@@ -1,0 +1,23 @@
+# Maven
+**/target/
+
+# IDE
+.settings/
+.classpath
+.project
+*.iml
+.idea/
+*.ipr
+*.iws
+.vscode/
+
+# OS
+*.class
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Maven wrapper
+**/mvnw*
+**/.mvn/
