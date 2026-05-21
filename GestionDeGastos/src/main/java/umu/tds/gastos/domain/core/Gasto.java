@@ -11,6 +11,12 @@ public class Gasto {
     private LocalDate fecha;
     private String categoria;
 
+    public Gasto() {
+        if (this.id == null) {
+			this.id = UUID.randomUUID();
+		}
+    }
+
     public Gasto(double cantidad, LocalDate fecha, String categoria) {
         this.id = UUID.randomUUID();
         this.cantidad = cantidad;
@@ -19,6 +25,9 @@ public class Gasto {
     }
     
     public UUID getId() {
+        if (this.id == null) {
+			this.id = UUID.randomUUID();
+		}
         return id;
     }
 
@@ -55,7 +64,7 @@ public class Gasto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Gasto gasto = (Gasto) o;
-        return id == gasto.id;
+        return Objects.equals(id, gasto.id);
     }
 
     @Override
