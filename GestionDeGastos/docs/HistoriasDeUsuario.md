@@ -650,10 +650,34 @@ Entonces los cambios se persisten automáticamente sin acción adicional del usu
 | **Descripción** | El proyecto debe gestionarse mediante Git con un repositorio compartido en GitHub. |
 | **Categoría** | Tecnología |
 
-### RNF-07: Separación en capas
+### RNF-07: Arquitectura MVC (Modelo-Vista-Controlador)
 
 | Campo | Valor |
 |-------|-------|
 | **ID** | RNF-07 |
-| **Descripción** | La aplicación debe seguir una arquitectura por capas que separe el modelo de dominio, la capa de persistencia (repositorio), la lógica de negocio (servicio) y la interfaz de usuario. |
+| **Descripción** | La aplicación debe seguir el patrón MVC con separación en capas: modelo de dominio (`domain/`), repositorios (`repository/` + `repository/impl/`), controladores (`controller/`) que contienen la lógica de negocio, y la interfaz de usuario (`ui/`) que incluye las vistas FXML. Los controladores deben ser reutilizables desde la interfaz gráfica y desde la CLI. |
+| **Categoría** | Arquitectura |
+
+### RNF-08: Inversión de dependencias
+
+| Campo | Valor |
+|-------|-------|
+| **ID** | RNF-08 |
+| **Descripción** | Las dependencias entre capas deben resolverse mediante inyección de dependencias a través de la clase singleton `Configuracion`. Los repositorios se definen como interfaces y se inyectan en los controladores, permitiendo cambiar la implementación sin modificar el código cliente. |
+| **Categoría** | Arquitectura |
+
+### RNF-09: Singleton en clases de acceso global
+
+| Campo | Valor |
+|-------|-------|
+| **ID** | RNF-09 |
+| **Descripción** | Las clases cuyo acceso a la única instancia en el sistema deba ser global (como `Configuracion` y `SceneManager`) deben implementar el patrón Singleton. |
+| **Categoría** | Diseño |
+
+### RNF-10: Patrón Repositorio
+
+| Campo | Valor |
+|-------|-------|
+| **ID** | RNF-10 |
+| **Descripción** | El acceso a los datos debe realizarse a través del patrón Repositorio, desacoplando la capa de almacenamiento del resto de la aplicación. Se usará Jackson para la persistencia en JSON. |
 | **Categoría** | Arquitectura |
