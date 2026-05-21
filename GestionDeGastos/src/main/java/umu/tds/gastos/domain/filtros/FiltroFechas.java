@@ -1,7 +1,6 @@
 package umu.tds.gastos.domain.filtros;
 
 import java.time.LocalDate;
-import java.util.Objects;
 import umu.tds.gastos.domain.core.Gasto;
 
 public class FiltroFechas implements Filtro {
@@ -16,7 +15,7 @@ public class FiltroFechas implements Filtro {
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
     }
-
+    //pongo los gets por si hay que depurar a futuro 
     public LocalDate getFechaInicio() {
         return fechaInicio;
     }
