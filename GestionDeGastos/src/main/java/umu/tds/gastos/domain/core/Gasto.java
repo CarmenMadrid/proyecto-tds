@@ -10,11 +10,9 @@ public class Gasto {
     private double cantidad;
     private LocalDate fecha;
     private Categoria categoria;
+    private Persona pagador;
 
     public Gasto() {
-        if (this.id == null) {
-			this.id = UUID.randomUUID();
-		}
     }
 
     public Gasto(double cantidad, LocalDate fecha, Categoria categoria) {
@@ -23,11 +21,13 @@ public class Gasto {
         this.fecha = fecha;
         this.categoria = categoria;
     }
+
+    public Gasto(double cantidad, LocalDate fecha, Categoria categoria, Persona pagador) {
+        this(cantidad, fecha, categoria);
+        this.pagador = pagador;
+    }
     
     public UUID getId() {
-        if (this.id == null) {
-			this.id = UUID.randomUUID();
-		}
         return id;
     }
 
@@ -59,6 +59,14 @@ public class Gasto {
         this.categoria = categoria;
     }
 
+    public Persona getPagador() {
+        return pagador;
+    }
+
+    public void setPagador(Persona pagador) {
+        this.pagador = pagador;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -69,7 +77,7 @@ public class Gasto {
 
     @Override
 	public String toString() {
-		return "Gasto (" + id + ") [cantidad=" + cantidad + ", fecha=" + fecha + ", categoria=" + categoria + ']';
+		return "Gasto [cantidad=" + cantidad + ", fecha=" + fecha + ", categoria=" + categoria + ", pagador=" + (pagador == null ? "null" : pagador) + ']';
 	}
 
     @Override

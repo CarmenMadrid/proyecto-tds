@@ -1,0 +1,163 @@
+package umu.tds.gastos.controller;
+
+import com.google.common.base.Preconditions;
+import umu.tds.gastos.domain.core.*;
+import umu.tds.gastos.persistence.CuentaRepository;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
+public class CuentaController {
+
+    private final CuentaRepository cuentaRepository;
+
+    public CuentaController(CuentaRepository cuentaRepository) {
+        this.cuentaRepository = cuentaRepository;
+    }
+
+    // Cuentas
+
+    public Cuenta crearCuentaPersonal(String nombre) {
+        Preconditions.checkNotNull(nombre, "El nombre no puede ser nulo");
+        Cuenta cuenta = new Cuenta(nombre);
+        cuentaRepository.addCuenta(cuenta);
+        return cuenta;
+    }
+
+    public Cuenta crearCuentaCompartida(String nombre, List<Persona> personas, CuentaCompartida.TipoReparto tipoReparto) {
+        Preconditions.checkNotNull(nombre, "El nombre no puede ser nulo");
+        CuentaCompartida cuenta = new CuentaCompartida(nombre, personas, tipoReparto);
+        cuentaRepository.addCuenta(cuenta);
+        return cuenta;
+    }
+
+    public void eliminarCuenta(UUID id) {
+        cuentaRepository.deleteCuenta(id);
+    }
+
+    public List<Cuenta> obtenerCuentas() {
+        return cuentaRepository.getAllCuentas();
+    }
+
+    public Optional<Cuenta> obtenerCuenta(UUID id) {
+        return cuentaRepository.getCuenta(id);
+    }
+
+    public Cuenta obtenerCuentaPersonal() {
+        return cuentaRepository.getAllCuentas().stream()
+                .filter(c -> !c.isCompartida())
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("No existe cuenta personal"));
+    }
+
+    // Gastos 
+
+    public Gasto registrarGasto(UUID idCuenta, double cantidad, LocalDate fecha, String nombreCategoria) {
+        return registrarGasto(idCuenta, cantidad, fecha, nombreCategoria, null);
+    }
+
+    public Gasto registrarGasto(UUID idCuenta, double cantidad, LocalDate fecha, String nombreCategoria, Persona pagador) {
+        Preconditions.checkArgument(cantidad > 0, "La cantidad debe ser mayor que 0");
+        Preconditions.checkNotNull(fecha, "La fecha no puede ser nula");
+        Preconditions.checkNotNull(nombreCategoria, "La categoría no puede ser nula");
+
+        Cuenta cuenta = cuentaRepository.getCuenta(idCuenta)
+                .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
+
+        Categoria categoria = cuenta.getCategoria(nombreCategoria)
+                .orElseGet(() -> {
+                    Categoria nueva = new Categoria(nombreCategoria);
+                    cuenta.addCategoria(nueva);
+                    return nueva;
+                });
+
+        Gasto gasto;
+        if (cuenta instanceof CuentaCompartida comp) {
+            gasto = comp.agregarGasto(cantidad, fecha, categoria, pagador);
+        } else {
+            gasto = cuenta.agregarGasto(cantidad, fecha, categoria);
+        }
+        cuentaRepository.updateCuenta(cuenta);
+        return gasto;
+    }
+
+    public void editarGasto(UUID idCuenta, UUID idGasto, double cantidad, LocalDate fecha, String nombreCategoria) {
+        Preconditions.checkArgument(cantidad > 0, "La cantidad debe ser mayor que 0");
+        Preconditions.checkNotNull(fecha, "La fecha no puede ser nula");
+
+        Cuenta cuenta = cuentaRepository.getCuenta(idCuenta)
+                .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
+
+        Categoria categoria = null;
+        if (nombreCategoria != null && !nombreCategoria.trim().isEmpty()) {
+            String cat = nombreCategoria.trim();
+            categoria = cuenta.getCategoria(cat)
+                    .orElseGet(() -> {
+                        Categoria nueva = new Categoria(cat);
+                        cuenta.addCategoria(nueva);
+                        return nueva;
+                    });
+        }
+
+        Gasto gasto = cuenta.getGasto(idGasto)
+                .orElseThrow(() -> new IllegalArgumentException("Gasto no encontrado"));
+        cuenta.modificarGasto(gasto, cantidad, fecha, categoria != null ? categoria : gasto.getCategoria());
+
+        cuentaRepository.updateCuenta(cuenta);
+    }
+
+    public void eliminarGasto(UUID idCuenta, UUID idGasto) {
+        Cuenta cuenta = cuentaRepository.getCuenta(idCuenta)
+                .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
+        Gasto gasto = cuenta.getGasto(idGasto)
+                .orElseThrow(() -> new IllegalArgumentException("Gasto no encontrado"));
+        cuenta.borrarGasto(gasto);
+        cuentaRepository.updateCuenta(cuenta);
+    }
+
+    public List<Gasto> obtenerGastos(UUID idCuenta) {
+        return cuentaRepository.getCuenta(idCuenta)
+                .map(Cuenta::getGastos)
+                .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
+    }
+
+    // Categorías 
+
+    public List<Categoria> obtenerCategorias(UUID idCuenta) {
+        return cuentaRepository.getCuenta(idCuenta)
+                .map(Cuenta::getCategorias)
+                .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
+    }
+
+    public Categoria crearCategoria(UUID idCuenta, String nombre) {
+        Preconditions.checkNotNull(nombre, "El nombre no puede ser nulo");
+        Preconditions.checkArgument(!nombre.trim().isEmpty(), "El nombre no puede estar vacío");
+
+        Cuenta cuenta = cuentaRepository.getCuenta(idCuenta)
+                .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
+
+        String nombreTrim = nombre.trim();
+        Optional<Categoria> existente = cuenta.getCategoria(nombreTrim);
+        if (existente.isPresent()) {
+            return existente.get();
+        }
+        Categoria nueva = new Categoria(nombreTrim);
+        cuenta.addCategoria(nueva);
+        cuentaRepository.updateCuenta(cuenta);
+        return nueva;
+    }
+
+    // Saldos (cuentas compartidas) 
+
+    public Map<Persona, Double> obtenerSaldos(UUID idCuenta) {
+        Cuenta cuenta = cuentaRepository.getCuenta(idCuenta)
+                .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
+        if (!cuenta.isCompartida()) {
+            throw new UnsupportedOperationException("La cuenta personal no tiene saldos");
+        }
+        return cuenta.getSaldos();
+    }
+}
