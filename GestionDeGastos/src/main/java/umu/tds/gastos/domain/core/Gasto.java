@@ -9,7 +9,7 @@ public class Gasto {
     private UUID id;
     private double cantidad;
     private LocalDate fecha;
-    private String categoria;
+    private Categoria categoria;
 
     public Gasto() {
         if (this.id == null) {
@@ -17,7 +17,7 @@ public class Gasto {
 		}
     }
 
-    public Gasto(double cantidad, LocalDate fecha, String categoria) {
+    public Gasto(double cantidad, LocalDate fecha, Categoria categoria) {
         this.id = UUID.randomUUID();
         this.cantidad = cantidad;
         this.fecha = fecha;
@@ -51,11 +51,11 @@ public class Gasto {
         this.fecha = fecha;
     }
 
-    public String getCategoria() {
+    public Categoria getCategoria() {
         return categoria;
     }
 
-    public void setCategoria(String categoria) {
+    public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
     }
 
