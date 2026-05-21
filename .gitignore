@@ -1,6 +1,9 @@
 # Maven
 **/target/
 
+# Data
+**/data/
+
 # IDE
 .settings/
 .classpath
