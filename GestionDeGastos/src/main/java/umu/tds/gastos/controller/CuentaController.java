@@ -2,9 +2,12 @@ package umu.tds.gastos.controller;
 
 import com.google.common.base.Preconditions;
 import umu.tds.gastos.domain.core.*;
+import umu.tds.gastos.domain.filtros.*;
 import umu.tds.gastos.persistence.CuentaRepository;
 
 import java.time.LocalDate;
+import java.time.Month;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -160,4 +163,28 @@ public class CuentaController {
         }
         return cuenta.getSaldos();
     }
+
+    //Filtros
+
+    public List<Gasto> filtrarGastos(UUID idCuenta, Filtro filtro) {
+        Cuenta cuenta = cuentaRepository.getCuenta(idCuenta)
+                .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
+        return cuenta.filtrarGastos(filtro);
+    }
+    public List<Gasto> filtrarGastos(UUID idCuenta, List<Categoria> categorias, LocalDate fechaInicio, LocalDate fechaFin,
+			List<Month> meses) {
+
+		    List<Filtro> listaFiltros = new ArrayList<>();
+
+		    Filtro filtroCategorias = new FiltroCategorias(new ArrayList<>(categorias));
+		    Filtro filtroFechas = new FiltroFechas(fechaInicio, fechaFin);
+		    Filtro filtroMeses = new FiltroMeses(meses);
+
+		    listaFiltros.add(filtroCategorias);
+            listaFiltros.add(filtroFechas); 
+            listaFiltros.add(filtroMeses);
+            Filtro filtroMultiple = new FiltroMultiple(listaFiltros);
+		    return filtrarGastos(idCuenta, filtroMultiple);
+	    }	
+
 }
