@@ -15,7 +15,6 @@ public class FiltroFechas implements Filtro {
         this.fechaInicio = fechaInicio;
         this.fechaFin = fechaFin;
     }
-    //pongo los gets por si hay que depurar a futuro 
     public LocalDate getFechaInicio() {
         return fechaInicio;
     }

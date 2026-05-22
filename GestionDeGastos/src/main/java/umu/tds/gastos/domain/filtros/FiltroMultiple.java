@@ -7,7 +7,7 @@ public class FiltroMultiple implements Filtro {
     private final List<Filtro> filtros;
 
     public FiltroMultiple(List<Filtro> filtros) {
-        this.filtros = List.copyOf(filtros);
+        this.filtros = new java.util.ArrayList<>(filtros);
     }
     public FiltroMultiple() {
         this.filtros = new java.util.ArrayList<>(); 
