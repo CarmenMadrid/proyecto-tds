@@ -8,7 +8,7 @@ public class FiltroCategorias implements Filtro {
     private final List<Categoria> categorias;
 
     public FiltroCategorias(List<Categoria> categorias) {
-        this.categorias = List.copyOf(categorias);
+        this.categorias = new java.util.ArrayList<>(categorias);
     }
 
     public List<Categoria> getCategorias() {
@@ -20,7 +20,7 @@ public class FiltroCategorias implements Filtro {
         if (g == null || g.getCategoria() == null) {
             return false;
         }
-        if(categorias == null || categorias.isEmpty()) { //si categorias es null o vacio es como un filtro abierto
+        if(categorias == null || categorias.isEmpty()) { 
             return true;
         }   
         return categorias.contains(g.getCategoria());
