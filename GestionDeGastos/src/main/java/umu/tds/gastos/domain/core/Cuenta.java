@@ -70,6 +70,7 @@ public class Cuenta {
         return new ArrayList<>(categorias);
     }
 
+    // Filtros
 
     public List<Gasto> filtrarGastos(Filtro filtro) {
         return gastos.stream()
