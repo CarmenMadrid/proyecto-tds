@@ -1,5 +1,7 @@
 package umu.tds.gastos.domain.core;
 
+import umu.tds.gastos.domain.filtros.Filtro;
+
 import java.time.LocalDate;
 import java.util.*;
 
@@ -68,6 +70,13 @@ public class Cuenta {
         return new ArrayList<>(categorias);
     }
 
+    // Filtros
+
+    public List<Gasto> filtrarGastos(Filtro filtro) {
+        return gastos.stream()
+                .filter(filtro::cumple)
+                .toList();
+    }
 
     public Map<Persona, Double> getSaldos() {
         return new HashMap<>();

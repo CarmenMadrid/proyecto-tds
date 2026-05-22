@@ -164,13 +164,14 @@ public class CuentaController {
         return cuenta.getSaldos();
     }
 
-    //Filtros
+    // Filtros
 
     public List<Gasto> filtrarGastos(UUID idCuenta, Filtro filtro) {
         Cuenta cuenta = cuentaRepository.getCuenta(idCuenta)
                 .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
         return cuenta.filtrarGastos(filtro);
     }
+    
     public List<Gasto> filtrarGastos(UUID idCuenta, List<Categoria> categorias, LocalDate fechaInicio, LocalDate fechaFin,
 			List<Month> meses) {
 
