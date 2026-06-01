@@ -3,15 +3,20 @@ package umu.tds.gastos.controller;
 import com.google.common.base.Preconditions;
 import umu.tds.gastos.domain.core.*;
 import umu.tds.gastos.domain.filtros.*;
+import umu.tds.gastos.imports.ImportadorFactory;
+import umu.tds.gastos.imports.ImportadorGastos;
 import umu.tds.gastos.persistence.CuentaRepository;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class CuentaController {
 
@@ -153,7 +158,14 @@ public class CuentaController {
         return nueva;
     }
 
-    // Saldos (cuentas compartidas) 
+    public void eliminarCategoria(UUID idCuenta, String nombreCategoria) {
+        Cuenta cuenta = cuentaRepository.getCuenta(idCuenta)
+                .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
+        cuenta.eliminarCategoria(nombreCategoria);
+        cuentaRepository.updateCuenta(cuenta);
+    }
+
+    // Saldos y reparto (cuentas compartidas)
 
     public Map<Persona, Double> obtenerSaldos(UUID idCuenta) {
         Cuenta cuenta = cuentaRepository.getCuenta(idCuenta)
@@ -164,6 +176,38 @@ public class CuentaController {
         return cuenta.getSaldos();
     }
 
+    public CuentaCompartida obtenerCuentaCompartida(UUID idCuenta) {
+        Cuenta cuenta = cuentaRepository.getCuenta(idCuenta)
+                .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
+        if (!cuenta.isCompartida()) {
+            throw new UnsupportedOperationException("La cuenta no es compartida");
+        }
+        return (CuentaCompartida) cuenta;
+    }
+
+    public Map<String, Double> obtenerPorcentajes(UUID idCuenta) {
+        CuentaCompartida cc = obtenerCuentaCompartida(idCuenta);
+        return cc.getPorcentajes().entrySet().stream()
+                .collect(Collectors.toMap(
+                        e -> e.getKey().getNombre(),
+                        Map.Entry::getValue));
+    }
+
+    public void configurarPorcentajes(UUID idCuenta, Map<String, Double> porcentajesPorNombre) {
+        CuentaCompartida cc = obtenerCuentaCompartida(idCuenta);
+        Map<Persona, Double> porcentajes = new HashMap<>();
+        for (Map.Entry<String, Double> entry : porcentajesPorNombre.entrySet()) {
+            Persona p = cc.getPersonas().stream()
+                    .filter(per -> per.getNombre().equalsIgnoreCase(entry.getKey()))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "Persona no encontrada: " + entry.getKey()));
+            porcentajes.put(p, entry.getValue());
+        }
+        cc.setPorcentajes(porcentajes);
+        cuentaRepository.updateCuenta(cc);
+    }
+
     // Filtros
 
     public List<Gasto> filtrarGastos(UUID idCuenta, Filtro filtro) {
@@ -172,20 +216,66 @@ public class CuentaController {
         return cuenta.filtrarGastos(filtro);
     }
     
-    public List<Gasto> filtrarGastos(UUID idCuenta, List<Categoria> categorias, LocalDate fechaInicio, LocalDate fechaFin,
-			List<Month> meses) {
+    public List<Gasto> filtrarGastos(UUID idCuenta, List<Categoria> categorias, LocalDate fechaInicio, LocalDate fechaFin, List<Month> meses) {		    
+        List<Filtro> listaFiltros = new ArrayList<>();
 
-		    List<Filtro> listaFiltros = new ArrayList<>();
+		Filtro filtroCategorias = new FiltroCategorias(new ArrayList<>(categorias));
+		Filtro filtroFechas = new FiltroFechas(fechaInicio, fechaFin);
+		Filtro filtroMeses = new FiltroMeses(meses);
 
-		    Filtro filtroCategorias = new FiltroCategorias(new ArrayList<>(categorias));
-		    Filtro filtroFechas = new FiltroFechas(fechaInicio, fechaFin);
-		    Filtro filtroMeses = new FiltroMeses(meses);
+	    listaFiltros.add(filtroCategorias);
+        listaFiltros.add(filtroFechas); 
+        listaFiltros.add(filtroMeses);
+        Filtro filtroMultiple = new FiltroMultiple(listaFiltros);
+	    return filtrarGastos(idCuenta, filtroMultiple);
+	}
 
-		    listaFiltros.add(filtroCategorias);
-            listaFiltros.add(filtroFechas); 
-            listaFiltros.add(filtroMeses);
-            Filtro filtroMultiple = new FiltroMultiple(listaFiltros);
-		    return filtrarGastos(idCuenta, filtroMultiple);
-	    }	
+    // Importar
+
+    public int importarGastos(UUID idCuenta, String archivo, String formato) throws IOException {
+        Cuenta cuenta = cuentaRepository.getCuenta(idCuenta)
+                .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
+
+        ImportadorGastos importador = ImportadorFactory.crearImportador(formato);
+        List<Gasto> importados = importador.importar(archivo, cuenta);
+
+        int count = 0;
+        for (Gasto g : importados) {
+            Categoria cat = cuenta.getCategoria(g.getCategoria().getNombre())
+                    .orElseGet(() -> {
+                        Categoria nueva = new Categoria(g.getCategoria().getNombre());
+                        cuenta.addCategoria(nueva);
+                        return nueva;
+                    });
+
+            if (cuenta instanceof CuentaCompartida comp) {
+                comp.agregarGasto(g.getCantidad(), g.getFecha(), cat, g.getPagador());
+            } else {
+                cuenta.agregarGasto(g.getCantidad(), g.getFecha(), cat);
+            }
+            count++;
+        }
+
+        if (count > 0) {
+            cuentaRepository.updateCuenta(cuenta);
+        }
+        return count;
+    }
+
+    // Datos para gráficas
+
+    public Map<String, Double> obtenerGastosPorCategoria(UUID idCuenta) {
+        return obtenerGastosPorCategoria(idCuenta, null);
+    }
+
+    public Map<String, Double> obtenerGastosPorCategoria(UUID idCuenta, Filtro filtro) {
+        Cuenta cuenta = cuentaRepository.getCuenta(idCuenta)
+                .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
+        List<Gasto> gastos = (filtro != null) ? cuenta.filtrarGastos(filtro) : cuenta.getGastos();
+        return gastos.stream()
+                .collect(Collectors.groupingBy(
+                        g -> g.getCategoria().getNombre(),
+                        Collectors.summingDouble(Gasto::getCantidad)));
+    }
 
 }
