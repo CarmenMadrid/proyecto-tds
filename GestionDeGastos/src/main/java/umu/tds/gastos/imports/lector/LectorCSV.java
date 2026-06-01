@@ -51,7 +51,6 @@ public class LectorCSV {
         }
 
         String date = cols[0].trim();
-        String account = cols[1].trim();
         String subcategory = cols[3].trim();
         String payer = cols[5].trim();
         String amount = cols[6].trim();
