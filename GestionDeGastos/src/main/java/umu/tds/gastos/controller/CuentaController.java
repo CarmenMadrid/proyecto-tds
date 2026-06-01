@@ -262,4 +262,20 @@ public class CuentaController {
         return count;
     }
 
+    // Datos para gráficas
+
+    public Map<String, Double> obtenerGastosPorCategoria(UUID idCuenta) {
+        return obtenerGastosPorCategoria(idCuenta, null);
+    }
+
+    public Map<String, Double> obtenerGastosPorCategoria(UUID idCuenta, Filtro filtro) {
+        Cuenta cuenta = cuentaRepository.getCuenta(idCuenta)
+                .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
+        List<Gasto> gastos = (filtro != null) ? cuenta.filtrarGastos(filtro) : cuenta.getGastos();
+        return gastos.stream()
+                .collect(Collectors.groupingBy(
+                        g -> g.getCategoria().getNombre(),
+                        Collectors.summingDouble(Gasto::getCantidad)));
+    }
+
 }
