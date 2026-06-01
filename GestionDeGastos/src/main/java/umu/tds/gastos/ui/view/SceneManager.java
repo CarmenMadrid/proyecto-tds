@@ -3,18 +3,27 @@ package umu.tds.gastos.ui.view;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import umu.tds.gastos.domain.core.Cuenta;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SceneManager {
 
-    private static final String FXML_ROOT = "/umu/tds/gastos/ui/fxml/";
     private static SceneManager instancia;
     private Stage stage;
+    private Scene escenaActual;
 
-    private SceneManager() {
-    }
+    private List<Cuenta> cuentas = new ArrayList<>();
+
+    private static final String FXML_ROOT = "/umu/tds/gastos/ui/fxml/";
+
+    private SceneManager() {}
 
     public static SceneManager getInstancia() {
         if (instancia == null) {
@@ -23,48 +32,88 @@ public class SceneManager {
         return instancia;
     }
 
+    public List<Cuenta> getCuentas() {
+        return cuentas;
+    }
+
+    public void eliminarCuenta(Cuenta cuenta) {
+        cuentas.remove(cuenta);
+    }
+
     public void init(Stage stage) {
         this.stage = stage;
     }
 
+
     public void showVentanaPrincipal() {
-        cargarEscena("VentanaPrincipal.fxml", "Gestión de Gastos");
+        cargarYMostrar("VentanaPrincipal");
     }
 
+    public void showCrearCuenta() {
+        cargarYMostrar("CrearCuenta");
+    }
+
+    public void showCrearCuentaCompartida() {
+        cargarYMostrar("CrearCuentaCompartida");
+    }
+
+
     public void showNuevoGasto() {
-        cargarEscena("NuevoGasto.fxml", "Nuevo Gasto");
+        cargarYMostrar("NuevoGasto");
     }
 
     public void showGraficos() {
-        cargarEscena("Graficos.fxml", "Gráficos");
+        cargarYMostrar("Graficos");
     }
 
     public void showCalendario() {
-        cargarEscena("Calendario.fxml", "Calendario");
+        cargarYMostrar("Calendario");
     }
 
     public void showAlertas() {
-        cargarEscena("Alertas.fxml", "Alertas");
+        cargarYMostrar("Alertas");
     }
 
     public void showCuentasCompartidas() {
-        cargarEscena("CuentasCompartidas.fxml", "Cuentas Compartidas");
+        cargarYMostrar("CuentasCompartidas");
     }
 
     public void showImportar() {
-        cargarEscena("Importar.fxml", "Importar Gastos");
+        cargarYMostrar("Importar");
     }
 
-    private void cargarEscena(String fxml, String titulo) {
+    private void cargarYMostrar(String fxml) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML_ROOT + fxml));
-            Parent root = loader.load();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.setTitle(titulo);
-            stage.show();
+            Parent root = loadFXML(fxml);
+
+            if (escenaActual == null) {
+                escenaActual = new Scene(root);
+                stage.setScene(escenaActual);
+                stage.show();
+            } else {
+                escenaActual.setRoot(root);
+            }
+
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
+    }
+
+    private void cargarYMostrarDialogo(String fxml, String titulo) {
+        try {
+            DialogPane pane = (DialogPane) loadFXML(fxml);
+            Dialog<Void> dialog = new Dialog<>();
+            dialog.setDialogPane(pane);
+            dialog.setTitle(titulo);
+            dialog.initStyle(StageStyle.UTILITY);
+            dialog.showAndWait();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Parent loadFXML(String fxml) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML_ROOT + fxml + ".fxml"));
+        return loader.load();
     }
 }
