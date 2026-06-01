@@ -120,18 +120,55 @@ Entonces la categoría sigue disponible
 | Campo | Valor |
 |-------|-------|
 | **ID** | HU-06 |
-| **Título** | Registrar, modificar y borrar gastos desde la línea de comandos |
-| **Descripción** | Como usuario, quiero poder realizar las operaciones básicas de gestión de gastos (alta, modificación, borrado) desde una interfaz de línea de comandos para poder gestionar mis gastos sin necesidad de la interfaz gráfica. |
+| **Título** | Gestionar gastos desde menú interactivo en una terminal |
+| **Descripción** | Como usuario, quiero gestionar gastos personales y compartidos mediante un menú interactivo en la línea de comandos para poder realizar las operaciones CRUD sin necesidad de la interfaz gráfica. |
 | **Prioridad** | Alta |
 
 **Criterios de aceptación:**
 
-**CA-01: Registro desde CLI**
-Dado que el usuario ejecuta el comando de registro con los parámetros correctos
-Cuando la sintaxis es válida
+**CA-01: Menú principal con opciones**
+Dado que el usuario inicia la terminal
+Cuando se carga el menú
+Entonces ve las opciones disponibles: ver, añadir, editar y eliminar gastos personales; ver cuentas compartidas; añadir, editar y eliminar gastos compartidos; y salir
+
+**CA-02: Registro de gasto personal**
+Dado que el usuario selecciona la opción de añadir gasto personal
+Cuando introduce una cantidad válida (> 0), una fecha y una categoría existente o nueva
 Entonces el gasto se crea y persiste en el sistema
 
-**CA-02: Consistencia entre CLI e interfaz gráfica**
+**CA-03: Registro de gasto compartido**
+Dado que el usuario selecciona la opción de añadir gasto compartido
+Cuando elige una cuenta compartida, introduce los datos del gasto y selecciona la persona que paga
+Entonces el gasto se registra con el pagador asignado
+
+**CA-04: Edición con valor actual por defecto**
+Dado que el usuario edita un gasto existente
+Cuando pulsa Enter en un campo sin introducir valor
+Entonces se conserva el valor anterior de ese campo
+
+**CA-05: Eliminación con confirmación**
+Dado que el usuario selecciona un gasto para eliminar
+Cuando confirma la operación escribiendo "s"
+Entonces el gasto se elimina de forma permanente
+Cuando escribe cualquier otra cosa
+Entonces la eliminación se cancela y el gasto permanece
+
+**CA-06: Cancelación con "salir"**
+Dado que el usuario está en cualquier prompt del CLI
+Cuando escribe "salir"
+Entonces la operación en curso se cancela y se vuelve al menú principal sin realizar cambios
+
+**CA-07: Visualización de cuentas compartidas**
+Dado que el usuario selecciona la opción de ver cuentas compartidas
+Cuando elige una cuenta
+Entonces ve el nombre, tipo de reparto, miembros, saldos de cada persona y la lista de gastos
+
+**CA-08: Persistencia de datos**
+Dado que el usuario realiza cualquier operación de modificación
+Cuando la operación finaliza correctamente
+Entonces los cambios se persisten automáticamente
+
+**CA-09: Consistencia entre CLI e interfaz gráfica**
 Dado que el usuario realiza una operación desde el CLI
 Cuando abre la interfaz gráfica
 Entonces los cambios realizados desde CLI se reflejan en la interfaz gráfica
@@ -550,20 +587,47 @@ Entonces muestra un mensaje de error indicando que el formato no es válido
 |-------|-------|
 | **ID** | HU-24 |
 | **Título** | Listar y filtrar gastos desde CLI |
-| **Descripción** | Como usuario, quiero listar y filtrar gastos desde la línea de comandos para consultar mis gastos sin necesidad de abrir la interfaz gráfica. |
+| **Descripción** | Como usuario, quiero listar y filtrar gastos desde la línea de comandos por meses, rango de fechas y categorías para consultar mis gastos sin necesidad de abrir la interfaz gráfica. |
 | **Prioridad** | Baja |
 
 **Criterios de aceptación:**
 
-**CA-01: Listado desde CLI**
-Dado que el usuario ejecuta el comando de listado
-Cuando no hay filtros adicionales
-Entonces se muestran todos los gastos en la consola
+**CA-01: Opción de filtrar en menú**
+Dado que el usuario inicia la terminal
+Cuando se carga el menú
+Entonces ve la opción de filtrar
 
-**CA-02: Filtros desde CLI**
-Dado que el usuario ejecuta el comando de listado con parámetros de filtro
-Cuando los parámetros son válidos
-Entonces solo se muestran los gastos que cumplen los filtros indicados
+**CA-02: Filtro opcional por meses**
+Dado que el usuario responde "s" a filtrar por meses
+Cuando introduce números de mes separados por coma (ej: 1,7,8)
+Entonces solo se muestran los gastos de los meses seleccionados
+Cuando responde "N" o deja en blanco
+Entonces no se aplica filtro de mes
+
+**CA-03: Filtro opcional por rango de fechas**
+Dado que el usuario responde "s" a filtrar por fechas
+Cuando introduce una fecha de inicio anterior o igual a la fecha de fin
+Entonces solo se muestran los gastos comprendidos en ese intervalo
+Cuando la fecha de inicio es posterior a la de fin
+Entonces el sistema muestra un mensaje de error y solicita de nuevo las fechas
+
+**CA-04: Filtro opcional por categorías**
+Dado que el usuario responde "s" a filtrar por categorías
+Cuando selecciona una o varias categorías por número
+Entonces solo se muestran los gastos de las categorías seleccionadas
+
+**CA-05: Combinación de filtros (AND)**
+Dado que el usuario activa varios filtros simultáneamente
+Cuando confirma la selección
+Entonces solo se muestran los gastos que cumplen todas las condiciones
+
+**CA-06: Visualización de resultados**
+Dado que el usuario completa la configuración de filtros
+Cuando hay gastos que cumplen los criterios
+Entonces se muestran en formato tabla con el número total de resultados, 
+Cuando no hay gastos que cumplan los criterios
+Entonces se muestra un mensaje indicando que no se encontraron resultados y Cuando no hay filtros aplicados
+Entonces se muestran todos los gastos en la consola
 
 ---
 
