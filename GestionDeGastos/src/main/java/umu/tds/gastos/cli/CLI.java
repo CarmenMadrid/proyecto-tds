@@ -10,6 +10,7 @@ import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -126,6 +127,28 @@ public class CLI {
         CuentaCompartida cc = seleccionarCuentaCompartida();
         if (cc == null) return;
         mostrarDetalleCuenta(cc);
+        while (true) {
+            System.out.println();
+            System.out.println(" 1. Volver al menú principal");
+            if (cc.getTipoReparto() == CuentaCompartida.TipoReparto.PORCENTAJE) {
+                System.out.println(" 2. Configurar porcentajes de reparto\n");
+            }
+            String input = leerLinea("Seleccione (o 'salir'): ");
+            try {
+                int op = Integer.parseInt(input);
+                if (op == 1) return;
+                if (op == 2 && cc.getTipoReparto() == CuentaCompartida.TipoReparto.PORCENTAJE) {
+                    configurarPorcentajes(cc);
+                    mostrarDetalleCuenta(cc);
+                } else {
+                    System.out.println("Opción inválida.");
+                }
+            } catch (CancelarOperacion e) {
+                return;
+            } catch (NumberFormatException e) {
+                System.out.println("Número inválido.");
+            }
+        }
     }
 
     private void anadirGastoCompartido() {
@@ -363,6 +386,16 @@ public class CLI {
         System.out.print("Miembros: ");
         System.out.println(cc.getPersonas().stream().map(Persona::getNombre).collect(Collectors.joining(", ")));
 
+        if (cc.getTipoReparto() == CuentaCompartida.TipoReparto.PORCENTAJE) {
+            Map<String, Double> pcts = controller.obtenerPorcentajes(cc.getId());
+            if (!pcts.isEmpty()) {
+                System.out.print("Porcentajes: ");
+                System.out.println(pcts.entrySet().stream()
+                        .map(e -> e.getKey() + "=" + String.format("%.0f", e.getValue()) + "%")
+                        .collect(Collectors.joining(", ")));
+            }
+        }
+
         System.out.println("\nSaldos:");
         Map<Persona, Double> saldos = controller.obtenerSaldos(cc.getId());
         if (saldos.isEmpty()) {
@@ -475,6 +508,43 @@ public class CLI {
             catch (NumberFormatException e) {
                 System.out.println("Número inválido.");
             }
+        }
+    }
+
+    private void configurarPorcentajes(CuentaCompartida cc) {
+        System.out.println("\n--- Configurar porcentajes de reparto ---");
+        System.out.println("(Enter para mantener el valor actual)\n");
+        List<Persona> personas = cc.getPersonas();
+        Map<String, Double> actuales = controller.obtenerPorcentajes(cc.getId());
+        Map<String, Double> nuevos = new HashMap<>();
+        try {
+            for (Persona p : personas) {
+                double actual = actuales.getOrDefault(p.getNombre(), 0.0);
+                String prompt = String.format("Porcentaje para %s [%.0f%%] (o 'salir'): ",
+                        p.getNombre(), actual);
+                String linea = leerLinea(prompt);
+                if (linea.isEmpty()) {
+                    nuevos.put(p.getNombre(), actual);
+                } else {
+                    double pct = Double.parseDouble(linea);
+                    if (pct < 0 || pct > 100) {
+                        System.out.println("El porcentaje debe estar entre 0 y 100.");
+                        return;
+                    }
+                    nuevos.put(p.getNombre(), pct);
+                }
+            }
+            double suma = nuevos.values().stream().mapToDouble(Double::doubleValue).sum();
+            if (Math.abs(suma - 100.0) > 0.001) {
+                System.out.printf("Los porcentajes deben sumar 100%%. Suma actual: %.1f%%\n", suma);
+                return;
+            }
+            controller.configurarPorcentajes(cc.getId(), nuevos);
+            System.out.println("\u2713 Porcentajes actualizados correctamente.\n");
+        } catch (CancelarOperacion e) {
+            System.out.println(e.getMessage() + "\n");
+        } catch (NumberFormatException e) {
+            System.out.println("Número inválido.\n");
         }
     }
 

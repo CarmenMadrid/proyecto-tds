@@ -62,6 +62,23 @@ public class Cuenta {
         }
     }
 
+    public void eliminarCategoria(String nombreCategoria) {
+        Categoria cat = categorias.stream()
+                .filter(c -> c.getNombre().equalsIgnoreCase(nombreCategoria))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Categoría no encontrada: " + nombreCategoria));
+
+        boolean enUso = gastos.stream()
+                .anyMatch(g -> g.getCategoria().getNombre().equalsIgnoreCase(nombreCategoria));
+        if (enUso) {
+            throw new IllegalStateException(
+                    "No se puede eliminar la categoría '" + cat.getNombre()
+                    + "' porque está en uso por uno o más gastos");
+        }
+
+        categorias.remove(cat);
+    }
+
     public Optional<Categoria> getCategoria(String nombre) {
         return categorias.stream().filter(c -> c.getNombre().equalsIgnoreCase(nombre)).findFirst();
     }
