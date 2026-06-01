@@ -10,12 +10,15 @@ public class Notificacion {
 	private Alertas alerta;
 	private String nombreCuenta;
 
-    public Notificacion(String mensaje, LocalDate fecha, Alertas alerta, String nombreCuenta) {
+    public Notificacion() { 
+    }
+
+    public Notificacion(Alertas alerta, String nombreCuenta) {
         this.alerta = Preconditions.checkNotNull(alerta);
 		this.nombreCuenta = Preconditions.checkNotNull(nombreCuenta);
         
-        this.mensaje = mensaje;
-        this.fecha = fecha;
+        this.mensaje = alerta.getMensaje();
+        this.fecha = LocalDate.now();
         this.alerta = alerta;
         this.nombreCuenta = nombreCuenta;
     }

@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import umu.tds.gastos.domain.alertas.patronEstrategias.*;
 
 import umu.tds.gastos.domain.core.Categoria;
@@ -14,9 +17,12 @@ public class Alertas {
 	private Categoria categoria;
 	private UUID id;
     LocalDate fechaCreacion;
+    boolean mostrada = false;
 
     private EstrategiaTiempo tipo; 
 
+    public Alertas() {
+    }
 
     public Alertas(double limite, Categoria categoria , EstrategiaTiempo tipo) {
         this.limite = limite;
@@ -24,6 +30,8 @@ public class Alertas {
         this.id = UUID.randomUUID();
         this.fechaCreacion = LocalDate.now();
         this.tipo = tipo;
+        this.mostrada = false;
+
     }
 
     public double getLimite() {
@@ -70,5 +78,19 @@ public class Alertas {
 		List<Gasto> gastosCategoria = filtrarPorCategoria(gastos);
 		double total = tipo.comprobar(this, gastosCategoria);
 		return total > limite;
+	}
+    public boolean isMostrada() {
+		return mostrada;
+	}
+
+	public void setMostrada(boolean m) {
+		mostrada = m;
+	}
+    
+    @JsonIgnore
+	public String getMensaje() {
+		String cat = (getCategoria() == null) ? "General" : getCategoria().getNombre();
+		return "Has superado tu límite " + tipo.getNombreEstrategia() + " de " + getLimite()
+				+ "€ en la categoría '" + cat + "'.";
 	}
 }
