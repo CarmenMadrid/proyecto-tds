@@ -11,10 +11,12 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class CuentaController {
 
@@ -163,7 +165,7 @@ public class CuentaController {
         cuentaRepository.updateCuenta(cuenta);
     }
 
-    // Saldos (cuentas compartidas) 
+    // Saldos y reparto (cuentas compartidas)
 
     public Map<Persona, Double> obtenerSaldos(UUID idCuenta) {
         Cuenta cuenta = cuentaRepository.getCuenta(idCuenta)
@@ -172,6 +174,38 @@ public class CuentaController {
             throw new UnsupportedOperationException("La cuenta personal no tiene saldos");
         }
         return cuenta.getSaldos();
+    }
+
+    public CuentaCompartida obtenerCuentaCompartida(UUID idCuenta) {
+        Cuenta cuenta = cuentaRepository.getCuenta(idCuenta)
+                .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
+        if (!cuenta.isCompartida()) {
+            throw new UnsupportedOperationException("La cuenta no es compartida");
+        }
+        return (CuentaCompartida) cuenta;
+    }
+
+    public Map<String, Double> obtenerPorcentajes(UUID idCuenta) {
+        CuentaCompartida cc = obtenerCuentaCompartida(idCuenta);
+        return cc.getPorcentajes().entrySet().stream()
+                .collect(Collectors.toMap(
+                        e -> e.getKey().getNombre(),
+                        Map.Entry::getValue));
+    }
+
+    public void configurarPorcentajes(UUID idCuenta, Map<String, Double> porcentajesPorNombre) {
+        CuentaCompartida cc = obtenerCuentaCompartida(idCuenta);
+        Map<Persona, Double> porcentajes = new HashMap<>();
+        for (Map.Entry<String, Double> entry : porcentajesPorNombre.entrySet()) {
+            Persona p = cc.getPersonas().stream()
+                    .filter(per -> per.getNombre().equalsIgnoreCase(entry.getKey()))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "Persona no encontrada: " + entry.getKey()));
+            porcentajes.put(p, entry.getValue());
+        }
+        cc.setPorcentajes(porcentajes);
+        cuentaRepository.updateCuenta(cc);
     }
 
     // Filtros
