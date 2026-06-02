@@ -340,7 +340,7 @@ public class CuentaController {
 					alertaRepository.updateAlerta(alerta);
 
 					// Crear notificación
-					Notificacion notif = new Notificacion(alerta,"Cuenta Personal");
+					Notificacion notif = new Notificacion(alerta,"Personal");
 					notificacionesRepository.addNotificacion(notif);
 				}
 
