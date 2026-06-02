@@ -1,14 +1,15 @@
 package umu.tds.gastos.ui.view;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import umu.tds.gastos.app.Configuracion;
+import umu.tds.gastos.controller.CuentaController;
 
 public class CuentaNuevaController {
-	
-	@FXML
-    private TextField nombreCuenta;
 
     @FXML
     private Button btnAceptar;
@@ -16,6 +17,34 @@ public class CuentaNuevaController {
     @FXML
     private Button btnCancelar;
 
+    @FXML
+    private TextField nombreCuenta;
+    
+    private final CuentaController cuentaController = Configuracion.getInstancia().getCuentaController();
+    
+    @FXML
+    void aceptar(ActionEvent event) {
+        String nombre = nombreCuenta.getText().trim();
+        if (nombre.isEmpty()) {
+        	mensajeError("El nombre no puede estar vacío.");
+            return;
+        }
+
+        cuentaController.crearCuentaPersonal(nombre);
+        cerrarVentana();
+    }
+
+    @FXML
+    void cancelar(ActionEvent event) {
+        cerrarVentana();
+    }
+
+    private void cerrarVentana() {
+        Stage stage = (Stage) btnCancelar.getScene().getWindow();
+        stage.close();
+    }
+
+    /*
     @FXML
     private void aceptar() {
 
@@ -36,7 +65,7 @@ public class CuentaNuevaController {
     @FXML
     private void cancelar() {
         SceneManager.getInstancia().showVentanaPrincipal();
-    }
+    }*/
 
 
     private void mensajeError(String mensaje) {

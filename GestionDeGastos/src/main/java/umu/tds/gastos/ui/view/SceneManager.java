@@ -5,21 +5,25 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.Window;
 import umu.tds.gastos.domain.core.Cuenta;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.base.Preconditions;
+
 public class SceneManager {
 
     private static SceneManager instancia;
-    private Stage stage;
+    //private Stage stage;
     private Scene escenaActual;
-
-    private List<Cuenta> cuentas = new ArrayList<>();
+    private FXMLLoader ultimoLoader;
+    private Stage primaryStage;
 
     private static final String FXML_ROOT = "/umu/tds/gastos/ui/fxml/";
 
@@ -32,55 +36,30 @@ public class SceneManager {
         return instancia;
     }
 
-    public List<Cuenta> getCuentas() {
-        return cuentas;
-    }
-
-    public void eliminarCuenta(Cuenta cuenta) {
-        cuentas.remove(cuenta);
-    }
-
     public void init(Stage stage) {
-        this.stage = stage;
+        this.primaryStage = stage;
     }
-
-
+    
     public void showVentanaPrincipal() {
         cargarYMostrar("VentanaPrincipal");
     }
 
     public void showCrearCuenta() {
-        cargarYMostrar("CrearCuenta");
+        showModal("CuentaNueva.fxml", "Crear Cuenta");
     }
 
     public void showCrearCuentaCompartida() {
-        cargarYMostrar("CrearCuentaCompartida");
+        showModal("CuentaCompartida.fxml", "Crear Cuenta Compartida");
     }
 
-
-    public void showNuevoGasto() {
-        cargarYMostrar("NuevoGasto");
+    public void showCrearGasto() {
+        showModal("GastoNuevo.fxml", "Crear Gasto");
     }
 
-    public void showGraficos() {
-        cargarYMostrar("Graficos");
+    public void showCrearCategoria() {
+        showModal("CategoriaNueva.fxml", "Crear Categoría");
     }
 
-    public void showCalendario() {
-        cargarYMostrar("Calendario");
-    }
-
-    public void showAlertas() {
-        cargarYMostrar("Alertas");
-    }
-
-    public void showCuentasCompartidas() {
-        cargarYMostrar("CuentasCompartidas");
-    }
-
-    public void showImportar() {
-        cargarYMostrar("Importar");
-    }
 
     private void cargarYMostrar(String fxml) {
         try {
@@ -88,29 +67,50 @@ public class SceneManager {
 
             if (escenaActual == null) {
                 escenaActual = new Scene(root);
-                stage.setScene(escenaActual);
-                stage.show();
+                primaryStage.setScene(escenaActual);
+                primaryStage.show();
             } else {
                 escenaActual.setRoot(root);
             }
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error al cambiar de escena a: " + fxml, e);
         }
     }
 
     private void cargarYMostrarDialogo(String fxml, String titulo) {
         try {
-            DialogPane pane = (DialogPane) loadFXML(fxml);
+        	FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML_ROOT + fxml + ".fxml"));
+            DialogPane pane = loader.load();
             Dialog<Void> dialog = new Dialog<>();
             dialog.setDialogPane(pane);
             dialog.setTitle(titulo);
             dialog.initStyle(StageStyle.UTILITY);
             dialog.showAndWait();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("No se pudo cargar el diálogo: " + fxml + ".fxml", e);
         }
     }
+    
+    
+    public void showModal(String fxml, String titulo) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML_ROOT + fxml));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle(titulo);
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(primaryStage);
+            stage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    
 
     private Parent loadFXML(String fxml) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML_ROOT + fxml + ".fxml"));

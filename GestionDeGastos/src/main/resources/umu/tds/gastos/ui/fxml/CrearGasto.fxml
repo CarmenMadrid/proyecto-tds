@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<TitledPane animated="false" minHeight="-Infinity" minWidth="-Infinity" prefHeight="435.0" prefWidth="476.0" text="Creación de gasto" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="umu.tds.gastos.ui.controller.CrearGastoController">
+<TitledPane animated="false" minHeight="-Infinity" minWidth="-Infinity" prefHeight="435.0" prefWidth="476.0" text="Creación de gasto" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="umu.tds.gastos.ui.view.CrearGastoController">
    <font>
       <Font size="14.0" />
    </font>

@@ -1,33 +1,77 @@
 package umu.tds.gastos.ui.view;
 
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
+import umu.tds.gastos.app.Configuracion;
+import umu.tds.gastos.controller.CuentaController;
 import umu.tds.gastos.domain.core.CuentaCompartida;
 import umu.tds.gastos.domain.core.Persona;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 public class CuentaCompartidaController {
 
-    @FXML private TextField nombreCuentaCompartida;
+    @FXML
+    private Button btnAceptar;
 
-    @FXML private TableView<PersonaTabla> tablaPersonasCuenta;
-    @FXML private TableColumn<PersonaTabla, String> columnaNombre;
-    @FXML private TableColumn<PersonaTabla, Double> columnaPorcentaje;
+    @FXML
+    private Button btnAddPersona;
 
-    @FXML private TextField nombrePersona;
-    @FXML private TextField porcentajePersona;
+    @FXML
+    private Button btnCancelar;
 
-    @FXML private Button btnAddPersona;
+    @FXML
+    private CheckBox btnPorcentaje;
 
-    private ObservableList<PersonaTabla> personas = FXCollections.observableArrayList();
+    @FXML
+    private TableColumn<PersonaPorcentaje, String> columnaNombre;
 
+    @FXML
+    private TableColumn<PersonaPorcentaje, Double> columnaPorcentaje;
 
-    public static class PersonaTabla {
+    @FXML
+    private TextField nombreCuentaCompartida;
+
+    @FXML
+    private TextField nombrePersona;
+
+    @FXML
+    private TextField porcentajePersona;
+
+    @FXML
+    private TableView<PersonaPorcentaje> tablaPersonasCuenta;
+
+    private final ObservableList<PersonaPorcentaje> personas =
+            FXCollections.observableArrayList();
+
+    private final CuentaController cuentaController =
+            Configuracion.getInstancia().getCuentaController();
+
+    @FXML
+    void initialize() {
+        tablaPersonasCuenta.setItems(personas);
+
+        columnaNombre.setCellValueFactory(c ->
+                new SimpleStringProperty(c.getValue().getNombre()));
+
+        columnaPorcentaje.setCellValueFactory(c ->
+                new SimpleObjectProperty<>(c.getValue().getPorcentaje()));
+    }
+    
+    // Clase auxiliar para la tabla
+    public static class PersonaPorcentaje {
         private final String nombre;
         private final double porcentaje;
 
-        public PersonaTabla(String nombre, double porcentaje) {
+        public PersonaPorcentaje(String nombre, double porcentaje) {
             this.nombre = nombre;
             this.porcentaje = porcentaje;
         }
@@ -41,116 +85,114 @@ public class CuentaCompartidaController {
         }
     }
 
-
     @FXML
-    public void initialize() {
-    	//Dice qué mostrar en la columna Nombre
-        columnaNombre.setCellValueFactory(data ->
-                new javafx.beans.property.SimpleStringProperty(data.getValue().getNombre()));
-        //Dice qué mostrar en la columna Porcentaje
-        columnaPorcentaje.setCellValueFactory(data ->
-                new javafx.beans.property.SimpleDoubleProperty(data.getValue().getPorcentaje()).asObject());
-        //Conecta la tabla con la lista de personas
-        tablaPersonasCuenta.setItems(personas);
-    }
-
-
-    @FXML
-    private void añadirPersona() {
-
+    void addPersona(ActionEvent event) {
         String nombre = nombrePersona.getText().trim();
-        String porcentajeStr = porcentajePersona.getText().trim();
 
-        //Comprobamos que el campo no está vacío
         if (nombre.isEmpty()) {
-        	mensajeError("El nombre no puede estar vacío.");
-            return;
-        }
-
-        //Comprobamos que es un número el porcentaje
-        double porcentaje;
-        try {
-            porcentaje = Double.parseDouble(porcentajeStr);
-        } catch (NumberFormatException e) {
-        	mensajeError("El porcentaje debe ser un número.");
+            mensajeError("Introduce un nombre para la persona");
             return;
         }
         
-      //Comprobamos que el porcentaje está entre 0 y 100
-        if (porcentaje < 0 || porcentaje > 100) {
-        	mensajeError("El porcentaje debe estar entre 0 y 100.");
+        boolean existe = personas.stream()
+                .anyMatch(p -> p.getNombre().equalsIgnoreCase(nombre));
+
+        if (existe) {
+            mensajeError("El nombre \"" + nombre + "\" ya existe. Introduce un nombre diferente.");
             return;
         }
 
-        //Añadir a la tabla la persona
-        personas.add(new PersonaTabla(nombre, porcentaje));
+        double porcentaje = 0;
 
-        //Limpiar campos para poder añadir más personas después
+        if (btnPorcentaje.isSelected()) {
+            try {
+                porcentaje = Double.parseDouble(porcentajePersona.getText().trim());
+            } catch (NumberFormatException e) {
+                mensajeError("El porcentaje introducido no es válido");
+                return;
+            }
+        }
+
+        personas.add(new PersonaPorcentaje(nombre, porcentaje));
+
         nombrePersona.clear();
         porcentajePersona.clear();
     }
 
-
+   
     @FXML
-    private void aceptar() {
-
+    void aceptar(ActionEvent event) {
         String nombreCuenta = nombreCuentaCompartida.getText().trim();
 
         if (nombreCuenta.isEmpty()) {
-        	mensajeError("Debe introducir un nombre para la cuenta compartida.");
+            mensajeError("El nombre de la cuenta no puede estar vacío");
+            return;
+        }
+        
+        boolean existe = cuentaController.obtenerCuentas().stream()
+                .anyMatch(c -> c.getNombre().equals(nombreCuenta));
+
+        if (existe) {
+            mensajeError("Ya existe una cuenta con el nombre \"" + nombreCuenta + "\". Elige otro nombre.");
             return;
         }
 
         if (personas.isEmpty()) {
-        	mensajeError("Debe añadir al menos una persona.");
+            mensajeError("Añade al menos una persona");
             return;
         }
 
-        //Comprobar que da 100%
-        double suma = personas.stream().mapToDouble(PersonaTabla::getPorcentaje).sum();
-        if (Math.abs(suma - 100.0) > 0.001) {
-        	mensajeError("Los porcentajes deben sumar 100. Suma actual: " + suma);
-            return;
+        List<Persona> listaPersonas = personas.stream()
+                .map(p -> new Persona(p.getNombre()))
+                .collect(Collectors.toList());
+
+        CuentaCompartida.TipoReparto tipo = btnPorcentaje.isSelected()
+                        ? CuentaCompartida.TipoReparto.PORCENTAJE
+                        : CuentaCompartida.TipoReparto.EQUITATIVO;
+
+        CuentaCompartida cuenta = (CuentaCompartida)
+                cuentaController.crearCuentaCompartida(nombreCuenta, listaPersonas, tipo);
+
+        if (tipo == CuentaCompartida.TipoReparto.PORCENTAJE) {
+            Map<Persona, Double> mapa = new HashMap<>();
+
+            for (PersonaPorcentaje pp : personas) {
+                Persona persona = listaPersonas.stream()
+                        .filter(p -> p.getNombre().equals(pp.getNombre()))
+                        .findFirst()
+                        .orElseThrow();
+
+                mapa.put(persona, pp.getPorcentaje());
+            }
+
+            try {
+                cuenta.setPorcentajes(mapa);
+            } catch (IllegalArgumentException e) {
+                mensajeError(e.getMessage());
+                return;
+            }
         }
 
-        //Crear cuenta compartida
-        CuentaCompartida cuenta = new CuentaCompartida();
-        cuenta.setNombre(nombreCuenta);
-
-        //Convertir personas de tabla
-        java.util.List<Persona> listaModelo = new java.util.ArrayList<>();
-
-        for (PersonaTabla p : personas) {
-            Persona personaModelo = new Persona(p.getNombre());
-            listaModelo.add(personaModelo);
-        }
-
-        cuenta.setPersonas(listaModelo);
-        cuenta.setTipoReparto(CuentaCompartida.TipoReparto.PORCENTAJE);
-
-        //Asignar porcentajes
-        for (int i = 0; i < listaModelo.size(); i++) {
-            cuenta.getPorcentajes().put(listaModelo.get(i), personas.get(i).getPorcentaje());
-        }
-
-        //Guardar en SceneManager
-        SceneManager.getInstancia().getCuentas().add(cuenta);
-
-        //Volver a la ventana principal
-        SceneManager.getInstancia().showVentanaPrincipal();
+        cerrar();
     }
 
-
     @FXML
-    private void cancelar() {
-        SceneManager.getInstancia().showVentanaPrincipal();
+    void cancelar(ActionEvent event) {
+        cerrar();
+    }
+
+    private void cerrar() {
+        Stage stage = (Stage) btnCancelar.getScene().getWindow();
+        stage.close();
     }
 
     private void mensajeError(String mensaje) {
-        Alert a = new Alert(Alert.AlertType.ERROR);
-        a.setHeaderText("Error");
-        a.setContentText(mensaje);
-        a.showAndWait();
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText("No se puede crear la cuenta");
+        alert.setContentText(mensaje);
+        alert.showAndWait();
     }
-}
+    
 
+}
