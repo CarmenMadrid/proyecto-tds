@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<TitledPane animated="false" minHeight="-Infinity" minWidth="-Infinity" prefHeight="435.0" prefWidth="476.0" text="Creación de gasto" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="umu.tds.gastos.ui.view.CrearGastoController">
+   <font>
+      <Font size="14.0" />
+   </font>
+   <content>
+      <VBox prefHeight="423.0" prefWidth="502.0">
+         <children>
+            <GridPane prefHeight="391.2" prefWidth="597.6">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="195.20001220703125" minWidth="10.0" prefWidth="48.3999755859375" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="418.1999877929687" minWidth="10.0" prefWidth="339.20001220703125" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="229.99997558593753" minWidth="10.0" prefWidth="69.59998779296876" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <Label prefHeight="27.0" prefWidth="233.0" text="Nombre del gasto" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets top="-20.0" />
+                     </GridPane.margin>
+                  </Label>
+                  <TextField fx:id="nombreCuenta" prefHeight="27.0" prefWidth="266.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <GridPane.margin>
+                        <Insets top="25.0" />
+                     </GridPane.margin>
+                  </TextField>
+                  <ComboBox fx:id="comboCuenta" prefHeight="27.0" prefWidth="219.0" promptText="Seleccionar Cuenta" GridPane.columnIndex="1" />
+                  <Label prefHeight="27.0" prefWidth="233.0" text="Cantidad del gasto" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                     <GridPane.margin>
+                        <Insets top="-20.0" />
+                     </GridPane.margin>
+                  </Label>
+                  <TextField fx:id="cantidadGasto" prefHeight="27.0" prefWidth="266.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                     <GridPane.margin>
+                        <Insets top="25.0" />
+                     </GridPane.margin>
+                  </TextField>
+                  <Label prefHeight="27.0" prefWidth="233.0" text="Fecha del gasto" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                     <GridPane.margin>
+                        <Insets top="-20.0" />
+                     </GridPane.margin>
+                  </Label>
+                  <DatePicker fx:id="calFecha" prefHeight="27.0" prefWidth="349.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                     <GridPane.margin>
+                        <Insets top="25.0" />
+                     </GridPane.margin>
+                  </DatePicker>
+                  <Label prefHeight="27.0" prefWidth="233.0" text="Categoría del gasto" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                     <GridPane.margin>
+                        <Insets top="-20.0" />
+                     </GridPane.margin>
+                  </Label>
+                  <ComboBox fx:id="comboCategoria" prefHeight="27.0" prefWidth="342.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                     <GridPane.margin>
+                        <Insets top="25.0" />
+                     </GridPane.margin>
+                  </ComboBox>
+                  <Label prefHeight="27.0" prefWidth="285.0" text="Seleccionar persona (solo para cuenta compartida)" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                     <GridPane.margin>
+                        <Insets top="-20.0" />
+                     </GridPane.margin>
+                  </Label>
+                  <ComboBox fx:id="comboPersona" prefHeight="27.0" prefWidth="352.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                     <GridPane.margin>
+                        <Insets top="25.0" />
+                     </GridPane.margin>
+                  </ComboBox>
+               </children>
+            </GridPane>
+            <HBox prefHeight="120.0" prefWidth="479.0">
+               <children>
+                  <Button fx:id="btnAceptar" mnemonicParsing="false" prefHeight="31.0" prefWidth="78.0" text="Aceptar">
+                     <HBox.margin>
+                        <Insets left="110.0" top="20.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="btnCancelar" mnemonicParsing="false" prefHeight="31.0" prefWidth="78.0" text="Cancelar">
+                     <HBox.margin>
+                        <Insets left="60.0" top="20.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </content>
+</TitledPane>
