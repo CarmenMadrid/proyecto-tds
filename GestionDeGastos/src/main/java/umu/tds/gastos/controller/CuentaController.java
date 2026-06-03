@@ -26,8 +26,8 @@ import java.util.stream.Collectors;
 public class CuentaController {
 
     private final CuentaRepository cuentaRepository;
-    private AlertasRepository alertaRepository;
-	private NotificacionesRepository notificacionesRepository;
+    private final AlertasRepository alertaRepository;
+	private final NotificacionesRepository notificacionesRepository;
 
     public CuentaController(CuentaRepository cuentaRepository, AlertasRepository alertaRepository, NotificacionesRepository notificacionesRepository) {
         this.cuentaRepository = cuentaRepository;

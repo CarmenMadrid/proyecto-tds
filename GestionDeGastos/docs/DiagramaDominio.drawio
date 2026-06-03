@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net">
   <diagram name="Página-1" id="GPyzAAzE5wxWG-fDeipm">
-    <mxGraphModel dx="2700" dy="2191" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="5774" dy="3417" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -381,6 +381,35 @@
         </mxCell>
         <mxCell id="OH0DjNWPMwj8Gp3UPuvt-142" parent="1" style="text;align=center;fontStyle=1;verticalAlign=middle;spacingLeft=3;spacingRight=3;strokeColor=none;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="-Categoria" vertex="1">
           <mxGeometry height="26" width="80" x="10" y="-514" as="geometry" />
+        </mxCell>
+        <mxCell id="OH0DjNWPMwj8Gp3UPuvt-144" edge="1" parent="1" source="OH0DjNWPMwj8Gp3UPuvt-143" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="OH0DjNWPMwj8Gp3UPuvt-116">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="OH0DjNWPMwj8Gp3UPuvt-154" edge="1" parent="1" source="OH0DjNWPMwj8Gp3UPuvt-143" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="OH0DjNWPMwj8Gp3UPuvt-151">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="OH0DjNWPMwj8Gp3UPuvt-143" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;i&gt;&amp;lt;&amp;lt;Interface&amp;gt;&amp;gt;&lt;/i&gt;&lt;br&gt;&lt;b&gt;EstrategiaTiempo&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ comprobar(alerta: Alerta, gastos: List&amp;lt;Gasto&amp;gt;): Double&lt;br&gt;+ getNombreEstrategia(): String&lt;/p&gt;" vertex="1">
+          <mxGeometry height="90" width="320" x="-630" y="-994" as="geometry" />
+        </mxCell>
+        <mxCell id="OH0DjNWPMwj8Gp3UPuvt-145" parent="1" style="text;align=center;fontStyle=1;verticalAlign=middle;spacingLeft=3;spacingRight=3;strokeColor=none;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="tipo-" vertex="1">
+          <mxGeometry height="26" width="80" x="-220" y="-980" as="geometry" />
+        </mxCell>
+        <mxCell id="OH0DjNWPMwj8Gp3UPuvt-146" parent="1" style="text;align=center;fontStyle=1;verticalAlign=middle;spacingLeft=3;spacingRight=3;strokeColor=none;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="1" vertex="1">
+          <mxGeometry height="26" width="80" x="-340" y="-950" as="geometry" />
+        </mxCell>
+        <mxCell id="OH0DjNWPMwj8Gp3UPuvt-147" parent="1" style="text;align=center;fontStyle=1;verticalAlign=middle;spacingLeft=3;spacingRight=3;strokeColor=none;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="1" vertex="1">
+          <mxGeometry height="26" width="80" x="-200" y="-956" as="geometry" />
+        </mxCell>
+        <mxCell id="OH0DjNWPMwj8Gp3UPuvt-156" edge="1" parent="1" source="OH0DjNWPMwj8Gp3UPuvt-143" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="OH0DjNWPMwj8Gp3UPuvt-150">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-670" y="-870" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="OH0DjNWPMwj8Gp3UPuvt-150" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;EstrategiaSemanal&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ comprobar(alerta: Alerta, gastos: List&amp;lt;Gasto&amp;gt;): Double&lt;br&gt;+ getNombreEstrategia(): String&lt;/p&gt;" vertex="1">
+          <mxGeometry height="90" width="320" x="-880" y="-840" as="geometry" />
+        </mxCell>
+        <mxCell id="OH0DjNWPMwj8Gp3UPuvt-151" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;&quot;&gt;&lt;b&gt;EstrategiaMensual&lt;/b&gt;&lt;/p&gt;&lt;hr size=&quot;1&quot; style=&quot;border-style:solid;&quot;&gt;&lt;p style=&quot;margin:0px;margin-left:4px;&quot;&gt;+ comprobar(alerta: Alerta, gastos: List&amp;lt;Gasto&amp;gt;): Double&lt;br&gt;+ getNombreEstrategia(): String&lt;/p&gt;" vertex="1">
+          <mxGeometry height="90" width="310" x="-480" y="-840" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
