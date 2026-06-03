@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<TitledPane animated="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="423.0" prefWidth="699.0" text="Creación de cuenta compartida" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="umu.tds.gastos.ui.view.CuentaCompartidaController">
+  <content>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="412.0" prefWidth="650.0">
+         <children>
+            <Label layoutX="29.0" layoutY="28.0" prefHeight="27.0" prefWidth="254.0" text="Nombre de la cuenta compartida" />
+            <TextField fx:id="nombreCuentaCompartida" layoutX="29.0" layoutY="56.0" prefHeight="27.0" prefWidth="247.0" />
+            <Button fx:id="btnCancelar" layoutX="591.0" layoutY="330.0" mnemonicParsing="false" onAction="#cancelar" prefHeight="31.0" prefWidth="78.0" text="Cancelar" />
+            <Button fx:id="btnAceptar" layoutX="492.0" layoutY="330.0" mnemonicParsing="false" onAction="#aceptar" prefHeight="31.0" prefWidth="78.0" text="Aceptar" />
+            <TableView fx:id="tablaPersonasCuenta" layoutX="325.0" layoutY="54.0" prefHeight="200.0" prefWidth="334.0">
+              <columns>
+                <TableColumn fx:id="columnaNombre" prefWidth="164.80005073547363" text="Nombre" />
+                <TableColumn fx:id="columnaPorcentaje" prefWidth="167.9999542236328" text="Porcentaje" />
+              </columns>
+            </TableView>
+            <Label layoutX="29.0" layoutY="107.0" prefHeight="27.0" prefWidth="254.0" text="Nombre de la persona" />
+            <TextField fx:id="nombrePersona" layoutX="28.0" layoutY="140.0" prefHeight="27.0" prefWidth="247.0" />
+            <Label layoutX="29.0" layoutY="191.0" prefHeight="27.0" prefWidth="254.0" text="Porcentaje de la persona " />
+            <TextField fx:id="porcentajePersona" layoutX="29.0" layoutY="227.0" prefHeight="27.0" prefWidth="247.0" />
+            <Button fx:id="btnAddPersona" layoutX="29.0" layoutY="321.0" mnemonicParsing="false" onAction="#addPersona" prefHeight="31.0" prefWidth="135.0" text="Añadir persona" />
+            <CheckBox fx:id="btnPorcentaje" layoutX="29.0" layoutY="274.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="165.0" text="Reparto no equitativo" />
+         </children></AnchorPane>
+  </content>
+   <font>
+      <Font size="14.0" />
+   </font>
+</TitledPane>
