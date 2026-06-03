@@ -301,7 +301,6 @@ public class CuentaController {
 
     public void crearAlerta(double limite, Categoria categoria, String nombreClaseAlerta)
 			throws RuntimeException, IllegalArgumentException {
-		// Si categoria es null es una alerta general
 		Preconditions.checkArgument(limite > 0, "El límite debe ser positivo.");
 
 		EstrategiaTiempo tipoAlerta = instanciarEstrategia(nombreClaseAlerta);
@@ -317,7 +316,6 @@ public class CuentaController {
     public void borrarAlerta(Alertas alerta) {
 		Preconditions.checkNotNull(alerta, "Selecciona una alerta para eliminarla.");
 
-		// Si borro una alerta, borro todas sus notificaciones
 		notificacionesRepository.borrarPorAlerta(alerta);
 
 		alertaRepository.deleteAlerta(alerta.getId());
@@ -327,10 +325,8 @@ public class CuentaController {
     private void verificarAlertas() {
 		Preconditions.checkNotNull(obtenerCuentaPersonal(), "Cuenta personal es null");
 
-		// Obtener lista plana de TODOS los gastos de la cuenta personal
 		List<Gasto> gastosPersonales = obtenerGastos(obtenerCuentaPersonal().getId());
 
-		// Comprobar cada alerta
 		for (Alertas alerta : alertaRepository.getAllAlertas()) {
 
 			if (alerta.superaLimite(gastosPersonales)) {
