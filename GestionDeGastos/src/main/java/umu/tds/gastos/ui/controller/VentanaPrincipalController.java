@@ -21,9 +21,7 @@ import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListCell;
@@ -282,17 +280,18 @@ public class VentanaPrincipalController {
             mensajeError("Selecciona una cuenta para eliminarla.");
             return;
         }
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Eliminar cuenta");
-        alert.setHeaderText("¿Seguro que quiere eliminar esta cuenta?");
-        alert.setContentText(seleccionada.getNombre());
-        alert.showAndWait().ifPresent(r -> {
-            if (r == ButtonType.OK) {
-                boolean eraPrincipal = seleccionada.equals(comboCuenta.getValue());//Comprueba si la cuenta que se va a eliminar es la misma que está seleccionada en comboCuenta
-                Configuracion.getInstancia().getCuentaController().eliminarCuenta(seleccionada.getId());
+        SceneManager.getInstancia().showConfirmation(
+            "Eliminar cuenta",
+            "¿Seguro que quiere eliminar la cuenta \"" +
+            seleccionada.getNombre() + "\"?",
+            () -> {
+                boolean eraPrincipal = seleccionada.equals(comboCuenta.getValue());
+                Configuracion.getInstancia()
+                        .getCuentaController()
+                        .eliminarCuenta(seleccionada.getId());
                 if (eraPrincipal) {
                     sincronizandoCombos = true;
-                    comboCuenta.setValue(null); //evitamos los errores en las gráficas
+                    comboCuenta.setValue(null);
                     comboCuentaGraficas.setValue(null);
                     sincronizandoCombos = false;
                     gastosTV.getItems().clear();
@@ -301,8 +300,7 @@ public class VentanaPrincipalController {
                 }
                 refrescarCuentas();
                 cargarTodosLosGastos();
-            }
-        });
+            });
     }
     
     private void mensajeError(String mensaje) {
@@ -379,17 +377,16 @@ public class VentanaPrincipalController {
         Gasto seleccionado = gastosTV.getSelectionModel().getSelectedItem();
         if (seleccionado == null) { mensajeError("Seleccione un gasto."); return; }
         Cuenta cuenta = gastoCuentaMap.get(seleccionado.getId());
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Eliminar Gasto");
-        confirm.setHeaderText("¿Seguro que desea eliminar este gasto?");
-        confirm.showAndWait().ifPresent(r -> {
-            if (r == ButtonType.OK) {
+        SceneManager.getInstancia().showConfirmation(
+            "Eliminar gasto",
+            "¿Seguro que desea eliminar el gasto \"" +
+            seleccionado.toString() + "\"?",
+            () -> {
                 Configuracion.getInstancia().getCuentaController()
                         .eliminarGasto(cuenta.getId(), seleccionado.getId());
                 cargarGastosCuenta(cuenta);
                 actualizarGraficas(cuenta);
-            }
-        });
+            });
     }
     
     /*Configuramos ambos desplegables con el mismo converter y listeners.
