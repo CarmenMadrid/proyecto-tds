@@ -32,7 +32,6 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.stage.FileChooser;
@@ -50,9 +49,6 @@ public class VentanaPrincipalController {
 
     @FXML // URL location of the FXML file that was given to the FXMLLoader
     private URL location;
-
-    @FXML // fx:id="areaComando"
-    private TextArea areaComando; // Value injected by FXMLLoader
 
     @FXML // fx:id="barChar"
     private Tab barChar; // Value injected by FXMLLoader
