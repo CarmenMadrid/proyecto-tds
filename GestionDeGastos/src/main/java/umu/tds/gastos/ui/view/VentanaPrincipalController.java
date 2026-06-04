@@ -5,9 +5,7 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.PieChart;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListView;
@@ -100,6 +98,9 @@ public class VentanaPrincipalController {
 
     @FXML // fx:id="comboCuenta"
     private ComboBox<?> comboCuenta; // Value injected by FXMLLoader
+
+    @FXML // fx:id="comboCuentaGraficas"
+    private ComboBox<?> comboCuentaGraficas; // Value injected by FXMLLoader
 
     @FXML // fx:id="fechaCol"
     private TableColumn<?, ?> fechaCol; // Value injected by FXMLLoader
@@ -216,29 +217,20 @@ public class VentanaPrincipalController {
             return;
         }
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Eliminar cuenta");
-        alert.setHeaderText("¿Seguro que quiere eliminar esta cuenta?");
-        alert.setContentText(seleccionada.getNombre());
-
-        alert.showAndWait().ifPresent(respuesta -> {
-            if (respuesta == ButtonType.OK) {
-
+        SceneManager.getInstancia().showConfirmation(
+            "Eliminar cuenta",
+            "¿Seguro que quiere eliminar esta cuenta?\n" + seleccionada.getNombre(),
+            () -> {
                 Configuracion.getInstancia()
                         .getCuentaController()
                         .eliminarCuenta(seleccionada.getId());
-
                 cargarCuentas();
             }
-        });
+        );
     }
     
     private void mensajeError(String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText("No se puede crear la cuenta");
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        SceneManager.getInstancia().showError("Error", "No se puede crear la cuenta\n" + mensaje);
     }
 
 
