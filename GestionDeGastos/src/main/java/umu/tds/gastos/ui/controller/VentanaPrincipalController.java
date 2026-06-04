@@ -12,7 +12,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import umu.tds.gastos.app.Configuracion;
@@ -27,9 +26,6 @@ public class VentanaPrincipalController {
 
     @FXML // URL location of the FXML file that was given to the FXMLLoader
     private URL location;
-
-    @FXML // fx:id="areaComando"
-    private TextArea areaComando; // Value injected by FXMLLoader
 
     @FXML // fx:id="barChar"
     private Tab barChar; // Value injected by FXMLLoader
@@ -75,9 +71,6 @@ public class VentanaPrincipalController {
 
     @FXML // fx:id="btnImportar"
     private Button btnImportar; // Value injected by FXMLLoader
-
-    @FXML // fx:id="btnOpciones"
-    private Button btnOpciones; // Value injected by FXMLLoader
 
     @FXML // fx:id="calFechaFin"
     private DatePicker calFechaFin; // Value injected by FXMLLoader
@@ -180,11 +173,6 @@ public class VentanaPrincipalController {
 
     @FXML // fx:id="tbSeptiembre"
     private ToggleButton tbSeptiembre; // Value injected by FXMLLoader
-
-    @FXML // fx:id="txtComando"
-    private TextField txtComando; // Value injected by FXMLLoader
-
-
 
     @FXML
     public void initialize() {
