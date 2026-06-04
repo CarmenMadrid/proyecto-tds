@@ -1,11 +1,18 @@
 package umu.tds.gastos.ui.view;
 
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.DialogPane;
-import javafx.stage.Modality;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
@@ -13,18 +20,15 @@ import umu.tds.gastos.domain.core.Cuenta;
 import umu.tds.gastos.domain.core.Gasto;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-import com.google.common.base.Preconditions;
 
 public class SceneManager {
 
     private static SceneManager instancia;
     //private Stage stage;
     private Scene escenaActual;
-    private FXMLLoader ultimoLoader;
     private Stage primaryStage;
+    private Object dialogKey;
 
     private static final String FXML_ROOT = "/umu/tds/gastos/ui/fxml/";
 
@@ -47,6 +51,7 @@ public class SceneManager {
     
     public void showVentanaPrincipal() {
         cargarYMostrar("VentanaPrincipal");
+        primaryStage.setMaximized(true);
     }
 
     public void showCrearCuenta() {
@@ -113,13 +118,15 @@ public class SceneManager {
     private void cargarYMostrar(String fxml) {
         try {
             Parent root = loadFXML(fxml);
+            root.setStyle("-fx-font-size: 14px;");
+            StackPane stack = new StackPane(root);
 
             if (escenaActual == null) {
-                escenaActual = new Scene(root);
+                escenaActual = new Scene(stack);
                 primaryStage.setScene(escenaActual);
                 primaryStage.show();
             } else {
-                escenaActual.setRoot(root);
+                escenaActual.setRoot(stack);
             }
 
         } catch (IOException e) {
@@ -127,32 +134,126 @@ public class SceneManager {
         }
     }
 
-    private void cargarYMostrarDialogo(String fxml, String titulo) {
-        try {
-        	FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML_ROOT + fxml + ".fxml"));
-            DialogPane pane = loader.load();
-            Dialog<Void> dialog = new Dialog<>();
-            dialog.setDialogPane(pane);
-            dialog.setTitle(titulo);
-            dialog.initStyle(StageStyle.UTILITY);
-            dialog.showAndWait();
-        } catch (IOException e) {
-            throw new RuntimeException("No se pudo cargar el diálogo: " + fxml + ".fxml", e);
+    private void showAlertOverlay(String titulo, String mensaje) {
+        StackPane mainStack = (StackPane) escenaActual.getRoot();
+
+        Rectangle overlay = new Rectangle();
+        overlay.setFill(Color.color(0, 0, 0, 0.5));
+        overlay.widthProperty().bind(mainStack.widthProperty());
+        overlay.heightProperty().bind(mainStack.heightProperty());
+
+        Label titleLabel = new Label(titulo);
+        titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+
+        Label msgLabel = new Label(mensaje);
+        msgLabel.setStyle("-fx-font-size: 14px;");
+        msgLabel.setWrapText(true);
+
+        VBox alertBox = new VBox(15, titleLabel, msgLabel);
+        alertBox.setAlignment(Pos.CENTER);
+        alertBox.setStyle("-fx-background-color: white; -fx-border-color: #cccccc; -fx-border-radius: 5; -fx-background-radius: 5;");
+        alertBox.setPadding(new Insets(20));
+        alertBox.setMaxSize(400, Region.USE_PREF_SIZE);
+
+        Button btnOk = new Button("Aceptar");
+        btnOk.setStyle("-fx-font-size: 14px;");
+        btnOk.setOnAction(e -> {
+            mainStack.getChildren().removeAll(overlay, alertBox);
+            if (dialogKey != null) {
+                Platform.exitNestedEventLoop(dialogKey, null);
+                dialogKey = null;
+            }
+        });
+        alertBox.getChildren().add(btnOk);
+
+        mainStack.getChildren().addAll(overlay, alertBox);
+    }
+
+    public void showError(String titulo, String mensaje) {
+        showAlertOverlay(titulo, mensaje);
+        dialogKey = new Object();
+        Platform.enterNestedEventLoop(dialogKey);
+    }
+
+    public void showConfirmation(String titulo, String mensaje, Runnable onAccept) {
+        StackPane mainStack = (StackPane) escenaActual.getRoot();
+
+        Rectangle overlay = new Rectangle();
+        overlay.setFill(Color.color(0, 0, 0, 0.5));
+        overlay.widthProperty().bind(mainStack.widthProperty());
+        overlay.heightProperty().bind(mainStack.heightProperty());
+
+        Label titleLabel = new Label(titulo);
+        titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+
+        Label msgLabel = new Label(mensaje);
+        msgLabel.setStyle("-fx-font-size: 14px;");
+        msgLabel.setWrapText(true);
+
+        Button btnOk = new Button("Aceptar");
+        btnOk.setStyle("-fx-font-size: 14px;");
+        Button btnCancel = new Button("Cancelar");
+        btnCancel.setStyle("-fx-font-size: 14px;");
+
+        VBox btnBox = new VBox(10, btnOk, btnCancel);
+        btnBox.setAlignment(Pos.CENTER);
+
+        VBox alertBox = new VBox(15, titleLabel, msgLabel, btnBox);
+        alertBox.setAlignment(Pos.CENTER);
+        alertBox.setStyle("-fx-background-color: white; -fx-border-color: #cccccc; -fx-border-radius: 5; -fx-background-radius: 5;");
+        alertBox.setPadding(new Insets(20));
+        alertBox.setMaxSize(400, Region.USE_PREF_SIZE);
+
+        mainStack.getChildren().addAll(overlay, alertBox);
+
+        btnOk.setOnAction(e -> {
+            mainStack.getChildren().removeAll(overlay, alertBox);
+            if (dialogKey != null) {
+                Platform.exitNestedEventLoop(dialogKey, null);
+                dialogKey = null;
+            }
+            if (onAccept != null) onAccept.run();
+        });
+        btnCancel.setOnAction(e -> {
+            mainStack.getChildren().removeAll(overlay, alertBox);
+            if (dialogKey != null) {
+                Platform.exitNestedEventLoop(dialogKey, null);
+                dialogKey = null;
+            }
+        });
+
+        dialogKey = new Object();
+        Platform.enterNestedEventLoop(dialogKey);
+    }
+
+    public void closeDialog() {
+        if (dialogKey != null) {
+            Platform.exitNestedEventLoop(dialogKey, null);
+            dialogKey = null;
         }
     }
-    
-    
+
     public void showModal(String fxml, String titulo) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML_ROOT + fxml));
             Parent root = loader.load();
 
-            Stage stage = new Stage();
-            stage.setTitle(titulo);
-            stage.setScene(new Scene(root));
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.initOwner(primaryStage);
-            stage.showAndWait();
+            Rectangle overlay = new Rectangle();
+            overlay.setFill(Color.color(0, 0, 0, 0.5));
+            StackPane mainStack = (StackPane) escenaActual.getRoot();
+            overlay.widthProperty().bind(mainStack.widthProperty());
+            overlay.heightProperty().bind(mainStack.heightProperty());
+
+            StackPane dialogWrapper = new StackPane(root);
+            dialogWrapper.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+
+            mainStack.getChildren().addAll(overlay, dialogWrapper);
+
+            dialogKey = new Object();
+            Platform.enterNestedEventLoop(dialogKey);
+
+            mainStack.getChildren().removeAll(overlay, dialogWrapper);
+            primaryStage.setMaximized(true);
         } catch (Exception e) {
             e.printStackTrace();
         }

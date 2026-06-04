@@ -8,7 +8,7 @@ Aplicación de escritorio para la gestión y control de gastos personales desarr
 |--------|-------|----------|
 | Paula García Algar | p.garciaalgar@um.es | 2.3 |
 | Carmen Madrid Fernández | c.madridfernandez@um.es | 2.3 |
-| Álvaro  | alvaro.s.g1@um.es | 2.3 |
+| Álvaro Sánchez García | alvaro.s.g1@um.es | 2.3 |
 
 ## Descripción
 
@@ -18,6 +18,11 @@ La aplicación permite registrar gastos personales, organizarlos en categorías,
 
 ```bash
 mvn clean javafx:run
+```
+
+También disponible en modo CLI:
+```bash
+mvn exec:java -Dexec.mainClass="umu.tds.gastos.cli.CLI" -q
 ```
 
 ## Documentación

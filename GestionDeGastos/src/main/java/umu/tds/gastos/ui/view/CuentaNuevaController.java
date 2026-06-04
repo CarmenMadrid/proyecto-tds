@@ -2,10 +2,8 @@ package umu.tds.gastos.ui.view;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 import umu.tds.gastos.app.Configuracion;
 import umu.tds.gastos.controller.CuentaController;
 
@@ -48,8 +46,7 @@ public class CuentaNuevaController {
     }
 
     private void cerrarVentana() {
-        Stage stage = (Stage) btnCancelar.getScene().getWindow();
-        stage.close();
+        SceneManager.getInstancia().closeDialog();
     }
 
     /*
@@ -77,10 +74,6 @@ public class CuentaNuevaController {
 
 
     private void mensajeError(String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText("No se puede crear la cuenta");
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        SceneManager.getInstancia().showError("Error", "No se puede crear la cuenta\n" + mensaje);
     }
 }

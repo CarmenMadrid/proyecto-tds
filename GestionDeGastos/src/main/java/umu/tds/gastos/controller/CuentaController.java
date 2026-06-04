@@ -187,6 +187,13 @@ public class CuentaController {
         cuentaRepository.updateCuenta(cuenta);
     }*/
 
+    public void eliminarCategoria(UUID idCuenta, String nombreCategoria) {
+        Cuenta cuenta = cuentaRepository.getCuenta(idCuenta)
+                .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
+        cuenta.eliminarCategoria(nombreCategoria);
+        cuentaRepository.updateCuenta(cuenta);
+    }
+
     // Saldos y reparto (cuentas compartidas)
 
     public Map<Persona, Double> obtenerSaldos(UUID idCuenta) {

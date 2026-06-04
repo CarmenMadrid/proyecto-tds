@@ -23,7 +23,6 @@ import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListCell;
@@ -125,6 +124,9 @@ public class VentanaPrincipalController {
     
     @FXML // fx:id="comboCuentaGraficas"
     private ComboBox<Cuenta> comboCuentaGraficas; // Value injected by FXMLLoader
+
+    @FXML // fx:id="comboCuentaGraficas"
+    private ComboBox<?> comboCuentaGraficas; // Value injected by FXMLLoader
 
     @FXML // fx:id="fechaCol"
     private TableColumn<Gasto, LocalDate> fechaCol; // Value injected by FXMLLoader
@@ -338,29 +340,20 @@ public class VentanaPrincipalController {
             return;
         }
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Eliminar cuenta");
-        alert.setHeaderText("¿Seguro que quiere eliminar esta cuenta?");
-        alert.setContentText(seleccionada.getNombre());
-
-        alert.showAndWait().ifPresent(respuesta -> {
-            if (respuesta == ButtonType.OK) {
-
+        SceneManager.getInstancia().showConfirmation(
+            "Eliminar cuenta",
+            "¿Seguro que quiere eliminar esta cuenta?\n" + seleccionada.getNombre(),
+            () -> {
                 Configuracion.getInstancia()
                         .getCuentaController()
                         .eliminarCuenta(seleccionada.getId());
-
                 cargarCuentas();
             }
         });
     }*/
     
     private void mensajeError(String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText("No se puede crear la cuenta");
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        SceneManager.getInstancia().showError("Error", "No se puede crear la cuenta\n" + mensaje);
     }
     
     private Cuenta cuentaActual() {
