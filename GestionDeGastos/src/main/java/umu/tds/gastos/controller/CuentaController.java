@@ -1,24 +1,38 @@
 package umu.tds.gastos.controller;
 
 import com.google.common.base.Preconditions;
+
+import umu.tds.gastos.domain.alertas.*;
+import umu.tds.gastos.domain.alertas.patronEstrategias.EstrategiaTiempo;
 import umu.tds.gastos.domain.core.*;
 import umu.tds.gastos.domain.filtros.*;
+import umu.tds.gastos.persistence.AlertasRepository;
+import umu.tds.gastos.imports.ImportadorFactory;
+import umu.tds.gastos.imports.ImportadorGastos;
 import umu.tds.gastos.persistence.CuentaRepository;
+import umu.tds.gastos.persistence.NotificacionesRepository;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class CuentaController {
 
     private final CuentaRepository cuentaRepository;
+    private final AlertasRepository alertaRepository;
+	private final NotificacionesRepository notificacionesRepository;
 
-    public CuentaController(CuentaRepository cuentaRepository) {
+    public CuentaController(CuentaRepository cuentaRepository, AlertasRepository alertaRepository, NotificacionesRepository notificacionesRepository) {
         this.cuentaRepository = cuentaRepository;
+        this.alertaRepository = alertaRepository;
+        this.notificacionesRepository = notificacionesRepository;
     }
 
     // Cuentas
@@ -56,7 +70,13 @@ public class CuentaController {
                 .orElseThrow(() -> new IllegalStateException("No existe cuenta personal"));
     }
 
-    // Gastos 
+ // Gastos 
+    /*******************************************************************************************************************/
+    public Gasto registrarGasto(UUID idCuenta, String nombre, double cantidad, LocalDate fecha, String nombreCategoria, Persona pagador) {
+        return registrarGasto(idCuenta, cantidad, fecha, nombreCategoria, null);
+    }
+    
+    /*******************************************************************************************************************/
 
     public Gasto registrarGasto(UUID idCuenta, double cantidad, LocalDate fecha, String nombreCategoria) {
         return registrarGasto(idCuenta, cantidad, fecha, nombreCategoria, null);
@@ -85,6 +105,11 @@ public class CuentaController {
         }
         cuentaRepository.updateCuenta(cuenta);
         return gasto;
+    }
+    
+    
+    public void editarGasto(UUID idCuenta, UUID idGasto, String nombre, double cantidad, LocalDate fecha, String nombreCategoria) {
+    	editarGasto(idCuenta, idGasto, null, cantidad, fecha, nombreCategoria);
     }
 
     public void editarGasto(UUID idCuenta, UUID idGasto, double cantidad, LocalDate fecha, String nombreCategoria) {
@@ -152,8 +177,17 @@ public class CuentaController {
         cuentaRepository.updateCuenta(cuenta);
         return nueva;
     }
+    
+    
+    /* COMENTARLO
+    public void eliminarCategoria(UUID idCuenta, String nombreCategoria) {
+        Cuenta cuenta = cuentaRepository.getCuenta(idCuenta)
+                .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
+        cuenta.eliminarCategoria(nombreCategoria);
+        cuentaRepository.updateCuenta(cuenta);
+    }*/
 
-    // Saldos (cuentas compartidas) 
+    // Saldos y reparto (cuentas compartidas)
 
     public Map<Persona, Double> obtenerSaldos(UUID idCuenta) {
         Cuenta cuenta = cuentaRepository.getCuenta(idCuenta)
@@ -164,6 +198,38 @@ public class CuentaController {
         return cuenta.getSaldos();
     }
 
+    public CuentaCompartida obtenerCuentaCompartida(UUID idCuenta) {
+        Cuenta cuenta = cuentaRepository.getCuenta(idCuenta)
+                .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
+        if (!cuenta.isCompartida()) {
+            throw new UnsupportedOperationException("La cuenta no es compartida");
+        }
+        return (CuentaCompartida) cuenta;
+    }
+
+    public Map<String, Double> obtenerPorcentajes(UUID idCuenta) {
+        CuentaCompartida cc = obtenerCuentaCompartida(idCuenta);
+        return cc.getPorcentajes().entrySet().stream()
+                .collect(Collectors.toMap(
+                        e -> e.getKey().getNombre(),
+                        Map.Entry::getValue));
+    }
+
+    public void configurarPorcentajes(UUID idCuenta, Map<String, Double> porcentajesPorNombre) {
+        CuentaCompartida cc = obtenerCuentaCompartida(idCuenta);
+        Map<Persona, Double> porcentajes = new HashMap<>();
+        for (Map.Entry<String, Double> entry : porcentajesPorNombre.entrySet()) {
+            Persona p = cc.getPersonas().stream()
+                    .filter(per -> per.getNombre().equalsIgnoreCase(entry.getKey()))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "Persona no encontrada: " + entry.getKey()));
+            porcentajes.put(p, entry.getValue());
+        }
+        cc.setPorcentajes(porcentajes);
+        cuentaRepository.updateCuenta(cc);
+    }
+
     // Filtros
 
     public List<Gasto> filtrarGastos(UUID idCuenta, Filtro filtro) {
@@ -172,20 +238,142 @@ public class CuentaController {
         return cuenta.filtrarGastos(filtro);
     }
     
-    public List<Gasto> filtrarGastos(UUID idCuenta, List<Categoria> categorias, LocalDate fechaInicio, LocalDate fechaFin,
-			List<Month> meses) {
 
-		    List<Filtro> listaFiltros = new ArrayList<>();
+    public List<Gasto> filtrarGastos(UUID idCuenta, List<Categoria> categorias, LocalDate fechaInicio, LocalDate fechaFin, List<Month> meses) {		    
+        List<Filtro> listaFiltros = new ArrayList<>();
 
-		    Filtro filtroCategorias = new FiltroCategorias(new ArrayList<>(categorias));
-		    Filtro filtroFechas = new FiltroFechas(fechaInicio, fechaFin);
-		    Filtro filtroMeses = new FiltroMeses(meses);
+		Filtro filtroCategorias = new FiltroCategorias(new ArrayList<>(categorias));
+		Filtro filtroFechas = new FiltroFechas(fechaInicio, fechaFin);
+		Filtro filtroMeses = new FiltroMeses(meses);
 
-		    listaFiltros.add(filtroCategorias);
-            listaFiltros.add(filtroFechas); 
-            listaFiltros.add(filtroMeses);
-            Filtro filtroMultiple = new FiltroMultiple(listaFiltros);
-		    return filtrarGastos(idCuenta, filtroMultiple);
-	    }	
+	    listaFiltros.add(filtroCategorias);
+        listaFiltros.add(filtroFechas); 
+        listaFiltros.add(filtroMeses);
+        Filtro filtroMultiple = new FiltroMultiple(listaFiltros);
+	    return filtrarGastos(idCuenta, filtroMultiple);
+	}
 
+    // Importar
+
+    public int importarGastos(UUID idCuenta, String archivo, String formato) throws IOException {
+        Cuenta cuenta = cuentaRepository.getCuenta(idCuenta)
+                .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
+
+        ImportadorGastos importador = ImportadorFactory.crearImportador(formato);
+        List<Gasto> importados = importador.importar(archivo, cuenta);
+
+        int count = 0;
+        for (Gasto g : importados) {
+            Categoria cat = cuenta.getCategoria(g.getCategoria().getNombre())
+                    .orElseGet(() -> {
+                        Categoria nueva = new Categoria(g.getCategoria().getNombre());
+                        cuenta.addCategoria(nueva);
+                        return nueva;
+                    });
+
+            if (cuenta instanceof CuentaCompartida comp) {
+                comp.agregarGasto(g.getCantidad(), g.getFecha(), cat, g.getPagador());
+            } else {
+                cuenta.agregarGasto(g.getCantidad(), g.getFecha(), cat);
+            }
+            count++;
+        }
+
+        if (count > 0) {
+            cuentaRepository.updateCuenta(cuenta);
+        }
+        return count;
+    }
+
+    // Datos para gráficas
+
+    public Map<String, Double> obtenerGastosPorCategoria(UUID idCuenta) {
+        return obtenerGastosPorCategoria(idCuenta, null);
+    }
+
+    public Map<String, Double> obtenerGastosPorCategoria(UUID idCuenta, Filtro filtro) {
+        Cuenta cuenta = cuentaRepository.getCuenta(idCuenta)
+                .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
+        List<Gasto> gastos = (filtro != null) ? cuenta.filtrarGastos(filtro) : cuenta.getGastos();
+        return gastos.stream()
+                .collect(Collectors.groupingBy(
+                        g -> g.getCategoria().getNombre(),
+                        Collectors.summingDouble(Gasto::getCantidad)));
+    }
+
+
+
+	private EstrategiaTiempo instanciarEstrategia(String nombreAlerta) {
+		try {
+			String rutaCompleta = "umu.tds.gastos.domain.alertas.patronEstrategias.Estrategia" + nombreAlerta;
+			return (EstrategiaTiempo) Class.forName(rutaCompleta).getDeclaredConstructor().newInstance();
+		} catch (Exception e) {
+			throw new RuntimeException("Error creando alerta: " + nombreAlerta, e);
+		}
+	}
+
+    public void crearAlerta(double limite, Categoria categoria, String nombreClaseAlerta)
+			throws RuntimeException, IllegalArgumentException {
+		Preconditions.checkArgument(limite > 0, "El límite debe ser positivo.");
+
+		EstrategiaTiempo tipoAlerta = instanciarEstrategia(nombreClaseAlerta);
+        Preconditions.checkArgument(alertaRepository.buscarAlerta(limite, categoria, nombreClaseAlerta) == null,
+                "Ya existe la alerta");
+
+        Alertas nuevaAlerta = new Alertas(limite, categoria, tipoAlerta);
+        alertaRepository.addAlerta(nuevaAlerta);
+
+        verificarAlertas();
+    }
+
+    public void borrarAlerta(Alertas alerta) {
+		Preconditions.checkNotNull(alerta, "Selecciona una alerta para eliminarla.");
+
+		notificacionesRepository.borrarPorAlerta(alerta);
+
+		alertaRepository.deleteAlerta(alerta.getId());
+	}
+
+    
+    private void verificarAlertas() {
+		Preconditions.checkNotNull(obtenerCuentaPersonal(), "Cuenta personal es null");
+
+		List<Gasto> gastosPersonales = obtenerGastos(obtenerCuentaPersonal().getId());
+
+		for (Alertas alerta : alertaRepository.getAllAlertas()) {
+
+			if (alerta.superaLimite(gastosPersonales)) {
+
+				if (!alerta.isMostrada()) {
+					alerta.setMostrada(true);
+					alertaRepository.updateAlerta(alerta);
+
+					// Crear notificación
+					Notificacion notif = new Notificacion(alerta,"Personal");
+					notificacionesRepository.addNotificacion(notif);
+				}
+
+			} else if (alerta.isMostrada()) {
+				
+				notificacionesRepository.borrarPorAlerta(alerta);
+
+				alerta.setMostrada(false);
+				alertaRepository.updateAlerta(alerta);
+			}
+
+		}
+
+	}
+
+	public List<Alertas> getAlertas() {
+		return alertaRepository.getAllAlertas();
+	}
+
+	public List<Notificacion> getNotificaciones() {
+		return notificacionesRepository.getAllNotificaciones();
+	}
+
+	public List<String> getNombresPeriodosDisponibles() {
+		return List.of("Semanal", "Mensual");
+	}
 }

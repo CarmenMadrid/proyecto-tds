@@ -29,6 +29,14 @@ public class CuentaNuevaController {
         	mensajeError("El nombre no puede estar vacío.");
             return;
         }
+        
+        boolean existe = cuentaController.obtenerCuentas().stream()
+                .anyMatch(c -> c.getNombre().equals(nombreCuenta));
+
+        if (existe) {
+            mensajeError("Ya existe una cuenta con el nombre \"" + nombreCuenta + "\". Elige otro nombre.");
+            return;
+        }
 
         cuentaController.crearCuentaPersonal(nombre);
         cerrarVentana();

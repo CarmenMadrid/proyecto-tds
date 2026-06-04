@@ -1,6 +1,7 @@
 package umu.tds.gastos.domain.core;
 
 import java.time.LocalDate;
+import java.time.temporal.IsoFields;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -9,6 +10,7 @@ public class Gasto {
     private UUID id;
     private double cantidad;
     private LocalDate fecha;
+    private String nombre;
     private Categoria categoria;
     private Persona pagador;
 
@@ -33,6 +35,14 @@ public class Gasto {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+    
+    public String getNombre() {
+        return nombre != null ? nombre : "";
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     public double getCantidad() {
@@ -67,6 +77,18 @@ public class Gasto {
         this.pagador = pagador;
     }
 
+    public int getAno() {
+		return getFecha().getYear();
+	}
+
+	public int getMes() {
+		return getFecha().getMonthValue();
+	}
+
+	public int getSemana() {
+		return getFecha().get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
+	}
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
