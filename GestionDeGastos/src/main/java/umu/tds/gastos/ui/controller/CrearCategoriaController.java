@@ -1,4 +1,4 @@
-package umu.tds.gastos.ui.view;
+package umu.tds.gastos.ui.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

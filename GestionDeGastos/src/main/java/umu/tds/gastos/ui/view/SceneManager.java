@@ -11,13 +11,16 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.stage.Window;
 import umu.tds.gastos.domain.core.Cuenta;
 import umu.tds.gastos.domain.core.Gasto;
+import umu.tds.gastos.ui.controller.CrearCategoriaController;
+import umu.tds.gastos.ui.controller.CrearGastoController;
+import umu.tds.gastos.ui.controller.EditarGastoController;
 
 import java.io.IOException;
 
@@ -195,7 +198,7 @@ public class SceneManager {
         Button btnCancel = new Button("Cancelar");
         btnCancel.setStyle("-fx-font-size: 14px;");
 
-        VBox btnBox = new VBox(10, btnOk, btnCancel);
+        HBox btnBox = new HBox(10, btnOk, btnCancel);
         btnBox.setAlignment(Pos.CENTER);
 
         VBox alertBox = new VBox(15, titleLabel, msgLabel, btnBox);

@@ -1,4 +1,4 @@
-package umu.tds.gastos.ui.view;
+package umu.tds.gastos.ui.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -7,7 +7,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 
-public class EditarAlertaController {
+public class AddAlertaController {
 
     @FXML
     private Button btnAceptar;
