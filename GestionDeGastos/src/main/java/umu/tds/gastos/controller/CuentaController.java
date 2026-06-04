@@ -1,11 +1,16 @@
 package umu.tds.gastos.controller;
 
 import com.google.common.base.Preconditions;
+
+import umu.tds.gastos.domain.alertas.*;
+import umu.tds.gastos.domain.alertas.patronEstrategias.EstrategiaTiempo;
 import umu.tds.gastos.domain.core.*;
 import umu.tds.gastos.domain.filtros.*;
+import umu.tds.gastos.persistence.AlertasRepository;
 import umu.tds.gastos.imports.ImportadorFactory;
 import umu.tds.gastos.imports.ImportadorGastos;
 import umu.tds.gastos.persistence.CuentaRepository;
+import umu.tds.gastos.persistence.NotificacionesRepository;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -21,9 +26,13 @@ import java.util.stream.Collectors;
 public class CuentaController {
 
     private final CuentaRepository cuentaRepository;
+    private final AlertasRepository alertaRepository;
+	private final NotificacionesRepository notificacionesRepository;
 
-    public CuentaController(CuentaRepository cuentaRepository) {
+    public CuentaController(CuentaRepository cuentaRepository, AlertasRepository alertaRepository, NotificacionesRepository notificacionesRepository) {
         this.cuentaRepository = cuentaRepository;
+        this.alertaRepository = alertaRepository;
+        this.notificacionesRepository = notificacionesRepository;
     }
 
     // Cuentas
@@ -216,6 +225,7 @@ public class CuentaController {
         return cuenta.filtrarGastos(filtro);
     }
     
+
     public List<Gasto> filtrarGastos(UUID idCuenta, List<Categoria> categorias, LocalDate fechaInicio, LocalDate fechaFin, List<Month> meses) {		    
         List<Filtro> listaFiltros = new ArrayList<>();
 
@@ -278,4 +288,79 @@ public class CuentaController {
                         Collectors.summingDouble(Gasto::getCantidad)));
     }
 
+
+
+	private EstrategiaTiempo instanciarEstrategia(String nombreAlerta) {
+		try {
+			String rutaCompleta = "umu.tds.gastos.domain.alertas.patronEstrategias.Estrategia" + nombreAlerta;
+			return (EstrategiaTiempo) Class.forName(rutaCompleta).getDeclaredConstructor().newInstance();
+		} catch (Exception e) {
+			throw new RuntimeException("Error creando alerta: " + nombreAlerta, e);
+		}
+	}
+
+    public void crearAlerta(double limite, Categoria categoria, String nombreClaseAlerta)
+			throws RuntimeException, IllegalArgumentException {
+		Preconditions.checkArgument(limite > 0, "El límite debe ser positivo.");
+
+		EstrategiaTiempo tipoAlerta = instanciarEstrategia(nombreClaseAlerta);
+        Preconditions.checkArgument(alertaRepository.buscarAlerta(limite, categoria, nombreClaseAlerta) == null,
+                "Ya existe la alerta");
+
+        Alertas nuevaAlerta = new Alertas(limite, categoria, tipoAlerta);
+        alertaRepository.addAlerta(nuevaAlerta);
+
+        verificarAlertas();
+    }
+
+    public void borrarAlerta(Alertas alerta) {
+		Preconditions.checkNotNull(alerta, "Selecciona una alerta para eliminarla.");
+
+		notificacionesRepository.borrarPorAlerta(alerta);
+
+		alertaRepository.deleteAlerta(alerta.getId());
+	}
+
+    
+    private void verificarAlertas() {
+		Preconditions.checkNotNull(obtenerCuentaPersonal(), "Cuenta personal es null");
+
+		List<Gasto> gastosPersonales = obtenerGastos(obtenerCuentaPersonal().getId());
+
+		for (Alertas alerta : alertaRepository.getAllAlertas()) {
+
+			if (alerta.superaLimite(gastosPersonales)) {
+
+				if (!alerta.isMostrada()) {
+					alerta.setMostrada(true);
+					alertaRepository.updateAlerta(alerta);
+
+					// Crear notificación
+					Notificacion notif = new Notificacion(alerta,"Personal");
+					notificacionesRepository.addNotificacion(notif);
+				}
+
+			} else if (alerta.isMostrada()) {
+				
+				notificacionesRepository.borrarPorAlerta(alerta);
+
+				alerta.setMostrada(false);
+				alertaRepository.updateAlerta(alerta);
+			}
+
+		}
+
+	}
+
+	public List<Alertas> getAlertas() {
+		return alertaRepository.getAllAlertas();
+	}
+
+	public List<Notificacion> getNotificaciones() {
+		return notificacionesRepository.getAllNotificaciones();
+	}
+
+	public List<String> getNombresPeriodosDisponibles() {
+		return List.of("Semanal", "Mensual");
+	}
 }

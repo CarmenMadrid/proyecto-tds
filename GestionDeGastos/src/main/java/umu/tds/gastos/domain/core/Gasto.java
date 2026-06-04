@@ -1,6 +1,7 @@
 package umu.tds.gastos.domain.core;
 
 import java.time.LocalDate;
+import java.time.temporal.IsoFields;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -67,6 +68,18 @@ public class Gasto {
         this.pagador = pagador;
     }
 
+    public int getAno() {
+		return getFecha().getYear();
+	}
+
+	public int getMes() {
+		return getFecha().getMonthValue();
+	}
+
+	public int getSemana() {
+		return getFecha().get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
+	}
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
