@@ -1,4 +1,4 @@
-package umu.tds.gastos.ui.view;
+package umu.tds.gastos.ui.controller;
 
 public class EditarAlertaController {
 
