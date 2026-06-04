@@ -6,7 +6,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
 import umu.tds.gastos.app.Configuracion;
 import umu.tds.gastos.controller.CuentaController;
 import umu.tds.gastos.domain.core.CuentaCompartida;
@@ -182,16 +181,11 @@ public class CuentaCompartidaController {
     }
 
     private void cerrar() {
-        Stage stage = (Stage) btnCancelar.getScene().getWindow();
-        stage.close();
+        SceneManager.getInstancia().closeDialog();
     }
 
     private void mensajeError(String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText("No se puede crear la cuenta");
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+        SceneManager.getInstancia().showError("Error", "No se puede crear la cuenta\n" + mensaje);
     }
     
 
