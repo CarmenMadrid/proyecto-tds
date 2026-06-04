@@ -1,4 +1,4 @@
-package umu.tds.gastos.ui.view;
+package umu.tds.gastos.ui.controller;
 
 import java.time.LocalDate;
 
@@ -16,9 +16,10 @@ import umu.tds.gastos.controller.CuentaController;
 import umu.tds.gastos.domain.core.Categoria;
 import umu.tds.gastos.domain.core.Cuenta;
 import umu.tds.gastos.domain.core.CuentaCompartida;
+import umu.tds.gastos.domain.core.Gasto;
 import umu.tds.gastos.domain.core.Persona;
 
-public class CrearGastoController {
+public class EditarGastoController {
 
     @FXML
     private Button btnAceptar;
@@ -43,61 +44,56 @@ public class CrearGastoController {
 
     @FXML
     private TextField nombreCuenta;
-    
+
+
     private final CuentaController cuentaController = Configuracion.getInstancia().getCuentaController();
+    private Cuenta cuenta;
+    private Gasto gasto;
 
     @FXML
     public void initialize() {
-        comboCuenta.getItems().setAll(cuentaController.obtenerCuentas());
-
         comboCuenta.setConverter(new StringConverter<>() {
             public String toString(Cuenta c) { return c == null ? "" : c.getNombre(); }
             public Cuenta fromString(String s) { return null; }
         });
-        
         comboPersona.setConverter(new StringConverter<>() {
             public String toString(Persona p) { return p == null ? "" : p.getNombre(); }
             public Persona fromString(String s) { return null; }
         });
-
-        comboCuenta.valueProperty().addListener((obs, old, nueva) -> {
-            if (nueva != null) actualizarParaCuenta(nueva);
-        });
-        comboPersona.setDisable(true);
     }
 
-    public void setCuenta(Cuenta cuenta) {
-        if (cuenta != null) {
-            comboCuenta.setValue(cuenta);
-            actualizarParaCuenta(cuenta);
-        }
-    }
+    public void setGasto(Gasto gasto, Cuenta cuenta) {
+        this.gasto = gasto;
+        this.cuenta = cuenta;
 
-    private void actualizarParaCuenta(Cuenta cuenta) {
+        comboCuenta.getItems().setAll(cuenta);
+        comboCuenta.setValue(cuenta);
+        comboCuenta.setDisable(true);
+
         comboCategoria.getItems().setAll(cuentaController.obtenerCategorias(cuenta.getId()));
-        comboPersona.getItems().clear();
+        comboCategoria.setValue(gasto.getCategoria());
+
+        nombreCuenta.setText(gasto.getNombre());
+        cantidadGasto.setText(String.valueOf(gasto.getCantidad()));
+        calFecha.setValue(gasto.getFecha());
+
         if (cuenta instanceof CuentaCompartida cc) {
             comboPersona.getItems().setAll(cc.getPersonas());
+            comboPersona.setValue(gasto.getPagador());
             comboPersona.setDisable(false);
         } else {
-            comboPersona.setValue(null);
-            comboPersona.setDisable(true);
+            comboPersona.setDisable(true); //Si no es una cuenta compartida no puede tocar el desplegable
         }
     }
 
     @FXML
     void aceptar(ActionEvent event) {
-        Cuenta cuenta = comboCuenta.getValue();
-        if (cuenta == null) {
-        	mensajeError("Seleccione una cuenta.");
-            return;
-        }
         double cantidad;
         try {
             cantidad = Double.parseDouble(cantidadGasto.getText().trim());
             if (cantidad <= 0) throw new NumberFormatException();
         } catch (NumberFormatException e) {
-        	mensajeError("Introduce una cantidad válida mayor que 0.");
+        	mensajeError("Introduce una cantidad mayor que 0.");
             return;
         }
         LocalDate fecha = calFecha.getValue();
@@ -105,24 +101,10 @@ public class CrearGastoController {
         	mensajeError("Seleccione una fecha.");
             return;
         }
-
-        Categoria seleccionada = comboCategoria.getValue();
-        String nombreCategoria = null;
-		if (seleccionada != null) {
-        	nombreCategoria=seleccionada.getNombre();
-        }
-        if (nombreCategoria == null) {
-        	mensajeError("Seleccione una categoría.");
-            return;
-        }
-
-        Persona pagador = comboPersona.getValue();
-        if (cuenta instanceof CuentaCompartida && pagador == null) {
-        	mensajeError("Seleccione el pagador para la cuenta compartida.");
-            return;
-        }
+        Categoria categoria = comboCategoria.getValue();
+        String nombreCat = categoria != null ? categoria.getNombre() : gasto.getCategoria().getNombre();
         String nombre = nombreCuenta.getText().trim();
-        cuentaController.registrarGasto(cuenta.getId(), nombre, cantidad, fecha, nombreCategoria, pagador);
+        cuentaController.editarGasto(cuenta.getId(), gasto.getId(), nombre, cantidad, fecha, nombreCat);
         cerrar();
     }
 

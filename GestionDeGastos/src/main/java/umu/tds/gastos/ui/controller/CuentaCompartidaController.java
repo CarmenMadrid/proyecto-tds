@@ -1,4 +1,4 @@
-package umu.tds.gastos.ui.view;
+package umu.tds.gastos.ui.controller;
 
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -10,7 +10,7 @@ import umu.tds.gastos.app.Configuracion;
 import umu.tds.gastos.controller.CuentaController;
 import umu.tds.gastos.domain.core.CuentaCompartida;
 import umu.tds.gastos.domain.core.Persona;
-
+import umu.tds.gastos.ui.view.SceneManager;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
