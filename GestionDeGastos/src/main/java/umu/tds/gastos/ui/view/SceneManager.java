@@ -14,6 +14,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.stage.Window;
+import umu.tds.gastos.domain.core.Cuenta;
+import umu.tds.gastos.domain.core.Gasto;
 
 import java.io.IOException;
 
@@ -36,9 +40,13 @@ public class SceneManager {
         }
         return instancia;
     }
-
+    
     public void init(Stage stage) {
         this.primaryStage = stage;
+    }
+    
+    public Stage getPrimaryStage() {
+        return primaryStage;
     }
     
     public void showVentanaPrincipal() {
@@ -54,12 +62,56 @@ public class SceneManager {
         showModal("CuentaCompartida.fxml", "Crear Cuenta Compartida");
     }
 
-    public void showCrearGasto() {
-        showModal("CrearGasto.fxml", "Crear Gasto");
+
+    public void showCrearGasto(Cuenta cuenta) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML_ROOT + "CrearGasto.fxml"));
+            Parent root = loader.load();
+            CrearGastoController ctrl = loader.getController();
+            ctrl.setCuenta(cuenta);
+            Stage stage = new Stage();
+            stage.setTitle("Crear Gasto");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(primaryStage);
+            stage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void showEditarGasto(Gasto gasto, Cuenta cuenta) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML_ROOT + "EditarGasto.fxml"));
+            Parent root = loader.load();
+            EditarGastoController ctrl = loader.getController();
+            ctrl.setGasto(gasto, cuenta);
+            Stage stage = new Stage();
+            stage.setTitle("Editar Gasto");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(primaryStage);
+            stage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public void showCrearCategoria() {
-        showModal("CrearCategoria.fxml", "Crear Categoría");
+    public void showCrearCategoria(Cuenta cuenta) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML_ROOT + "CrearCategoria.fxml"));
+            Parent root = loader.load();
+            CrearCategoriaController ctrl = loader.getController();
+            ctrl.setCuenta(cuenta);
+            Stage stage = new Stage();
+            stage.setTitle("Crear Categoría");
+            stage.setScene(new Scene(root));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(primaryStage);
+            stage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -206,7 +258,6 @@ public class SceneManager {
             e.printStackTrace();
         }
     }
-
 
     
 

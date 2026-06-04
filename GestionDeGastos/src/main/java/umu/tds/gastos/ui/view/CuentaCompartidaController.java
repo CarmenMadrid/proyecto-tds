@@ -118,8 +118,81 @@ public class CuentaCompartidaController {
         porcentajePersona.clear();
     }
 
-   
     @FXML
+    void aceptar(ActionEvent event) {
+        String nombreCuenta = nombreCuentaCompartida.getText().trim();
+
+        if (nombreCuenta.isEmpty()) {
+            mensajeError("El nombre de la cuenta no puede estar vacío");
+            return;
+        }
+        
+        boolean existe = cuentaController.obtenerCuentas().stream()
+                .anyMatch(c -> c.getNombre().equals(nombreCuenta));
+
+        if (existe) {
+            mensajeError("Ya existe una cuenta con el nombre \"" + nombreCuenta + "\". Elige otro nombre.");
+            return;
+        }
+
+        if (personas.isEmpty()) {
+            mensajeError("Añade al menos una persona");
+            return;
+        }
+
+        CuentaCompartida.TipoReparto tipo = btnPorcentaje.isSelected()
+                        ? CuentaCompartida.TipoReparto.PORCENTAJE
+                        : CuentaCompartida.TipoReparto.EQUITATIVO;
+
+        // Validar porcentajes ANTES de crear la cuenta
+        if (tipo == CuentaCompartida.TipoReparto.PORCENTAJE) {
+            double suma = personas.stream()
+                    .mapToDouble(PersonaPorcentaje::getPorcentaje).sum();
+            if (Math.abs(suma - 100.0) > 0.001) {
+                mensajeError("Los porcentajes deben sumar 100. Suma actual: "
+                        + String.format("%.1f", suma));
+                return;
+            }
+        }
+
+        List<Persona> listaPersonas = personas.stream()
+                .map(p -> new Persona(p.getNombre()))
+                .collect(Collectors.toList());
+
+        CuentaCompartida cuenta = (CuentaCompartida)
+                cuentaController.crearCuentaCompartida(nombreCuenta, listaPersonas, tipo);
+
+        if (tipo == CuentaCompartida.TipoReparto.PORCENTAJE) {
+            Map<Persona, Double> mapa = new HashMap<>();
+            for (PersonaPorcentaje pp : personas) {
+                Persona persona = listaPersonas.stream()
+                        .filter(p -> p.getNombre().equals(pp.getNombre()))
+                        .findFirst()
+                        .orElseThrow();
+                mapa.put(persona, pp.getPorcentaje());
+            }
+            cuenta.setPorcentajes(mapa);
+        }
+
+        cerrar();
+    }
+
+    @FXML
+    void cancelar(ActionEvent event) {
+        cerrar();
+    }
+
+    private void cerrar() {
+        SceneManager.getInstancia().closeDialog();
+    }
+
+    private void mensajeError(String mensaje) {
+        SceneManager.getInstancia().showError("Error", "No se puede crear la cuenta\n" + mensaje);
+    }
+    
+    
+    /*
+     *  @FXML
     void aceptar(ActionEvent event) {
         String nombreCuenta = nombreCuentaCompartida.getText().trim();
 
@@ -173,20 +246,7 @@ public class CuentaCompartidaController {
         }
 
         cerrar();
-    }
-
-    @FXML
-    void cancelar(ActionEvent event) {
-        cerrar();
-    }
-
-    private void cerrar() {
-        SceneManager.getInstancia().closeDialog();
-    }
-
-    private void mensajeError(String mensaje) {
-        SceneManager.getInstancia().showError("Error", "No se puede crear la cuenta\n" + mensaje);
-    }
+    }*/
     
 
 }

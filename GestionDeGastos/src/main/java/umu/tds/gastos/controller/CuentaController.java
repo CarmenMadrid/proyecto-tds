@@ -70,7 +70,13 @@ public class CuentaController {
                 .orElseThrow(() -> new IllegalStateException("No existe cuenta personal"));
     }
 
-    // Gastos 
+ // Gastos 
+    /*******************************************************************************************************************/
+    public Gasto registrarGasto(UUID idCuenta, String nombre, double cantidad, LocalDate fecha, String nombreCategoria, Persona pagador) {
+        return registrarGasto(idCuenta, cantidad, fecha, nombreCategoria, null);
+    }
+    
+    /*******************************************************************************************************************/
 
     public Gasto registrarGasto(UUID idCuenta, double cantidad, LocalDate fecha, String nombreCategoria) {
         return registrarGasto(idCuenta, cantidad, fecha, nombreCategoria, null);
@@ -99,6 +105,11 @@ public class CuentaController {
         }
         cuentaRepository.updateCuenta(cuenta);
         return gasto;
+    }
+    
+    
+    public void editarGasto(UUID idCuenta, UUID idGasto, String nombre, double cantidad, LocalDate fecha, String nombreCategoria) {
+    	editarGasto(idCuenta, idGasto, null, cantidad, fecha, nombreCategoria);
     }
 
     public void editarGasto(UUID idCuenta, UUID idGasto, double cantidad, LocalDate fecha, String nombreCategoria) {
@@ -166,6 +177,15 @@ public class CuentaController {
         cuentaRepository.updateCuenta(cuenta);
         return nueva;
     }
+    
+    
+    /* COMENTARLO
+    public void eliminarCategoria(UUID idCuenta, String nombreCategoria) {
+        Cuenta cuenta = cuentaRepository.getCuenta(idCuenta)
+                .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
+        cuenta.eliminarCategoria(nombreCategoria);
+        cuentaRepository.updateCuenta(cuenta);
+    }*/
 
     public void eliminarCategoria(UUID idCuenta, String nombreCategoria) {
         Cuenta cuenta = cuentaRepository.getCuenta(idCuenta)

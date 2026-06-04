@@ -10,6 +10,7 @@ public class Gasto {
     private UUID id;
     private double cantidad;
     private LocalDate fecha;
+    private String nombre;
     private Categoria categoria;
     private Persona pagador;
 
@@ -34,6 +35,14 @@ public class Gasto {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+    
+    public String getNombre() {
+        return nombre != null ? nombre : "";
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     public double getCantidad() {

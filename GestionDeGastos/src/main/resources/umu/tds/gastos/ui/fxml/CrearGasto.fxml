@@ -91,12 +91,12 @@
             </GridPane>
             <HBox prefHeight="120.0" prefWidth="479.0">
                <children>
-                  <Button fx:id="btnAceptar" mnemonicParsing="false" prefHeight="31.0" prefWidth="78.0" text="Aceptar">
+                  <Button fx:id="btnAceptar" mnemonicParsing="false" onAction="#aceptar" prefHeight="31.0" prefWidth="78.0" text="Aceptar">
                      <HBox.margin>
                         <Insets left="110.0" top="20.0" />
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="btnCancelar" mnemonicParsing="false" prefHeight="31.0" prefWidth="78.0" text="Cancelar">
+                  <Button fx:id="btnCancelar" mnemonicParsing="false" onAction="#cancelar" prefHeight="31.0" prefWidth="78.0" text="Cancelar">
                      <HBox.margin>
                         <Insets left="60.0" top="20.0" />
                      </HBox.margin>
