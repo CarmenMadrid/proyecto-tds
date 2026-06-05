@@ -41,6 +41,21 @@ public class Notificacion {
 
     @Override
     public String toString() {
-        return "[" + fecha + "] " + mensaje;
+        StringBuilder sb = new StringBuilder();
+        sb.append("[").append(fecha).append("] ");
+        if (nombreCuenta != null && !nombreCuenta.isEmpty()) {
+            sb.append(nombreCuenta).append(": ");
+        }
+        if (alerta != null && alerta.getTipo() != null) {
+            String[] parts = alerta.getTipo().getNombreEstrategia().split(" ");
+            sb.append("Has superado tu limite ").append(parts[parts.length - 1].toLowerCase()).append(" de ");
+            sb.append(String.format("%.2f", alerta.getLimite())).append("\u20AC");
+            if (alerta.getCategoria() != null) {
+                sb.append(" en ").append(alerta.getCategoria().getNombre());
+            }
+        } else {
+            sb.append(mensaje);
+        }
+        return sb.toString();
     }
 }
