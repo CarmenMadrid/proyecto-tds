@@ -25,6 +25,7 @@ public class ImportadorCSV implements ImportadorGastos {
         List<GastoCSV> gastosCSV = lector.leer(archivo);
 
         return gastosCSV.stream()
+                .filter(r -> r.getCuentaNombre().equalsIgnoreCase(cuenta.getNombre()))
                 .map(r -> convertir(r, cuenta))
                 .collect(Collectors.toList());
     }
@@ -32,15 +33,21 @@ public class ImportadorCSV implements ImportadorGastos {
     private Gasto convertir(GastoCSV r, Cuenta cuenta) {
         Categoria cat = new Categoria(r.getCategoria());
         Persona pagador = null;
+        Gasto gasto;
 
         if (cuenta instanceof CuentaCompartida comp && r.getPagador() != null && !r.getPagador().isBlank()) {
             pagador = comp.getPersonas().stream()
                     .filter(p -> p.getNombre().equalsIgnoreCase(r.getPagador()))
                     .findFirst()
                     .orElse(null);
-            return new Gasto(r.getImporte(), r.getFecha(), cat, pagador);
+            gasto = new Gasto(r.getImporte(), r.getFecha(), cat, pagador);
+        } else {
+            gasto = new Gasto(r.getImporte(), r.getFecha(), cat);
         }
 
-        return new Gasto(r.getImporte(), r.getFecha(), cat);
+        if (!r.getNombre().isBlank()) {
+            gasto.setNombre(r.getNombre());
+        }
+        return gasto;
     }
 }

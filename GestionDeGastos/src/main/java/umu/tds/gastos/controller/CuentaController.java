@@ -23,6 +23,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+
 public class CuentaController {
 
     private final CuentaRepository cuentaRepository;
@@ -292,6 +293,14 @@ public class CuentaController {
         ImportadorGastos importador = ImportadorFactory.crearImportador(formato);
         List<Gasto> importados = importador.importar(archivo, cuenta);
 
+        int count = procesarGastosImportados(cuenta, importados);
+        if (count > 0) {
+            cuentaRepository.updateCuenta(cuenta);
+        }
+        return count;
+    }
+
+    private int procesarGastosImportados(Cuenta cuenta, List<Gasto> importados) {
         int count = 0;
         for (Gasto g : importados) {
             Categoria cat = cuenta.getCategoria(g.getCategoria().getNombre())
@@ -301,16 +310,20 @@ public class CuentaController {
                         return nueva;
                     });
 
+            Gasto nuevo;
             if (cuenta instanceof CuentaCompartida comp) {
-                comp.agregarGasto(g.getCantidad(), g.getFecha(), cat, g.getPagador());
+                Persona pagador = g.getPagador();
+                if (pagador == null || !comp.getPersonas().contains(pagador)) {
+                    pagador = comp.getPersonas().get(0);
+                }
+                nuevo = comp.agregarGasto(g.getCantidad(), g.getFecha(), cat, pagador);
             } else {
-                cuenta.agregarGasto(g.getCantidad(), g.getFecha(), cat);
+                nuevo = cuenta.agregarGasto(g.getCantidad(), g.getFecha(), cat);
+            }
+            if (!g.getNombre().isBlank()) {
+                nuevo.setNombre(g.getNombre());
             }
             count++;
-        }
-
-        if (count > 0) {
-            cuentaRepository.updateCuenta(cuenta);
         }
         return count;
     }
