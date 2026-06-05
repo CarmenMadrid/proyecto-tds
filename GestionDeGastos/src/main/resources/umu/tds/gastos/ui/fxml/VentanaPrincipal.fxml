@@ -46,9 +46,13 @@
                                <ListView fx:id="listMisCuentas" VBox.vgrow="ALWAYS" />
                             </children>
                          </VBox>
-                         <Button fx:id="btnCrearCuenta" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="102.0" mnemonicParsing="false" onAction="#crearCuenta" prefHeight="34.0" prefWidth="200.0" text="Crear Cuenta" />
-                         <Button fx:id="btnCrearCompartida" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="166.0" mnemonicParsing="false" onAction="#crearCuentaCompartida" prefHeight="34.0" prefWidth="200.0" text="Crear Cuenta Compartida" />
-                         <Button fx:id="btnEliminarCuenta" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="228.0" mnemonicParsing="false" onAction="#eliminarCuenta" prefHeight="34.0" prefWidth="200.0" text="Eliminar Cuenta" />
+                          <VBox spacing="20" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="45.0">
+                             <children>
+                                <Button fx:id="btnCrearCuenta" mnemonicParsing="false" onAction="#crearCuenta" prefHeight="34.0" prefWidth="200.0" text="Crear Cuenta" />
+                                <Button fx:id="btnCrearCompartida" mnemonicParsing="false" onAction="#crearCuentaCompartida" prefHeight="34.0" prefWidth="200.0" text="Crear Cuenta Compartida" />
+                                <Button fx:id="btnEliminarCuenta" mnemonicParsing="false" onAction="#eliminarCuenta" prefHeight="34.0" prefWidth="200.0" text="Eliminar Cuenta" />
+                             </children>
+                          </VBox>
                       </children>
                    </AnchorPane>
                 </content>
@@ -90,27 +94,27 @@
                              <children>
                                 <Button fx:id="btnCrearCategoria" mnemonicParsing="false" onAction="#crearCategoria" text="Crear Categoría">
                                    <HBox.margin>
-                                      <Insets left="35.0" top="10.0" bottom="10.0" />
+                                      <Insets left="20.0" top="10.0" bottom="10.0" />
                                    </HBox.margin>
                                 </Button>
                                 <Button fx:id="btnEliminarCategoria" mnemonicParsing="false" onAction="#eliminarCategoria" text="Eliminar Categoría">
                                    <HBox.margin>
-                                      <Insets left="35.0" top="10.0" bottom="10.0" />
+                                      <Insets left="20.0" top="10.0" bottom="10.0" />
                                    </HBox.margin>
                                 </Button>
                                 <Button fx:id="btnCrearGasto" mnemonicParsing="false" onAction="#crearGasto" text="Crear Gasto">
                                    <HBox.margin>
-                                      <Insets left="35.0" top="10.0" bottom="10.0" />
+                                      <Insets left="20.0" top="10.0" bottom="10.0" />
                                    </HBox.margin>
                                 </Button>
                                 <Button fx:id="btnEditarGasto" mnemonicParsing="false" onAction="#editarGasto" text="Editar Gasto">
                                    <HBox.margin>
-                                      <Insets left="35.0" top="10.0" bottom="10.0" />
+                                      <Insets left="20.0" top="10.0" bottom="10.0" />
                                    </HBox.margin>
                                 </Button>
                                 <Button fx:id="btnEliminarGasto" mnemonicParsing="false" onAction="#eliminarGasto" text="Eliminar Gasto">
                                    <HBox.margin>
-                                      <Insets left="35.0" top="10.0" bottom="10.0" />
+                                      <Insets left="20.0" top="10.0" bottom="10.0" />
                                    </HBox.margin>
                                 </Button>
                              </children>
