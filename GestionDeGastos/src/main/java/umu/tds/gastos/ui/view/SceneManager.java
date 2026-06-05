@@ -8,27 +8,27 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import umu.tds.gastos.domain.core.Cuenta;
 import umu.tds.gastos.domain.core.Gasto;
+import umu.tds.gastos.ui.controller.ConfirmacionController;
 import umu.tds.gastos.ui.controller.CrearCategoriaController;
 import umu.tds.gastos.ui.controller.CrearGastoController;
 import umu.tds.gastos.ui.controller.EditarGastoController;
+import umu.tds.gastos.ui.controller.ImportarController;
 
 import java.io.IOException;
-
+import java.util.function.Consumer;
 
 public class SceneManager {
 
     private static SceneManager instancia;
-    //private Stage stage;
     private Scene escenaActual;
     private Stage primaryStage;
     private Object dialogKey;
@@ -43,80 +43,91 @@ public class SceneManager {
         }
         return instancia;
     }
-    
+
     public void init(Stage stage) {
         this.primaryStage = stage;
     }
-    
+
     public Stage getPrimaryStage() {
         return primaryStage;
     }
-    
+
     public void showVentanaPrincipal() {
         cargarYMostrar("VentanaPrincipal");
         primaryStage.setMaximized(true);
     }
 
     public void showCrearCuenta() {
-        showModal("CuentaNueva.fxml", "Crear Cuenta");
+        showOverlayDialog("CuentaNueva.fxml", null);
     }
 
     public void showCrearCuentaCompartida() {
-        showModal("CuentaCompartida.fxml", "Crear Cuenta Compartida");
+        showOverlayDialog("CuentaCompartida.fxml", null);
     }
-
 
     public void showCrearGasto(Cuenta cuenta) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML_ROOT + "CrearGasto.fxml"));
-            Parent root = loader.load();
+        showOverlayDialog("CrearGasto.fxml", loader -> {
             CrearGastoController ctrl = loader.getController();
             ctrl.setCuenta(cuenta);
-            Stage stage = new Stage();
-            stage.setTitle("Crear Gasto");
-            stage.setScene(new Scene(root));
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.initOwner(primaryStage);
-            stage.showAndWait();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        });
     }
-    
+
     public void showEditarGasto(Gasto gasto, Cuenta cuenta) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML_ROOT + "EditarGasto.fxml"));
-            Parent root = loader.load();
+        showOverlayDialog("EditarGasto.fxml", loader -> {
             EditarGastoController ctrl = loader.getController();
             ctrl.setGasto(gasto, cuenta);
-            Stage stage = new Stage();
-            stage.setTitle("Editar Gasto");
-            stage.setScene(new Scene(root));
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.initOwner(primaryStage);
-            stage.showAndWait();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        });
     }
 
     public void showCrearCategoria(Cuenta cuenta) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML_ROOT + "CrearCategoria.fxml"));
-            Parent root = loader.load();
+        showOverlayDialog("CrearCategoria.fxml", loader -> {
             CrearCategoriaController ctrl = loader.getController();
             ctrl.setCuenta(cuenta);
-            Stage stage = new Stage();
-            stage.setTitle("Crear Categoría");
-            stage.setScene(new Scene(root));
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.initOwner(primaryStage);
-            stage.showAndWait();
+        });
+    }
+
+    public void showImportar(Cuenta cuenta, Consumer<Integer> onImported) {
+        showOverlayDialog("Importar.fxml", loader -> {
+            ImportarController ctrl = loader.getController();
+            ctrl.setCuenta(cuenta);
+            ctrl.setOnImported(onImported);
+        });
+    }
+
+    private void showOverlayDialog(String fxml, Consumer<FXMLLoader> initController) {
+        try {
+            primaryStage.setMaximized(true);
+
+            StackPane oldRoot = (StackPane) escenaActual.getRoot();
+            Parent originalContent = (Parent) oldRoot.getChildren().get(0);
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML_ROOT + fxml));
+            Parent root = loader.load();
+
+            if (initController != null) {
+                initController.accept(loader);
+            }
+
+            Pane overlay = new Pane();
+            overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
+
+            StackPane dialogWrapper = new StackPane(root);
+            dialogWrapper.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
+
+            StackPane newRoot = new StackPane(originalContent, overlay, dialogWrapper);
+            escenaActual.setRoot(newRoot);
+            primaryStage.setMaximized(true);
+
+            dialogKey = new Object();
+            Platform.enterNestedEventLoop(dialogKey);
+
+            oldRoot.getChildren().add(originalContent);
+            escenaActual.setRoot(oldRoot);
+            primaryStage.setMaximized(true);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 
     private void cargarYMostrar(String fxml) {
         try {
@@ -173,60 +184,46 @@ public class SceneManager {
     }
 
     public void showError(String titulo, String mensaje) {
+        Object prevKey = dialogKey;
         showAlertOverlay(titulo, mensaje);
         dialogKey = new Object();
         Platform.enterNestedEventLoop(dialogKey);
+        dialogKey = prevKey;
     }
 
     public void showConfirmation(String titulo, String mensaje, Runnable onAccept) {
-        StackPane mainStack = (StackPane) escenaActual.getRoot();
+        try {
+            primaryStage.setMaximized(true);
 
-        Rectangle overlay = new Rectangle();
-        overlay.setFill(Color.color(0, 0, 0, 0.5));
-        overlay.widthProperty().bind(mainStack.widthProperty());
-        overlay.heightProperty().bind(mainStack.heightProperty());
+            StackPane oldRoot = (StackPane) escenaActual.getRoot();
+            Parent originalContent = (Parent) oldRoot.getChildren().get(0);
 
-        Label titleLabel = new Label(titulo);
-        titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML_ROOT + "Confirmacion.fxml"));
+            Parent root = loader.load();
 
-        Label msgLabel = new Label(mensaje);
-        msgLabel.setStyle("-fx-font-size: 14px;");
-        msgLabel.setWrapText(true);
+            ConfirmacionController controller = loader.getController();
+            controller.setMensaje(mensaje);
+            controller.setOnAccept(onAccept);
 
-        Button btnOk = new Button("Aceptar");
-        btnOk.setStyle("-fx-font-size: 14px;");
-        Button btnCancel = new Button("Cancelar");
-        btnCancel.setStyle("-fx-font-size: 14px;");
+            Pane overlay = new Pane();
+            overlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
 
-        HBox btnBox = new HBox(10, btnOk, btnCancel);
-        btnBox.setAlignment(Pos.CENTER);
+            StackPane dialogWrapper = new StackPane(root);
+            dialogWrapper.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
 
-        VBox alertBox = new VBox(15, titleLabel, msgLabel, btnBox);
-        alertBox.setAlignment(Pos.CENTER);
-        alertBox.setStyle("-fx-background-color: white; -fx-border-color: #cccccc; -fx-border-radius: 5; -fx-background-radius: 5;");
-        alertBox.setPadding(new Insets(20));
-        alertBox.setMaxSize(400, Region.USE_PREF_SIZE);
+            StackPane newRoot = new StackPane(originalContent, overlay, dialogWrapper);
+            escenaActual.setRoot(newRoot);
+            primaryStage.setMaximized(true);
 
-        mainStack.getChildren().addAll(overlay, alertBox);
+            dialogKey = new Object();
+            Platform.enterNestedEventLoop(dialogKey);
 
-        btnOk.setOnAction(e -> {
-            mainStack.getChildren().removeAll(overlay, alertBox);
-            if (dialogKey != null) {
-                Platform.exitNestedEventLoop(dialogKey, null);
-                dialogKey = null;
-            }
-            if (onAccept != null) onAccept.run();
-        });
-        btnCancel.setOnAction(e -> {
-            mainStack.getChildren().removeAll(overlay, alertBox);
-            if (dialogKey != null) {
-                Platform.exitNestedEventLoop(dialogKey, null);
-                dialogKey = null;
-            }
-        });
-
-        dialogKey = new Object();
-        Platform.enterNestedEventLoop(dialogKey);
+            oldRoot.getChildren().add(originalContent);
+            escenaActual.setRoot(oldRoot);
+            primaryStage.setMaximized(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void closeDialog() {
@@ -235,34 +232,6 @@ public class SceneManager {
             dialogKey = null;
         }
     }
-
-    public void showModal(String fxml, String titulo) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML_ROOT + fxml));
-            Parent root = loader.load();
-
-            Rectangle overlay = new Rectangle();
-            overlay.setFill(Color.color(0, 0, 0, 0.5));
-            StackPane mainStack = (StackPane) escenaActual.getRoot();
-            overlay.widthProperty().bind(mainStack.widthProperty());
-            overlay.heightProperty().bind(mainStack.heightProperty());
-
-            StackPane dialogWrapper = new StackPane(root);
-            dialogWrapper.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-
-            mainStack.getChildren().addAll(overlay, dialogWrapper);
-
-            dialogKey = new Object();
-            Platform.enterNestedEventLoop(dialogKey);
-
-            mainStack.getChildren().removeAll(overlay, dialogWrapper);
-            primaryStage.setMaximized(true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    
 
     private Parent loadFXML(String fxml) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource(FXML_ROOT + fxml + ".fxml"));
