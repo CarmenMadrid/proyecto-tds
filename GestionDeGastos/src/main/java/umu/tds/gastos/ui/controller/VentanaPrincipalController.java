@@ -24,9 +24,8 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.ListCell;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -37,7 +36,9 @@ import umu.tds.gastos.app.Configuracion;
 import umu.tds.gastos.controller.CuentaController;
 import umu.tds.gastos.domain.core.Categoria;
 import umu.tds.gastos.domain.core.Cuenta;
+import umu.tds.gastos.domain.core.CuentaCompartida;
 import umu.tds.gastos.domain.core.Gasto;
+import umu.tds.gastos.domain.core.Persona;
 import umu.tds.gastos.ui.view.SceneManager;
 public class VentanaPrincipalController {
 
@@ -122,6 +123,9 @@ public class VentanaPrincipalController {
     @FXML // fx:id="comboCuentaGraficas"
     private ComboBox<Cuenta> comboCuentaGraficas; // Value injected by FXMLLoader
 
+    @FXML // fx:id="comboCuentaFiltro"
+    private ComboBox<Cuenta> comboCuentaFiltro; // Value injected by FXMLLoader
+
     @FXML // fx:id="fechaCol"
     private TableColumn<Gasto, LocalDate> fechaCol; // Value injected by FXMLLoader
 
@@ -137,8 +141,14 @@ public class VentanaPrincipalController {
     @FXML // fx:id="listAlertas"
     private ListView<?> listAlertas; // Value injected by FXMLLoader
 
-    @FXML // fx:id="listCategoria"
-    private ListView<Categoria> listCategoria; // Value injected by FXMLLoader
+    @FXML // fx:id="comboCategoriaFiltro"
+    private ComboBox<Categoria> comboCategoriaFiltro; // Value injected by FXMLLoader
+
+    @FXML // fx:id="comboPagadorFiltro"
+    private ComboBox<Persona> comboPagadorFiltro; // Value injected by FXMLLoader
+
+    @FXML // fx:id="lblPagadorFiltro"
+    private Label lblPagadorFiltro; // Value injected by FXMLLoader
 
     @FXML // fx:id="listImport"
     private ListView<String> listImport; // Value injected by FXMLLoader
@@ -148,6 +158,9 @@ public class VentanaPrincipalController {
 
     @FXML // fx:id="listNotificaciones"
     private ListView<?> listNotificaciones; // Value injected by FXMLLoader
+
+    @FXML // fx:id="tabFiltro"
+    private Tab tabFiltro; // Value injected by FXMLLoader
 
     @FXML // fx:id="nombreCol"
     private TableColumn<Gasto, String> nombreCol; // Value injected by FXMLLoader
@@ -217,17 +230,42 @@ public class VentanaPrincipalController {
         configurarComboCuenta();
 
         refrescarCuentas();
+
+        tabFiltro.selectedProperty().addListener((obs, old, nueva) -> {
+            if (nueva) {
+                comboCuentaFiltro.setValue(comboCuenta.getValue());
+                Cuenta cuenta = comboCuentaFiltro.getValue();
+                if (cuenta != null) {
+                    actualizarListaCategorias(cuenta);
+                    comboPagadorFiltro.setValue(null);
+                }
+                CuentaController cc = Configuracion.getInstancia().getCuentaController();
+                if (cuenta != null) {
+                    gastosTVFiltro.getItems().setAll(cc.obtenerGastos(cuenta.getId()));
+                } else {
+                    List<Gasto> todos = cc.obtenerCuentas().stream()
+                            .flatMap(c -> cc.obtenerGastos(c.getId()).stream())
+                            .collect(Collectors.toList());
+                    gastosTVFiltro.getItems().setAll(todos);
+                }
+            }
+        });
     }
     
     
     private void configurarListaCategoria() {
-        listCategoria.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        listCategoria.setCellFactory(lv -> new ListCell<>() {
-            @Override protected void updateItem(Categoria item, boolean empty) {
-                super.updateItem(item, empty);
-                setText(empty || item == null ? null : item.getNombre());
-            }
+        comboCategoriaFiltro.setConverter(new StringConverter<>() {
+            public String toString(Categoria c) { return c == null ? "" : c.getNombre(); }
+            public Categoria fromString(String s) { return null; }
         });
+        comboPagadorFiltro.setConverter(new StringConverter<>() {
+            public String toString(Persona p) { return p == null ? "" : p.getNombre(); }
+            public Persona fromString(String s) { return null; }
+        });
+        lblPagadorFiltro.setVisible(false);
+        lblPagadorFiltro.setManaged(false);
+        comboPagadorFiltro.setVisible(false);
+        comboPagadorFiltro.setManaged(false);
     }
     
     private void configurarTablaGastos() {
@@ -268,10 +306,12 @@ public class VentanaPrincipalController {
         sincronizandoCombos = true;
         comboCuenta.getItems().setAll(cuentas);
         comboCuentaGraficas.getItems().setAll(cuentas);
+        comboCuentaFiltro.getItems().setAll(cuentas);
         sincronizandoCombos = false;
         if (seleccionada != null && cuentas.contains(seleccionada)) {
             comboCuenta.setValue(seleccionada);
             comboCuentaGraficas.setValue(seleccionada);
+            comboCuentaFiltro.setValue(seleccionada);
         }
     }
     
@@ -351,7 +391,20 @@ public class VentanaPrincipalController {
 
     private void actualizarListaCategorias(Cuenta cuenta) {
         CuentaController cc = Configuracion.getInstancia().getCuentaController();
-        listCategoria.getItems().setAll(cc.obtenerCategorias(cuenta.getId()));
+        comboCategoriaFiltro.getItems().setAll(cc.obtenerCategorias(cuenta.getId()));
+        comboPagadorFiltro.getItems().clear();
+        if (cuenta instanceof CuentaCompartida cc2) {
+            comboPagadorFiltro.getItems().setAll(cc2.getPersonas());
+            lblPagadorFiltro.setVisible(true);
+            lblPagadorFiltro.setManaged(true);
+            comboPagadorFiltro.setVisible(true);
+            comboPagadorFiltro.setManaged(true);
+        } else {
+            lblPagadorFiltro.setVisible(false);
+            lblPagadorFiltro.setManaged(false);
+            comboPagadorFiltro.setVisible(false);
+            comboPagadorFiltro.setManaged(false);
+        }
     }
 
     private void cargarTodosLosGastos() {
@@ -450,6 +503,7 @@ public class VentanaPrincipalController {
             if (sincronizandoCombos || nueva == null) return;
             sincronizandoCombos = true;
             comboCuentaGraficas.setValue(nueva);
+            comboCuentaFiltro.setValue(nueva);
             sincronizandoCombos = false;
             cargarGastosCuenta(nueva);
             actualizarGraficas(nueva);
@@ -460,9 +514,32 @@ public class VentanaPrincipalController {
             if (sincronizandoCombos || nueva == null) return;
             sincronizandoCombos = true;
             comboCuenta.setValue(nueva);
+            comboCuentaFiltro.setValue(nueva);
             sincronizandoCombos = false;
             cargarGastosCuenta(nueva);
             actualizarGraficas(nueva);
+        });
+
+        comboCuentaFiltro.valueProperty().addListener((obs, old, nueva) -> {
+            if (sincronizandoCombos) return;
+            sincronizandoCombos = true;
+            if (nueva != null) {
+                comboCuenta.setValue(nueva);
+                comboCuentaGraficas.setValue(nueva);
+            }
+            sincronizandoCombos = false;
+            if (nueva != null) {
+                actualizarListaCategorias(nueva);
+                comboCategoriaFiltro.setValue(null);
+                comboPagadorFiltro.setValue(null);
+            } else {
+                comboCategoriaFiltro.getItems().clear();
+                comboPagadorFiltro.getItems().clear();
+                lblPagadorFiltro.setVisible(false);
+                lblPagadorFiltro.setManaged(false);
+                comboPagadorFiltro.setVisible(false);
+                comboPagadorFiltro.setManaged(false);
+            }
         });
     } 
     
@@ -506,13 +583,24 @@ public class VentanaPrincipalController {
 
     @FXML
     void borrar(ActionEvent event) {
-        gastosTVFiltro.getItems().clear();
-        listCategoria.getSelectionModel().clearSelection();
+        comboCategoriaFiltro.setValue(null);
+        comboPagadorFiltro.setValue(null);
+        comboCuentaFiltro.setValue(null);
         calFechaInicio.setValue(null);
         calFechaFin.setValue(null);
         ToggleButton[] toggles = {tbEnero, tbFebrero, tbMarzo, tbAbril, tbMayo, tbJunio,
                 tbJulio, tbAgosto, tbSeptiembre, tbOctubre, tbNoviembre, tbDiciembre};
         for (ToggleButton tb : toggles) tb.setSelected(false);
+        CuentaController cc = Configuracion.getInstancia().getCuentaController();
+        Cuenta cuenta = comboCuentaFiltro.getValue();
+        if (cuenta != null) {
+            gastosTVFiltro.getItems().setAll(cc.obtenerGastos(cuenta.getId()));
+        } else {
+            List<Gasto> todos = cc.obtenerCuentas().stream()
+                    .flatMap(c -> cc.obtenerGastos(c.getId()).stream())
+                    .collect(Collectors.toList());
+            gastosTVFiltro.getItems().setAll(todos);
+        }
     }
 
     
@@ -528,16 +616,18 @@ public class VentanaPrincipalController {
 
     @FXML
     void filtrar(ActionEvent event) {
-        Cuenta cuenta = cuentaActual();
-        if (cuenta == null) {
-            mensajeError("Seleccione una cuenta primero.");
-            return;
-        }
         CuentaController cc = Configuracion.getInstancia().getCuentaController();
 
-        List<Categoria> categorias = new ArrayList<>(listCategoria.getSelectionModel().getSelectedItems());
+        Categoria categoria = comboCategoriaFiltro.getValue();
+        List<Categoria> categorias = categoria != null ? List.of(categoria) : List.of();
+        Persona pagador = comboPagadorFiltro.getValue();
         LocalDate fechaInicio = calFechaInicio.getValue();
         LocalDate fechaFin = calFechaFin.getValue();
+
+        if (fechaInicio != null && fechaFin != null && fechaFin.isBefore(fechaInicio)) {
+            mensajeError("La fecha de fin no puede ser anterior a la fecha de inicio.");
+            return;
+        }
 
         List<Month> meses = new ArrayList<>();
         ToggleButton[] toggles = {tbEnero, tbFebrero, tbMarzo, tbAbril, tbMayo, tbJunio,
@@ -549,8 +639,15 @@ public class VentanaPrincipalController {
             if (toggles[i].isSelected()) meses.add(months[i]);
         }
 
-        List<Gasto> filtrados = cc.filtrarGastos(cuenta.getId(), categorias, fechaInicio, fechaFin, meses);
-        gastosTVFiltro.getItems().setAll(filtrados);
+        Cuenta cuenta = comboCuentaFiltro.getValue();
+        if (cuenta != null) {
+            gastosTVFiltro.getItems().setAll(cc.filtrarGastos(cuenta.getId(), categorias, fechaInicio, fechaFin, meses, pagador));
+        } else {
+            List<Gasto> filtrados = cc.obtenerCuentas().stream()
+                    .flatMap(c -> cc.filtrarGastos(c.getId(), categorias, fechaInicio, fechaFin, meses, pagador).stream())
+                    .collect(Collectors.toList());
+            gastosTVFiltro.getItems().setAll(filtrados);
+        }
     }
 
 
