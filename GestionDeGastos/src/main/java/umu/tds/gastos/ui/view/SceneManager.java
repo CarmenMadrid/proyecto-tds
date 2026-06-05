@@ -97,6 +97,7 @@ public class SceneManager {
     }
 
     public void showImportar(Cuenta cuenta, Consumer<Integer> onImported) {
+    	//Creo que en vez de Integer sería String
         showOverlayDialog("Importar.fxml", loader -> {
             ImportarController ctrl = loader.getController();
             ctrl.setCuenta(cuenta);

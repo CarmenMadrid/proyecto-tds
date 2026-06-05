@@ -4,6 +4,7 @@ import umu.tds.gastos.imports.dto.GastoCSV;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -14,13 +15,13 @@ import java.util.Locale;
 
 public class LectorCSV {
 
-    private static final DateTimeFormatter FMT_FECHA =
-            DateTimeFormatter.ofPattern("M/d/yyyy[ HH:mm]", Locale.ENGLISH);
+	private static final DateTimeFormatter FMT_FECHA =
+            DateTimeFormatter.ofPattern("M/d/yyyy[ H:mm]", Locale.ENGLISH);
 
-    public List<GastoCSV> leer(String archivo) throws IOException {
+	public List<GastoCSV> leer(String archivo) throws IOException {
         List<GastoCSV> gastos = new ArrayList<>();
 
-        try (BufferedReader br = Files.newBufferedReader(Paths.get(archivo))) {
+        try (BufferedReader br = Files.newBufferedReader(Paths.get(archivo), StandardCharsets.UTF_8)) {
             String cabecera = br.readLine();
             if (cabecera == null) return gastos;
 
@@ -51,8 +52,9 @@ public class LectorCSV {
         }
 
         String date = cols[0].trim();
-        String account = cols[1].trim();
+        String cuentaNombre = cols[1].trim();
         String subcategory = cols[3].trim();
+        String nombre = cols[4].trim();
         String payer = cols[5].trim();
         String amount = cols[6].trim();
 
@@ -70,6 +72,6 @@ public class LectorCSV {
             throw new IllegalArgumentException("La categoría no puede estar vacía");
         }
 
-        return new GastoCSV(fecha, importe, subcategory, payer);
+        return new GastoCSV(fecha, importe, subcategory, payer, nombre, cuentaNombre);
     }
 }
