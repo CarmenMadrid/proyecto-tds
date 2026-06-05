@@ -4,12 +4,10 @@ import java.time.LocalDate;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import umu.tds.gastos.app.Configuracion;
 import umu.tds.gastos.controller.CuentaController;
@@ -18,6 +16,7 @@ import umu.tds.gastos.domain.core.Cuenta;
 import umu.tds.gastos.domain.core.CuentaCompartida;
 import umu.tds.gastos.domain.core.Gasto;
 import umu.tds.gastos.domain.core.Persona;
+import umu.tds.gastos.ui.view.SceneManager;
 
 public class EditarGastoController {
 
@@ -114,15 +113,11 @@ public class EditarGastoController {
     }
 
     private void cerrar() {
-        ((Stage) btnCancelar.getScene().getWindow()).close();
+        SceneManager.getInstancia().closeDialog();
     }
 
     private void mensajeError(String msg) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText("Error al crear gasto");
-        alert.setContentText(msg);
-        alert.showAndWait();
+        SceneManager.getInstancia().showError("Error al editar gasto", msg);
     }
 
 }
