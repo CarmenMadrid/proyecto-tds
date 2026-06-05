@@ -75,7 +75,7 @@
                          <Insets top="25.0" />
                       </GridPane.margin>
                    </ComboBox>
-                   <Label prefHeight="27.0" prefWidth="285.0" text="Seleccionar persona (solo para cuenta compartida)" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                   <Label fx:id="lblPersona" prefHeight="27.0" prefWidth="285.0" text="Seleccionar persona" GridPane.columnIndex="1" GridPane.rowIndex="4">
                       <GridPane.margin>
                          <Insets top="-20.0" />
                       </GridPane.margin>

@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.util.StringConverter;
 import umu.tds.gastos.app.Configuracion;
@@ -35,6 +36,9 @@ public class CrearGastoController {
     private ComboBox<Categoria> comboCategoria;
 
     @FXML
+    private Label lblPersona;
+
+    @FXML
     private ComboBox<Persona> comboPersona;
 
     @FXML
@@ -55,7 +59,14 @@ public class CrearGastoController {
             public Persona fromString(String s) { return null; }
         });
 
-        comboPersona.setDisable(true);
+        ocultarPersona();
+    }
+
+    private void ocultarPersona() {
+        lblPersona.setVisible(false);
+        lblPersona.setManaged(false);
+        comboPersona.setVisible(false);
+        comboPersona.setManaged(false);
     }
 
     public void setCuenta(Cuenta cuenta) {
@@ -69,11 +80,15 @@ public class CrearGastoController {
         comboCategoria.getItems().setAll(cuentaController.obtenerCategorias(cuenta.getId()));
         comboPersona.getItems().clear();
         if (cuenta instanceof CuentaCompartida cc) {
+            lblPersona.setVisible(true);
+            lblPersona.setManaged(true);
+            comboPersona.setVisible(true);
+            comboPersona.setManaged(true);
             comboPersona.getItems().setAll(cc.getPersonas());
             comboPersona.setDisable(false);
         } else {
             comboPersona.setValue(null);
-            comboPersona.setDisable(true);
+            ocultarPersona();
         }
     }
 
