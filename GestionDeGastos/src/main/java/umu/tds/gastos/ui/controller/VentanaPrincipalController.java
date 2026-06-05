@@ -6,10 +6,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.Month;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +32,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
-import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
 import umu.tds.gastos.app.Configuracion;
 import umu.tds.gastos.controller.CuentaController;
@@ -62,6 +61,9 @@ public class VentanaPrincipalController {
 
     @FXML // fx:id="btnCrearCategoria"
     private Button btnCrearCategoria; // Value injected by FXMLLoader
+
+    @FXML // fx:id="btnEliminarCategoria"
+    private Button btnEliminarCategoria; // Value injected by FXMLLoader
 
     @FXML // fx:id="btnCrearCompartida"
     private Button btnCrearCompartida; // Value injected by FXMLLoader
@@ -106,13 +108,13 @@ public class VentanaPrincipalController {
     private TableColumn<Gasto, Double> cantidadCol; // Value injected by FXMLLoader
 
     @FXML // fx:id="cantidadColFiltro"
-    private TableColumn<?, ?> cantidadColFiltro; // Value injected by FXMLLoader
+    private TableColumn<Gasto, Double> cantidadColFiltro; // Value injected by FXMLLoader
 
     @FXML // fx:id="categoriaCol"
     private TableColumn<Gasto, String> categoriaCol; // Value injected by FXMLLoader
 
     @FXML // fx:id="categoriaColFiltro"
-    private TableColumn<?, ?> categoriaColFiltro; // Value injected by FXMLLoader
+    private TableColumn<Gasto, String> categoriaColFiltro; // Value injected by FXMLLoader
 
     @FXML // fx:id="comboCuenta"
     private ComboBox<Cuenta> comboCuenta; // Value injected by FXMLLoader
@@ -124,7 +126,7 @@ public class VentanaPrincipalController {
     private TableColumn<Gasto, LocalDate> fechaCol; // Value injected by FXMLLoader
 
     @FXML // fx:id="fechaColFiltro"
-    private TableColumn<?, ?> fechaColFiltro; // Value injected by FXMLLoader
+    private TableColumn<Gasto, LocalDate> fechaColFiltro; // Value injected by FXMLLoader
 
     @FXML // fx:id="gastosTV"
     private TableView<Gasto> gastosTV; // Value injected by FXMLLoader
@@ -150,14 +152,14 @@ public class VentanaPrincipalController {
     @FXML // fx:id="nombreCol"
     private TableColumn<Gasto, String> nombreCol; // Value injected by FXMLLoader
 
-    @FXML // fx:id="nombreColFiltro"
-    private TableColumn<?, ?> nombreColFiltro; // Value injected by FXMLLoader
-
     @FXML // fx:id="personaCol"
     private TableColumn<Gasto, String> personaCol; // Value injected by FXMLLoader
 
+    @FXML // fx:id="nombreColFiltro"
+    private TableColumn<Gasto, String> nombreColFiltro; // Value injected by FXMLLoader
+
     @FXML // fx:id="personaColFiltro"
-    private TableColumn<?, ?> personaColFiltro; // Value injected by FXMLLoader
+    private TableColumn<Gasto, String> personaColFiltro; // Value injected by FXMLLoader
 
     @FXML // fx:id="pieChart"
     private PieChart pieChart; // Value injected by FXMLLoader
@@ -210,11 +212,11 @@ public class VentanaPrincipalController {
     @FXML
     public void initialize() {
         configurarTablaGastos();
+        configurarTablaFiltro();
         configurarListaCategoria();
         configurarComboCuenta();
 
         refrescarCuentas();
-        cargarTodosLosGastos();
     }
     
     
@@ -240,9 +242,24 @@ public class VentanaPrincipalController {
         personaCol.setCellValueFactory(d ->
                 new SimpleStringProperty(
                         d.getValue().getPagador() != null
-                                ? d.getValue().getPagador().getNombre() : "—"));
+                                ? d.getValue().getPagador().getNombre() : "Yo"));
     }
     
+    private void configurarTablaFiltro() {
+        nombreColFiltro.setCellValueFactory(d ->
+                new SimpleStringProperty(d.getValue().getNombre()));
+        cantidadColFiltro.setCellValueFactory(d ->
+                new SimpleObjectProperty<>(d.getValue().getCantidad()));
+        fechaColFiltro.setCellValueFactory(d ->
+                new SimpleObjectProperty<>(d.getValue().getFecha()));
+        categoriaColFiltro.setCellValueFactory(d ->
+                new SimpleStringProperty(d.getValue().getCategoria().getNombre()));
+        personaColFiltro.setCellValueFactory(d ->
+                new SimpleStringProperty(
+                        d.getValue().getPagador() != null
+                                ? d.getValue().getPagador().getNombre() : "Yo"));
+    }
+
     private void refrescarCuentas() {
         CuentaController cc = Configuracion.getInstancia().getCuentaController();
         List<Cuenta> cuentas = cc.obtenerCuentas();
@@ -263,14 +280,14 @@ public class VentanaPrincipalController {
     private void crearCuenta() {
         SceneManager.getInstancia().showCrearCuenta();
         refrescarCuentas();
-        cargarTodosLosGastos();
+        recargarCuentaActual();
     }
 
     @FXML
     private void crearCuentaCompartida() {
         SceneManager.getInstancia().showCrearCuentaCompartida();
         refrescarCuentas();
-        cargarTodosLosGastos();
+        recargarCuentaActual();
     }
     
     @FXML
@@ -299,10 +316,23 @@ public class VentanaPrincipalController {
                     pieChart.getData().clear();
                 }
                 refrescarCuentas();
-                cargarTodosLosGastos();
+                recargarCuentaActual();
             });
     }
-    
+
+    private void recargarCuentaActual() {
+        Cuenta actual = cuentaActual();
+        if (actual != null) {
+            cargarGastosCuenta(actual);
+            actualizarGraficas(actual);
+            actualizarListaCategorias(actual);
+        } else {
+            gastosTV.getItems().clear();
+            barChart.getData().clear();
+            pieChart.getData().clear();
+        }
+    }
+
     private void mensajeError(String mensaje) {
         SceneManager.getInstancia().showError("Error", mensaje);
     }
@@ -317,6 +347,11 @@ public class VentanaPrincipalController {
         List<Gasto> gastos = cc.obtenerGastos(cuenta.getId());
         gastos.forEach(g -> gastoCuentaMap.put(g.getId(), cuenta));
         gastosTV.getItems().setAll(gastos);
+    }
+
+    private void actualizarListaCategorias(Cuenta cuenta) {
+        CuentaController cc = Configuracion.getInstancia().getCuentaController();
+        listCategoria.getItems().setAll(cc.obtenerCategorias(cuenta.getId()));
     }
 
     private void cargarTodosLosGastos() {
@@ -334,31 +369,43 @@ public class VentanaPrincipalController {
 
     @FXML
     void crearGasto(ActionEvent event) {
-        CuentaController cc = Configuracion.getInstancia().getCuentaController();
         Cuenta preseleccionada = cuentaActual();
         if (preseleccionada == null) {
-            List<Cuenta> cuentas = cc.obtenerCuentas();
-            if (cuentas.isEmpty()) { mensajeError("Cree una cuenta primero."); return; }
-            preseleccionada = cuentas.get(0);
+            mensajeError("Seleccione una cuenta primero.");
+            return;
         }
         SceneManager.getInstancia().showCrearGasto(preseleccionada);
-        Cuenta actual = cuentaActual();
-        if (actual != null) { cargarGastosCuenta(actual); 
-        					actualizarGraficas(actual); 
-        }
-        else { cargarTodosLosGastos(); }
+        recargarCuentaActual();
     }
 
     @FXML
     void crearCategoria(ActionEvent event) {
-        CuentaController cc = Configuracion.getInstancia().getCuentaController();
         Cuenta cuenta = cuentaActual();
         if (cuenta == null) {
-            List<Cuenta> cuentas = cc.obtenerCuentas();
-            if (cuentas.isEmpty()) { mensajeError("No hay cuentas creadas."); return; }
-            cuenta = cuentas.get(0); //Si no hay ninguna seleccionada se coge la primera
+            mensajeError("Seleccione una cuenta primero.");
+            return;
         }
         SceneManager.getInstancia().showCrearCategoria(cuenta);
+        actualizarListaCategorias(cuenta);
+    }
+    
+    @FXML
+    void eliminarCategoria(ActionEvent event) {
+        Cuenta cuenta = cuentaActual();
+        if (cuenta == null) {
+            mensajeError("Seleccione una cuenta primero.");
+            return;
+        }
+        CuentaController cc = Configuracion.getInstancia().getCuentaController();
+        List<Categoria> categorias = cc.obtenerCategorias(cuenta.getId());
+        if (categorias.isEmpty()) {
+            mensajeError("No hay categorías para eliminar.");
+            return;
+        }
+        SceneManager.getInstancia().showEliminarCategoria(cuenta, categorias, () -> {
+            actualizarListaCategorias(cuenta);
+            recargarCuentaActual();
+        });
     }
     
     @FXML
@@ -406,6 +453,7 @@ public class VentanaPrincipalController {
             sincronizandoCombos = false;
             cargarGastosCuenta(nueva);
             actualizarGraficas(nueva);
+            actualizarListaCategorias(nueva);
         });
 
         comboCuentaGraficas.valueProperty().addListener((obs, old, nueva) -> {
@@ -435,27 +483,13 @@ public class VentanaPrincipalController {
     
     @FXML
     void importar(ActionEvent event) {
-        Cuenta cuenta = cuentaActual();
-        if (cuenta == null) {
-            mensajeError("Seleccione una cuenta primero.");
-            return;
-        }
-        FileChooser fc = new FileChooser(); //selector de archivos
-        fc.setTitle("Seleccionar archivo.");
-        fc.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("CSV Files", "*.csv"), //para que vea solo cvs
-                new FileChooser.ExtensionFilter("Todos los archivos", "*.*")); //para que vea todos los archivos
-        File file = fc.showOpenDialog(SceneManager.getInstancia().getPrimaryStage()); //abre para seleccionar el archivo
-        if (file == null) return;
-        try {
-            int count = Configuracion.getInstancia().getCuentaController()
-                    .importarGastos(cuenta.getId(), file.getAbsolutePath(), "CSV");
-            listImport.getItems().add(0, "Se han importado " + count + " gastos del archivo \"" + file.getName() + "\"");
-            cargarGastosCuenta(cuenta);
-            actualizarGraficas(cuenta);
-        } catch (IOException e) {
-            mensajeError("Error al importar: " + e.getMessage());
-        }
+        SceneManager.getInstancia().showImportar(cuentaActual(), count -> {
+            Cuenta c = cuentaActual();
+            String msg = "Se han importado " + count + " gastos";
+            if (c != null) msg += " en la cuenta \"" + c.getNombre() + "\"";
+            listImport.getItems().add(0, msg);
+        });
+        recargarCuentaActual();
     }
     
     
@@ -472,7 +506,13 @@ public class VentanaPrincipalController {
 
     @FXML
     void borrar(ActionEvent event) {
-
+        gastosTVFiltro.getItems().clear();
+        listCategoria.getSelectionModel().clearSelection();
+        calFechaInicio.setValue(null);
+        calFechaFin.setValue(null);
+        ToggleButton[] toggles = {tbEnero, tbFebrero, tbMarzo, tbAbril, tbMayo, tbJunio,
+                tbJulio, tbAgosto, tbSeptiembre, tbOctubre, tbNoviembre, tbDiciembre};
+        for (ToggleButton tb : toggles) tb.setSelected(false);
     }
 
     
@@ -488,7 +528,29 @@ public class VentanaPrincipalController {
 
     @FXML
     void filtrar(ActionEvent event) {
+        Cuenta cuenta = cuentaActual();
+        if (cuenta == null) {
+            mensajeError("Seleccione una cuenta primero.");
+            return;
+        }
+        CuentaController cc = Configuracion.getInstancia().getCuentaController();
 
+        List<Categoria> categorias = new ArrayList<>(listCategoria.getSelectionModel().getSelectedItems());
+        LocalDate fechaInicio = calFechaInicio.getValue();
+        LocalDate fechaFin = calFechaFin.getValue();
+
+        List<Month> meses = new ArrayList<>();
+        ToggleButton[] toggles = {tbEnero, tbFebrero, tbMarzo, tbAbril, tbMayo, tbJunio,
+                tbJulio, tbAgosto, tbSeptiembre, tbOctubre, tbNoviembre, tbDiciembre};
+        Month[] months = {Month.JANUARY, Month.FEBRUARY, Month.MARCH, Month.APRIL,
+                Month.MAY, Month.JUNE, Month.JULY, Month.AUGUST, Month.SEPTEMBER,
+                Month.OCTOBER, Month.NOVEMBER, Month.DECEMBER};
+        for (int i = 0; i < toggles.length; i++) {
+            if (toggles[i].isSelected()) meses.add(months[i]);
+        }
+
+        List<Gasto> filtrados = cc.filtrarGastos(cuenta.getId(), categorias, fechaInicio, fechaFin, meses);
+        gastosTVFiltro.getItems().setAll(filtrados);
     }
 
 

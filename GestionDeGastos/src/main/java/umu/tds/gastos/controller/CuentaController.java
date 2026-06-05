@@ -73,7 +73,9 @@ public class CuentaController {
  // Gastos 
     /*******************************************************************************************************************/
     public Gasto registrarGasto(UUID idCuenta, String nombre, double cantidad, LocalDate fecha, String nombreCategoria, Persona pagador) {
-        return registrarGasto(idCuenta, cantidad, fecha, nombreCategoria, null);
+        Gasto gasto = registrarGasto(idCuenta, cantidad, fecha, nombreCategoria, pagador);
+        gasto.setNombre(nombre);
+        return gasto;
     }
     
     /*******************************************************************************************************************/
@@ -109,7 +111,15 @@ public class CuentaController {
     
     
     public void editarGasto(UUID idCuenta, UUID idGasto, String nombre, double cantidad, LocalDate fecha, String nombreCategoria) {
-    	editarGasto(idCuenta, idGasto, null, cantidad, fecha, nombreCategoria);
+        editarGasto(idCuenta, idGasto, cantidad, fecha, nombreCategoria);
+        Cuenta cuenta = cuentaRepository.getCuenta(idCuenta)
+                .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
+        Gasto gasto = cuenta.getGasto(idGasto)
+                .orElseThrow(() -> new IllegalArgumentException("Gasto no encontrado"));
+        if (nombre != null && !nombre.trim().isEmpty()) {
+            gasto.setNombre(nombre);
+        }
+        cuentaRepository.updateCuenta(cuenta);
     }
 
     public void editarGasto(UUID idCuenta, UUID idGasto, double cantidad, LocalDate fecha, String nombreCategoria) {
@@ -192,6 +202,13 @@ public class CuentaController {
                 .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
         cuenta.eliminarCategoria(nombreCategoria);
         cuentaRepository.updateCuenta(cuenta);
+    }
+
+    public boolean categoriaEnUso(UUID idCuenta, String nombreCategoria) {
+        Cuenta cuenta = cuentaRepository.getCuenta(idCuenta)
+                .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
+        return cuenta.getGastos().stream()
+                .anyMatch(g -> g.getCategoria().getNombre().equalsIgnoreCase(nombreCategoria));
     }
 
     // Saldos y reparto (cuentas compartidas)

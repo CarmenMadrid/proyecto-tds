@@ -99,7 +99,7 @@ public class Gasto {
 
     @Override
 	public String toString() {
-		return "Gasto [cantidad=" + cantidad + ", fecha=" + fecha + ", categoria=" + categoria + ", pagador=" + (pagador == null ? "null" : pagador) + ']';
+		return "Gasto [nombre=" + getNombre() + ", cantidad=" + cantidad + ", fecha=" + fecha + ", categoria=" + categoria + ", pagador=" + (pagador == null ? "Yo" : pagador) + ']';
 	}
 
     @Override

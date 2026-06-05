@@ -4,12 +4,11 @@ import java.time.LocalDate;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import umu.tds.gastos.app.Configuracion;
 import umu.tds.gastos.controller.CuentaController;
@@ -18,6 +17,7 @@ import umu.tds.gastos.domain.core.Cuenta;
 import umu.tds.gastos.domain.core.CuentaCompartida;
 import umu.tds.gastos.domain.core.Gasto;
 import umu.tds.gastos.domain.core.Persona;
+import umu.tds.gastos.ui.view.SceneManager;
 
 public class EditarGastoController {
 
@@ -37,7 +37,7 @@ public class EditarGastoController {
     private ComboBox<Categoria> comboCategoria;
 
     @FXML
-    private ComboBox<Cuenta> comboCuenta;
+    private Label lblPersona;
 
     @FXML
     private ComboBox<Persona> comboPersona;
@@ -45,30 +45,33 @@ public class EditarGastoController {
     @FXML
     private TextField nombreCuenta;
 
-
     private final CuentaController cuentaController = Configuracion.getInstancia().getCuentaController();
     private Cuenta cuenta;
     private Gasto gasto;
 
     @FXML
     public void initialize() {
-        comboCuenta.setConverter(new StringConverter<>() {
-            public String toString(Cuenta c) { return c == null ? "" : c.getNombre(); }
-            public Cuenta fromString(String s) { return null; }
+        comboCategoria.setConverter(new StringConverter<>() {
+            public String toString(Categoria c) { return c == null ? "" : c.getNombre(); }
+            public Categoria fromString(String s) { return null; }
         });
         comboPersona.setConverter(new StringConverter<>() {
             public String toString(Persona p) { return p == null ? "" : p.getNombre(); }
             public Persona fromString(String s) { return null; }
         });
+        ocultarPersona();
+    }
+
+    private void ocultarPersona() {
+        lblPersona.setVisible(false);
+        lblPersona.setManaged(false);
+        comboPersona.setVisible(false);
+        comboPersona.setManaged(false);
     }
 
     public void setGasto(Gasto gasto, Cuenta cuenta) {
         this.gasto = gasto;
         this.cuenta = cuenta;
-
-        comboCuenta.getItems().setAll(cuenta);
-        comboCuenta.setValue(cuenta);
-        comboCuenta.setDisable(true);
 
         comboCategoria.getItems().setAll(cuentaController.obtenerCategorias(cuenta.getId()));
         comboCategoria.setValue(gasto.getCategoria());
@@ -78,11 +81,16 @@ public class EditarGastoController {
         calFecha.setValue(gasto.getFecha());
 
         if (cuenta instanceof CuentaCompartida cc) {
+            lblPersona.setVisible(true);
+            lblPersona.setManaged(true);
+            comboPersona.setVisible(true);
+            comboPersona.setManaged(true);
             comboPersona.getItems().setAll(cc.getPersonas());
             comboPersona.setValue(gasto.getPagador());
             comboPersona.setDisable(false);
         } else {
-            comboPersona.setDisable(true); //Si no es una cuenta compartida no puede tocar el desplegable
+            comboPersona.setValue(null);
+            ocultarPersona();
         }
     }
 
@@ -114,15 +122,11 @@ public class EditarGastoController {
     }
 
     private void cerrar() {
-        ((Stage) btnCancelar.getScene().getWindow()).close();
+        SceneManager.getInstancia().closeDialog();
     }
 
     private void mensajeError(String msg) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText("Error al crear gasto");
-        alert.setContentText(msg);
-        alert.showAndWait();
+        SceneManager.getInstancia().showError("Error al editar gasto", msg);
     }
 
 }

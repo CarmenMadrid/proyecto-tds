@@ -4,12 +4,11 @@ import java.time.LocalDate;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import umu.tds.gastos.app.Configuracion;
 import umu.tds.gastos.controller.CuentaController;
@@ -17,6 +16,7 @@ import umu.tds.gastos.domain.core.Categoria;
 import umu.tds.gastos.domain.core.Cuenta;
 import umu.tds.gastos.domain.core.CuentaCompartida;
 import umu.tds.gastos.domain.core.Persona;
+import umu.tds.gastos.ui.view.SceneManager;
 
 public class CrearGastoController {
 
@@ -36,39 +36,42 @@ public class CrearGastoController {
     private ComboBox<Categoria> comboCategoria;
 
     @FXML
-    private ComboBox<Cuenta> comboCuenta;
+    private Label lblPersona;
 
     @FXML
     private ComboBox<Persona> comboPersona;
 
     @FXML
     private TextField nombreCuenta;
-    
+
     private final CuentaController cuentaController = Configuracion.getInstancia().getCuentaController();
+    private Cuenta cuenta;
 
     @FXML
     public void initialize() {
-        comboCuenta.getItems().setAll(cuentaController.obtenerCuentas());
-
-        comboCuenta.setConverter(new StringConverter<>() {
-            public String toString(Cuenta c) { return c == null ? "" : c.getNombre(); }
-            public Cuenta fromString(String s) { return null; }
+        comboCategoria.setConverter(new StringConverter<>() {
+            public String toString(Categoria c) { return c == null ? "" : c.getNombre(); }
+            public Categoria fromString(String s) { return null; }
         });
-        
+
         comboPersona.setConverter(new StringConverter<>() {
             public String toString(Persona p) { return p == null ? "" : p.getNombre(); }
             public Persona fromString(String s) { return null; }
         });
 
-        comboCuenta.valueProperty().addListener((obs, old, nueva) -> {
-            if (nueva != null) actualizarParaCuenta(nueva);
-        });
-        comboPersona.setDisable(true);
+        ocultarPersona();
+    }
+
+    private void ocultarPersona() {
+        lblPersona.setVisible(false);
+        lblPersona.setManaged(false);
+        comboPersona.setVisible(false);
+        comboPersona.setManaged(false);
     }
 
     public void setCuenta(Cuenta cuenta) {
+        this.cuenta = cuenta;
         if (cuenta != null) {
-            comboCuenta.setValue(cuenta);
             actualizarParaCuenta(cuenta);
         }
     }
@@ -77,19 +80,22 @@ public class CrearGastoController {
         comboCategoria.getItems().setAll(cuentaController.obtenerCategorias(cuenta.getId()));
         comboPersona.getItems().clear();
         if (cuenta instanceof CuentaCompartida cc) {
+            lblPersona.setVisible(true);
+            lblPersona.setManaged(true);
+            comboPersona.setVisible(true);
+            comboPersona.setManaged(true);
             comboPersona.getItems().setAll(cc.getPersonas());
             comboPersona.setDisable(false);
         } else {
             comboPersona.setValue(null);
-            comboPersona.setDisable(true);
+            ocultarPersona();
         }
     }
 
     @FXML
     void aceptar(ActionEvent event) {
-        Cuenta cuenta = comboCuenta.getValue();
         if (cuenta == null) {
-        	mensajeError("Seleccione una cuenta.");
+        	mensajeError("No hay cuenta seleccionada.");
             return;
         }
         double cantidad;
@@ -132,15 +138,11 @@ public class CrearGastoController {
     }
 
     private void cerrar() {
-        ((Stage) btnCancelar.getScene().getWindow()).close();
+        SceneManager.getInstancia().closeDialog();
     }
 
     private void mensajeError(String msg) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText("Error al crear gasto");
-        alert.setContentText(msg);
-        alert.showAndWait();
+        SceneManager.getInstancia().showError("Error al crear gasto", msg);
     }
 
 }

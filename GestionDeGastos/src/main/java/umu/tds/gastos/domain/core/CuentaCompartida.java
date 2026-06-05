@@ -1,5 +1,6 @@
 package umu.tds.gastos.domain.core;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Preconditions;
 
 import java.time.LocalDate;
@@ -98,6 +99,7 @@ public class CuentaCompartida extends Cuenta {
         }
     }
 
+    @JsonProperty("saldos")
     public Map<Persona, Double> getSaldos() {
         if (saldos == null || saldos.isEmpty()) {
             calcularSaldos();

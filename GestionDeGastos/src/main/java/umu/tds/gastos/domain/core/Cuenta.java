@@ -5,6 +5,8 @@ import umu.tds.gastos.domain.filtros.Filtro;
 import java.time.LocalDate;
 import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Cuenta {
     private UUID id;
     private String nombre;
@@ -95,6 +97,7 @@ public class Cuenta {
                 .toList();
     }
 
+    @JsonIgnore
     public Map<Persona, Double> getSaldos() {
         return new HashMap<>();
     }

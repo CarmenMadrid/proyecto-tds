@@ -46,9 +46,13 @@
                                <ListView fx:id="listMisCuentas" VBox.vgrow="ALWAYS" />
                             </children>
                          </VBox>
-                         <Button fx:id="btnCrearCuenta" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="102.0" mnemonicParsing="false" onAction="#crearCuenta" prefHeight="34.0" prefWidth="200.0" text="Crear Cuenta" />
-                         <Button fx:id="btnCrearCompartida" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="166.0" mnemonicParsing="false" onAction="#crearCuentaCompartida" prefHeight="34.0" prefWidth="200.0" text="Crear Cuenta Compartida" />
-                         <Button fx:id="btnEliminarCuenta" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="228.0" mnemonicParsing="false" onAction="#eliminarCuenta" prefHeight="34.0" prefWidth="200.0" text="Eliminar Cuenta" />
+                          <VBox spacing="20" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="45.0">
+                             <children>
+                                <Button fx:id="btnCrearCuenta" mnemonicParsing="false" onAction="#crearCuenta" prefHeight="34.0" prefWidth="200.0" text="Crear Cuenta" />
+                                <Button fx:id="btnCrearCompartida" mnemonicParsing="false" onAction="#crearCuentaCompartida" prefHeight="34.0" prefWidth="200.0" text="Crear Cuenta Compartida" />
+                                <Button fx:id="btnEliminarCuenta" mnemonicParsing="false" onAction="#eliminarCuenta" prefHeight="34.0" prefWidth="200.0" text="Eliminar Cuenta" />
+                             </children>
+                          </VBox>
                       </children>
                    </AnchorPane>
                 </content>
@@ -86,30 +90,35 @@
                                <Insets left="20.0" right="20.0" />
                             </padding>
                          </HBox>
-                         <HBox>
-                            <children>
-                               <Button fx:id="btnCrearGasto" mnemonicParsing="false" text="Crear Gasto">
-                                  <HBox.margin>
-                                     <Insets left="45.0" top="10.0" bottom="10.0" />
-                                  </HBox.margin>
-                               </Button>
-                               <Button fx:id="btnCrearCategoria" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Crear Categoría">
-                                  <HBox.margin>
-                                     <Insets left="45.0" top="10.0" bottom="10.0" />
-                                  </HBox.margin>
-                               </Button>
-                               <Button fx:id="btnEditarGasto" layoutX="88.0" layoutY="10.0" mnemonicParsing="false" text="Editar Gasto">
-                                  <HBox.margin>
-                                     <Insets left="45.0" top="10.0" bottom="10.0" />
-                                  </HBox.margin>
-                               </Button>
-                               <Button fx:id="btnEliminarGasto" layoutX="188.0" layoutY="10.0" mnemonicParsing="false" text="Eliminar Gasto">
-                                  <HBox.margin>
-                                     <Insets left="45.0" top="10.0" bottom="10.0" />
-                                  </HBox.margin>
-                               </Button>
-                            </children>
-                         </HBox>
+                          <HBox>
+                             <children>
+                                <Button fx:id="btnCrearCategoria" mnemonicParsing="false" onAction="#crearCategoria" text="Crear Categoría">
+                                   <HBox.margin>
+                                      <Insets left="20.0" top="10.0" bottom="10.0" />
+                                   </HBox.margin>
+                                </Button>
+                                <Button fx:id="btnEliminarCategoria" mnemonicParsing="false" onAction="#eliminarCategoria" text="Eliminar Categoría">
+                                   <HBox.margin>
+                                      <Insets left="20.0" top="10.0" bottom="10.0" />
+                                   </HBox.margin>
+                                </Button>
+                                <Button fx:id="btnCrearGasto" mnemonicParsing="false" onAction="#crearGasto" text="Crear Gasto">
+                                   <HBox.margin>
+                                      <Insets left="20.0" top="10.0" bottom="10.0" />
+                                   </HBox.margin>
+                                </Button>
+                                <Button fx:id="btnEditarGasto" mnemonicParsing="false" onAction="#editarGasto" text="Editar Gasto">
+                                   <HBox.margin>
+                                      <Insets left="20.0" top="10.0" bottom="10.0" />
+                                   </HBox.margin>
+                                </Button>
+                                <Button fx:id="btnEliminarGasto" mnemonicParsing="false" onAction="#eliminarGasto" text="Eliminar Gasto">
+                                   <HBox.margin>
+                                      <Insets left="20.0" top="10.0" bottom="10.0" />
+                                   </HBox.margin>
+                                </Button>
+                             </children>
+                          </HBox>
                       </children>
                    </VBox>
                 </content>
@@ -162,7 +171,7 @@
                      <items>
                        <AnchorPane>
                             <children>
-                               <Button fx:id="btnImportar" layoutX="22.0" layoutY="16.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="109.0" text="Importar" />
+                               <Button fx:id="btnImportar" layoutX="22.0" layoutY="16.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="109.0" onAction="#importar" text="Importar" />
                             </children>
                          </AnchorPane>
                        <AnchorPane>
@@ -245,8 +254,8 @@
                                       <ListView fx:id="listCategoria" prefHeight="60.0" />
                                       <HBox spacing="10.0">
                                          <children>
-                                            <Button fx:id="btnFiltrar" prefWidth="100.0" HBox.hgrow="ALWAYS" mnemonicParsing="false" prefHeight="35.0" text="Filtrar" />
-                                            <Button fx:id="btnBorrar" prefWidth="100.0" HBox.hgrow="ALWAYS" mnemonicParsing="false" prefHeight="35.0" text="Borrar" />
+                                            <Button fx:id="btnFiltrar" prefWidth="100.0" HBox.hgrow="ALWAYS" mnemonicParsing="false" prefHeight="35.0" onAction="#filtrar" text="Filtrar" />
+                                            <Button fx:id="btnBorrar" prefWidth="100.0" HBox.hgrow="ALWAYS" mnemonicParsing="false" prefHeight="35.0" onAction="#borrar" text="Borrar" />
                                          </children>
                                       </HBox>
                                    </children>
@@ -310,17 +319,17 @@
                      <bottom>
                         <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                            <children>
-                              <Button fx:id="btnAddAlerta" mnemonicParsing="false" prefHeight="38.0" prefWidth="120.0" text="Añadir Alerta">
+                              <Button fx:id="btnAddAlerta" mnemonicParsing="false" prefHeight="38.0" prefWidth="120.0" onAction="#addAlerta" text="Añadir Alerta">
                                  <HBox.margin>
                                     <Insets left="50.0" top="30.0" />
                                  </HBox.margin>
                               </Button>
-                              <Button fx:id="btnEditarAlerta" mnemonicParsing="false" prefHeight="38.0" prefWidth="120.0" text="Editar Alerta">
+                              <Button fx:id="btnEditarAlerta" mnemonicParsing="false" prefHeight="38.0" prefWidth="120.0" onAction="#editarAlerta" text="Editar Alerta">
                                  <HBox.margin>
                                     <Insets left="15.0" top="30.0" />
                                  </HBox.margin>
                               </Button>
-                              <Button fx:id="btnEliminarAlerta" mnemonicParsing="false" prefHeight="38.0" prefWidth="130.0" text="Eliminar Alerta">
+                              <Button fx:id="btnEliminarAlerta" mnemonicParsing="false" prefHeight="38.0" prefWidth="130.0" onAction="#eliminarAlerta" text="Eliminar Alerta">
                                  <HBox.margin>
                                     <Insets left="15.0" top="30.0" />
                                  </HBox.margin>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<TitledPane animated="false" minHeight="-Infinity" minWidth="-Infinity" prefHeight="260.0" prefWidth="520.0" text="Importar gastos" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="umu.tds.gastos.ui.controller.ImportarController">
+   <content>
+      <AnchorPane>
+         <VBox alignment="CENTER" spacing="15" prefWidth="500" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+            <padding>
+               <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <children>
+               <GridPane hgap="10" vgap="10" maxWidth="500" alignment="CENTER">
+                  <columnConstraints>
+                     <ColumnConstraints halignment="RIGHT" percentWidth="25"/>
+                     <ColumnConstraints hgrow="ALWAYS" fillWidth="true" percentWidth="75"/>
+                  </columnConstraints>
+                  <rowConstraints>
+                     <RowConstraints vgrow="SOMETIMES"/>
+                     <RowConstraints vgrow="SOMETIMES"/>
+                  </rowConstraints>
+                  <children>
+                     <Label text="Cuenta" />
+                     <ComboBox fx:id="comboCuenta" maxWidth="Infinity" GridPane.columnIndex="1"/>
+                     <Label text="Archivo" GridPane.rowIndex="1"/>
+                     <HBox spacing="10" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <children>
+                           <TextField fx:id="archivoField" editable="false" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+                           <Button fx:id="btnSeleccionar" mnemonicParsing="false" onAction="#seleccionarArchivo" prefHeight="27.0" text="Seleccionar..." />
+                        </children>
+                     </HBox>
+                  </children>
+               </GridPane>
+               <HBox alignment="CENTER" spacing="30">
+                  <children>
+                     <Button fx:id="btnAceptar" mnemonicParsing="false" onAction="#aceptar" prefWidth="100.0" text="Importar" />
+                     <Button fx:id="btnCancelar" mnemonicParsing="false" onAction="#cancelar" prefWidth="100.0" text="Cancelar" />
+                  </children>
+               </HBox>
+            </children>
+         </VBox>
+      </AnchorPane>
+   </content>
+</TitledPane>
