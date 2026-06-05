@@ -270,11 +270,22 @@
                   </SplitPane>
                </content>
             </Tab>
-             <Tab text="Alertas">
-                <content>
-                   <BorderPane>
-                      <center>
-                         <GridPane BorderPane.alignment="CENTER">
+              <Tab fx:id="tabAlertas" text="Alertas">
+                 <content>
+                    <BorderPane>
+                       <top>
+                          <HBox alignment="CENTER_LEFT" prefHeight="40.0" spacing="10.0">
+                             <children>
+                                <Label text="Cuenta:" />
+                                <ComboBox fx:id="comboCuentaAlertas" prefHeight="26.0" prefWidth="200.0" />
+                             </children>
+                             <BorderPane.margin>
+                                <Insets left="50.0" top="10.0" />
+                             </BorderPane.margin>
+                          </HBox>
+                       </top>
+                       <center>
+                          <GridPane BorderPane.alignment="CENTER">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                           </columnConstraints>
@@ -301,7 +312,7 @@
                                      <Insets left="50.0" right="50.0" />
                                   </GridPane.margin>
                                </VBox>
-                              <Label prefHeight="26.0" prefWidth="113.0" text="Lista de alertas">
+                               <Label prefHeight="26.0" prefWidth="250.0" text="Límites y alertas programadas">
                                  <GridPane.margin>
                                     <Insets left="50.0" top="20.0" />
                                  </GridPane.margin>

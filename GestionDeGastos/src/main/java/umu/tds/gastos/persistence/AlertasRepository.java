@@ -13,5 +13,6 @@ public interface AlertasRepository {
     void deleteAlerta(UUID id);
     Optional<Alertas> getAlerta(UUID id);
     List<Alertas> getAllAlertas();
+    List<Alertas> getAlertasByCuenta(UUID idCuenta);
     Alertas buscarAlerta(double limite, Categoria categoria, String nombreClaseAlerta);
 }

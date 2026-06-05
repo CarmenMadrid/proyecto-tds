@@ -38,4 +38,9 @@ public class Notificacion {
     public String getNombreCuenta() {
         return nombreCuenta;
     }
+
+    @Override
+    public String toString() {
+        return "[" + fecha + "] " + mensaje;
+    }
 }

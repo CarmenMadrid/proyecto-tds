@@ -15,11 +15,15 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import umu.tds.gastos.domain.alertas.Alertas;
+import umu.tds.gastos.domain.core.Categoria;
 import umu.tds.gastos.domain.core.Cuenta;
 import umu.tds.gastos.domain.core.Gasto;
+import umu.tds.gastos.ui.controller.AddAlertaController;
 import umu.tds.gastos.ui.controller.ConfirmacionController;
 import umu.tds.gastos.ui.controller.CrearCategoriaController;
 import umu.tds.gastos.ui.controller.CrearGastoController;
+import umu.tds.gastos.ui.controller.EditarAlertaController;
 import umu.tds.gastos.ui.controller.EditarGastoController;
 import umu.tds.gastos.ui.controller.EliminarCategoriaController;
 import umu.tds.gastos.ui.controller.ImportarController;
@@ -93,6 +97,22 @@ public class SceneManager {
             ctrl.setCuenta(cuenta);
             ctrl.setCategorias(categorias);
             ctrl.setOnDeleted(onDeleted);
+        });
+    }
+
+    public void showAddAlerta(Cuenta cuenta, java.util.List<Categoria> categorias) {
+        showOverlayDialog("AddAlerta.fxml", loader -> {
+            AddAlertaController ctrl = loader.getController();
+            ctrl.setCuenta(cuenta);
+            ctrl.setCategorias(categorias);
+        });
+    }
+
+    public void showEditarAlerta(Alertas alerta, java.util.List<Categoria> categorias) {
+        showOverlayDialog("EditarAlerta.fxml", loader -> {
+            EditarAlertaController ctrl = loader.getController();
+            ctrl.setAlerta(alerta);
+            ctrl.setCategorias(categorias);
         });
     }
 
