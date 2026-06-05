@@ -35,44 +35,32 @@ public class CrearGastoController {
     private ComboBox<Categoria> comboCategoria;
 
     @FXML
-    private ComboBox<Cuenta> comboCuenta;
-
-    @FXML
     private ComboBox<Persona> comboPersona;
 
     @FXML
     private TextField nombreCuenta;
-    
+
     private final CuentaController cuentaController = Configuracion.getInstancia().getCuentaController();
+    private Cuenta cuenta;
 
     @FXML
     public void initialize() {
-        comboCuenta.getItems().setAll(cuentaController.obtenerCuentas());
-
-        comboCuenta.setConverter(new StringConverter<>() {
-            public String toString(Cuenta c) { return c == null ? "" : c.getNombre(); }
-            public Cuenta fromString(String s) { return null; }
-        });
-
         comboCategoria.setConverter(new StringConverter<>() {
             public String toString(Categoria c) { return c == null ? "" : c.getNombre(); }
             public Categoria fromString(String s) { return null; }
         });
-        
+
         comboPersona.setConverter(new StringConverter<>() {
             public String toString(Persona p) { return p == null ? "" : p.getNombre(); }
             public Persona fromString(String s) { return null; }
         });
 
-        comboCuenta.valueProperty().addListener((obs, old, nueva) -> {
-            if (nueva != null) actualizarParaCuenta(nueva);
-        });
         comboPersona.setDisable(true);
     }
 
     public void setCuenta(Cuenta cuenta) {
+        this.cuenta = cuenta;
         if (cuenta != null) {
-            comboCuenta.setValue(cuenta);
             actualizarParaCuenta(cuenta);
         }
     }
@@ -91,9 +79,8 @@ public class CrearGastoController {
 
     @FXML
     void aceptar(ActionEvent event) {
-        Cuenta cuenta = comboCuenta.getValue();
         if (cuenta == null) {
-        	mensajeError("Seleccione una cuenta.");
+        	mensajeError("No hay cuenta seleccionada.");
             return;
         }
         double cantidad;
