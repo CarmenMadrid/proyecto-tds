@@ -190,7 +190,7 @@
                    </SplitPane>
                 </content>
              </Tab>
-            <Tab text="Filtro">
+             <Tab fx:id="tabFiltro" text="Filtro">
                <content>
                    <SplitPane dividerPositions="0.6040145985401459">
                      <items>
@@ -216,9 +216,11 @@
                                    <padding>
                                       <Insets left="10.0" right="10.0" />
                                    </padding>
-                                   <children>
-                                      <Label text="Fecha inicio" />
-                                      <DatePicker fx:id="calFechaInicio" prefWidth="255.0" />
+                                    <children>
+                                       <Label text="Cuenta" />
+                                       <ComboBox fx:id="comboCuentaFiltro" prefHeight="26.0" prefWidth="255.0" promptText="Seleccionar Cuenta" />
+                                       <Label text="Fecha inicio" />
+                                       <DatePicker fx:id="calFechaInicio" prefWidth="255.0" />
                                       <Label text="Fecha fin" />
                                       <DatePicker fx:id="calFechaFin" prefWidth="255.0" />
                                       <Label text="Meses" />

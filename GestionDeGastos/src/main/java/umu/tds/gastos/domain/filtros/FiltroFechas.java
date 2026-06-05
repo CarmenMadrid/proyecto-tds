@@ -8,8 +8,7 @@ public class FiltroFechas implements Filtro {
     private final LocalDate fechaFin;
 
     public FiltroFechas(LocalDate fechaInicio, LocalDate fechaFin) {
-        
-        if (fechaFin.isBefore(fechaInicio)) {
+        if (fechaInicio != null && fechaFin != null && fechaFin.isBefore(fechaInicio)) {
             throw new IllegalArgumentException("fechaFin no puede ser antes de fechaInicio");
         }
         this.fechaInicio = fechaInicio;
@@ -29,6 +28,8 @@ public class FiltroFechas implements Filtro {
             return false;
         }
         LocalDate fechaGasto = g.getFecha();
-        return !fechaGasto.isBefore(fechaInicio) && !fechaGasto.isAfter(fechaFin);
+        if (fechaInicio != null && fechaGasto.isBefore(fechaInicio)) return false;
+        if (fechaFin != null && fechaGasto.isAfter(fechaFin)) return false;
+        return true;
     }
 }

@@ -122,6 +122,9 @@ public class VentanaPrincipalController {
     @FXML // fx:id="comboCuentaGraficas"
     private ComboBox<Cuenta> comboCuentaGraficas; // Value injected by FXMLLoader
 
+    @FXML // fx:id="comboCuentaFiltro"
+    private ComboBox<Cuenta> comboCuentaFiltro; // Value injected by FXMLLoader
+
     @FXML // fx:id="fechaCol"
     private TableColumn<Gasto, LocalDate> fechaCol; // Value injected by FXMLLoader
 
@@ -148,6 +151,9 @@ public class VentanaPrincipalController {
 
     @FXML // fx:id="listNotificaciones"
     private ListView<?> listNotificaciones; // Value injected by FXMLLoader
+
+    @FXML // fx:id="tabFiltro"
+    private Tab tabFiltro; // Value injected by FXMLLoader
 
     @FXML // fx:id="nombreCol"
     private TableColumn<Gasto, String> nombreCol; // Value injected by FXMLLoader
@@ -217,6 +223,23 @@ public class VentanaPrincipalController {
         configurarComboCuenta();
 
         refrescarCuentas();
+
+        tabFiltro.selectedProperty().addListener((obs, old, nueva) -> {
+            if (nueva) {
+                comboCuentaFiltro.setValue(comboCuenta.getValue());
+                Cuenta cuenta = comboCuentaFiltro.getValue();
+                if (cuenta != null) actualizarListaCategorias(cuenta);
+                CuentaController cc = Configuracion.getInstancia().getCuentaController();
+                if (cuenta != null) {
+                    gastosTVFiltro.getItems().setAll(cc.obtenerGastos(cuenta.getId()));
+                } else {
+                    List<Gasto> todos = cc.obtenerCuentas().stream()
+                            .flatMap(c -> cc.obtenerGastos(c.getId()).stream())
+                            .collect(Collectors.toList());
+                    gastosTVFiltro.getItems().setAll(todos);
+                }
+            }
+        });
     }
     
     
@@ -268,10 +291,12 @@ public class VentanaPrincipalController {
         sincronizandoCombos = true;
         comboCuenta.getItems().setAll(cuentas);
         comboCuentaGraficas.getItems().setAll(cuentas);
+        comboCuentaFiltro.getItems().setAll(cuentas);
         sincronizandoCombos = false;
         if (seleccionada != null && cuentas.contains(seleccionada)) {
             comboCuenta.setValue(seleccionada);
             comboCuentaGraficas.setValue(seleccionada);
+            comboCuentaFiltro.setValue(seleccionada);
         }
     }
     
@@ -450,6 +475,7 @@ public class VentanaPrincipalController {
             if (sincronizandoCombos || nueva == null) return;
             sincronizandoCombos = true;
             comboCuentaGraficas.setValue(nueva);
+            comboCuentaFiltro.setValue(nueva);
             sincronizandoCombos = false;
             cargarGastosCuenta(nueva);
             actualizarGraficas(nueva);
@@ -460,9 +486,25 @@ public class VentanaPrincipalController {
             if (sincronizandoCombos || nueva == null) return;
             sincronizandoCombos = true;
             comboCuenta.setValue(nueva);
+            comboCuentaFiltro.setValue(nueva);
             sincronizandoCombos = false;
             cargarGastosCuenta(nueva);
             actualizarGraficas(nueva);
+        });
+
+        comboCuentaFiltro.valueProperty().addListener((obs, old, nueva) -> {
+            if (sincronizandoCombos) return;
+            sincronizandoCombos = true;
+            if (nueva != null) {
+                comboCuenta.setValue(nueva);
+                comboCuentaGraficas.setValue(nueva);
+            }
+            sincronizandoCombos = false;
+            if (nueva != null) {
+                actualizarListaCategorias(nueva);
+            } else {
+                listCategoria.getItems().clear();
+            }
         });
     } 
     
@@ -513,6 +555,7 @@ public class VentanaPrincipalController {
         ToggleButton[] toggles = {tbEnero, tbFebrero, tbMarzo, tbAbril, tbMayo, tbJunio,
                 tbJulio, tbAgosto, tbSeptiembre, tbOctubre, tbNoviembre, tbDiciembre};
         for (ToggleButton tb : toggles) tb.setSelected(false);
+        comboCuentaFiltro.setValue(null);
     }
 
     
@@ -528,11 +571,6 @@ public class VentanaPrincipalController {
 
     @FXML
     void filtrar(ActionEvent event) {
-        Cuenta cuenta = cuentaActual();
-        if (cuenta == null) {
-            mensajeError("Seleccione una cuenta primero.");
-            return;
-        }
         CuentaController cc = Configuracion.getInstancia().getCuentaController();
 
         List<Categoria> categorias = new ArrayList<>(listCategoria.getSelectionModel().getSelectedItems());
@@ -549,8 +587,15 @@ public class VentanaPrincipalController {
             if (toggles[i].isSelected()) meses.add(months[i]);
         }
 
-        List<Gasto> filtrados = cc.filtrarGastos(cuenta.getId(), categorias, fechaInicio, fechaFin, meses);
-        gastosTVFiltro.getItems().setAll(filtrados);
+        Cuenta cuenta = comboCuentaFiltro.getValue();
+        if (cuenta != null) {
+            gastosTVFiltro.getItems().setAll(cc.filtrarGastos(cuenta.getId(), categorias, fechaInicio, fechaFin, meses));
+        } else {
+            List<Gasto> filtrados = cc.obtenerCuentas().stream()
+                    .flatMap(c -> cc.filtrarGastos(c.getId(), categorias, fechaInicio, fechaFin, meses).stream())
+                    .collect(Collectors.toList());
+            gastosTVFiltro.getItems().setAll(filtrados);
+        }
     }
 
 
