@@ -21,6 +21,7 @@ import umu.tds.gastos.ui.controller.ConfirmacionController;
 import umu.tds.gastos.ui.controller.CrearCategoriaController;
 import umu.tds.gastos.ui.controller.CrearGastoController;
 import umu.tds.gastos.ui.controller.EditarGastoController;
+import umu.tds.gastos.ui.controller.EliminarCategoriaController;
 import umu.tds.gastos.ui.controller.ImportarController;
 
 import java.io.IOException;
@@ -83,6 +84,15 @@ public class SceneManager {
         showOverlayDialog("CrearCategoria.fxml", loader -> {
             CrearCategoriaController ctrl = loader.getController();
             ctrl.setCuenta(cuenta);
+        });
+    }
+
+    public void showEliminarCategoria(Cuenta cuenta, java.util.List<umu.tds.gastos.domain.core.Categoria> categorias, Runnable onDeleted) {
+        showOverlayDialog("EliminarCategoria.fxml", loader -> {
+            EliminarCategoriaController ctrl = loader.getController();
+            ctrl.setCuenta(cuenta);
+            ctrl.setCategorias(categorias);
+            ctrl.setOnDeleted(onDeleted);
         });
     }
 

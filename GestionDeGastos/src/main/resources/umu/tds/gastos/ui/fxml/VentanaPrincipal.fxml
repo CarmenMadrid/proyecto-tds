@@ -86,30 +86,35 @@
                                <Insets left="20.0" right="20.0" />
                             </padding>
                          </HBox>
-                         <HBox>
-                            <children>
-                               <Button fx:id="btnCrearGasto" mnemonicParsing="false" onAction="#crearGasto" text="Crear Gasto">
-                                  <HBox.margin>
-                                     <Insets left="45.0" top="10.0" bottom="10.0" />
-                                  </HBox.margin>
-                               </Button>
-                               <Button fx:id="btnCrearCategoria" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#crearCategoria" text="Crear Categoría">
-                                  <HBox.margin>
-                                     <Insets left="45.0" top="10.0" bottom="10.0" />
-                                  </HBox.margin>
-                               </Button>
-                               <Button fx:id="btnEditarGasto" layoutX="88.0" layoutY="10.0" mnemonicParsing="false" onAction="#editarGasto" text="Editar Gasto">
-                                  <HBox.margin>
-                                     <Insets left="45.0" top="10.0" bottom="10.0" />
-                                  </HBox.margin>
-                               </Button>
-                               <Button fx:id="btnEliminarGasto" layoutX="188.0" layoutY="10.0" mnemonicParsing="false" onAction="#eliminarGasto" text="Eliminar Gasto">
-                                  <HBox.margin>
-                                     <Insets left="45.0" top="10.0" bottom="10.0" />
-                                  </HBox.margin>
-                               </Button>
-                            </children>
-                         </HBox>
+                          <HBox>
+                             <children>
+                                <Button fx:id="btnCrearCategoria" mnemonicParsing="false" onAction="#crearCategoria" text="Crear Categoría">
+                                   <HBox.margin>
+                                      <Insets left="35.0" top="10.0" bottom="10.0" />
+                                   </HBox.margin>
+                                </Button>
+                                <Button fx:id="btnEliminarCategoria" mnemonicParsing="false" onAction="#eliminarCategoria" text="Eliminar Categoría">
+                                   <HBox.margin>
+                                      <Insets left="35.0" top="10.0" bottom="10.0" />
+                                   </HBox.margin>
+                                </Button>
+                                <Button fx:id="btnCrearGasto" mnemonicParsing="false" onAction="#crearGasto" text="Crear Gasto">
+                                   <HBox.margin>
+                                      <Insets left="35.0" top="10.0" bottom="10.0" />
+                                   </HBox.margin>
+                                </Button>
+                                <Button fx:id="btnEditarGasto" mnemonicParsing="false" onAction="#editarGasto" text="Editar Gasto">
+                                   <HBox.margin>
+                                      <Insets left="35.0" top="10.0" bottom="10.0" />
+                                   </HBox.margin>
+                                </Button>
+                                <Button fx:id="btnEliminarGasto" mnemonicParsing="false" onAction="#eliminarGasto" text="Eliminar Gasto">
+                                   <HBox.margin>
+                                      <Insets left="35.0" top="10.0" bottom="10.0" />
+                                   </HBox.margin>
+                                </Button>
+                             </children>
+                          </HBox>
                       </children>
                    </VBox>
                 </content>

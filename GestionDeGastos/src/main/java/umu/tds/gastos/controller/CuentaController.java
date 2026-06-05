@@ -204,6 +204,13 @@ public class CuentaController {
         cuentaRepository.updateCuenta(cuenta);
     }
 
+    public boolean categoriaEnUso(UUID idCuenta, String nombreCategoria) {
+        Cuenta cuenta = cuentaRepository.getCuenta(idCuenta)
+                .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
+        return cuenta.getGastos().stream()
+                .anyMatch(g -> g.getCategoria().getNombre().equalsIgnoreCase(nombreCategoria));
+    }
+
     // Saldos y reparto (cuentas compartidas)
 
     public Map<Persona, Double> obtenerSaldos(UUID idCuenta) {

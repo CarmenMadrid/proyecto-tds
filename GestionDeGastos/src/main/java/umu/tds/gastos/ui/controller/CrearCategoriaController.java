@@ -38,6 +38,12 @@ public class CrearCategoriaController {
         	mensajeError("No hay cuenta seleccionada.");
             return;
         }
+        boolean existe = cuentaController.obtenerCategorias(cuenta.getId())
+                .stream().anyMatch(c -> c.getNombre().equalsIgnoreCase(nombre));
+        if (existe) {
+            mensajeError("La categoría \"" + nombre + "\" ya existe.");
+            return;
+        }
         try {
             cuentaController.crearCategoria(cuenta.getId(), nombre);
             cerrar();

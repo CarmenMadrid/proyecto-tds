@@ -62,6 +62,9 @@ public class VentanaPrincipalController {
     @FXML // fx:id="btnCrearCategoria"
     private Button btnCrearCategoria; // Value injected by FXMLLoader
 
+    @FXML // fx:id="btnEliminarCategoria"
+    private Button btnEliminarCategoria; // Value injected by FXMLLoader
+
     @FXML // fx:id="btnCrearCompartida"
     private Button btnCrearCompartida; // Value injected by FXMLLoader
 
@@ -214,7 +217,6 @@ public class VentanaPrincipalController {
         configurarComboCuenta();
 
         refrescarCuentas();
-        cargarTodosLosGastos();
     }
     
     
@@ -278,14 +280,14 @@ public class VentanaPrincipalController {
     private void crearCuenta() {
         SceneManager.getInstancia().showCrearCuenta();
         refrescarCuentas();
-        cargarTodosLosGastos();
+        recargarCuentaActual();
     }
 
     @FXML
     private void crearCuentaCompartida() {
         SceneManager.getInstancia().showCrearCuentaCompartida();
         refrescarCuentas();
-        cargarTodosLosGastos();
+        recargarCuentaActual();
     }
     
     @FXML
@@ -314,10 +316,23 @@ public class VentanaPrincipalController {
                     pieChart.getData().clear();
                 }
                 refrescarCuentas();
-                cargarTodosLosGastos();
+                recargarCuentaActual();
             });
     }
-    
+
+    private void recargarCuentaActual() {
+        Cuenta actual = cuentaActual();
+        if (actual != null) {
+            cargarGastosCuenta(actual);
+            actualizarGraficas(actual);
+            actualizarListaCategorias(actual);
+        } else {
+            gastosTV.getItems().clear();
+            barChart.getData().clear();
+            pieChart.getData().clear();
+        }
+    }
+
     private void mensajeError(String mensaje) {
         SceneManager.getInstancia().showError("Error", mensaje);
     }
@@ -360,12 +375,7 @@ public class VentanaPrincipalController {
             return;
         }
         SceneManager.getInstancia().showCrearGasto(preseleccionada);
-        Cuenta actual = cuentaActual();
-        if (actual != null) { cargarGastosCuenta(actual); 
-        					actualizarGraficas(actual);
-        					actualizarListaCategorias(actual); 
-        }
-        else { cargarTodosLosGastos(); }
+        recargarCuentaActual();
     }
 
     @FXML
@@ -377,6 +387,25 @@ public class VentanaPrincipalController {
         }
         SceneManager.getInstancia().showCrearCategoria(cuenta);
         actualizarListaCategorias(cuenta);
+    }
+    
+    @FXML
+    void eliminarCategoria(ActionEvent event) {
+        Cuenta cuenta = cuentaActual();
+        if (cuenta == null) {
+            mensajeError("Seleccione una cuenta primero.");
+            return;
+        }
+        CuentaController cc = Configuracion.getInstancia().getCuentaController();
+        List<Categoria> categorias = cc.obtenerCategorias(cuenta.getId());
+        if (categorias.isEmpty()) {
+            mensajeError("No hay categorías para eliminar.");
+            return;
+        }
+        SceneManager.getInstancia().showEliminarCategoria(cuenta, categorias, () -> {
+            actualizarListaCategorias(cuenta);
+            recargarCuentaActual();
+        });
     }
     
     @FXML
@@ -460,13 +489,7 @@ public class VentanaPrincipalController {
             if (c != null) msg += " en la cuenta \"" + c.getNombre() + "\"";
             listImport.getItems().add(0, msg);
         });
-        Cuenta actual = cuentaActual();
-        if (actual != null) {
-            cargarGastosCuenta(actual);
-            actualizarGraficas(actual);
-        } else {
-            cargarTodosLosGastos();
-        }
+        recargarCuentaActual();
     }
     
     
