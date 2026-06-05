@@ -240,7 +240,7 @@ public class VentanaPrincipalController {
         personaCol.setCellValueFactory(d ->
                 new SimpleStringProperty(
                         d.getValue().getPagador() != null
-                                ? d.getValue().getPagador().getNombre() : "—"));
+                                ? d.getValue().getPagador().getNombre() : "Yo"));
     }
     
     private void configurarTablaFiltro() {
@@ -255,7 +255,7 @@ public class VentanaPrincipalController {
         personaColFiltro.setCellValueFactory(d ->
                 new SimpleStringProperty(
                         d.getValue().getPagador() != null
-                                ? d.getValue().getPagador().getNombre() : "—"));
+                                ? d.getValue().getPagador().getNombre() : "Yo"));
     }
 
     private void refrescarCuentas() {
