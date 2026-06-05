@@ -583,15 +583,24 @@ public class VentanaPrincipalController {
 
     @FXML
     void borrar(ActionEvent event) {
-        gastosTVFiltro.getItems().clear();
         comboCategoriaFiltro.setValue(null);
         comboPagadorFiltro.setValue(null);
+        comboCuentaFiltro.setValue(null);
         calFechaInicio.setValue(null);
         calFechaFin.setValue(null);
         ToggleButton[] toggles = {tbEnero, tbFebrero, tbMarzo, tbAbril, tbMayo, tbJunio,
                 tbJulio, tbAgosto, tbSeptiembre, tbOctubre, tbNoviembre, tbDiciembre};
         for (ToggleButton tb : toggles) tb.setSelected(false);
-        comboCuentaFiltro.setValue(null);
+        CuentaController cc = Configuracion.getInstancia().getCuentaController();
+        Cuenta cuenta = comboCuentaFiltro.getValue();
+        if (cuenta != null) {
+            gastosTVFiltro.getItems().setAll(cc.obtenerGastos(cuenta.getId()));
+        } else {
+            List<Gasto> todos = cc.obtenerCuentas().stream()
+                    .flatMap(c -> cc.obtenerGastos(c.getId()).stream())
+                    .collect(Collectors.toList());
+            gastosTVFiltro.getItems().setAll(todos);
+        }
     }
 
     
@@ -614,6 +623,11 @@ public class VentanaPrincipalController {
         Persona pagador = comboPagadorFiltro.getValue();
         LocalDate fechaInicio = calFechaInicio.getValue();
         LocalDate fechaFin = calFechaFin.getValue();
+
+        if (fechaInicio != null && fechaFin != null && fechaFin.isBefore(fechaInicio)) {
+            mensajeError("La fecha de fin no puede ser anterior a la fecha de inicio.");
+            return;
+        }
 
         List<Month> meses = new ArrayList<>();
         ToggleButton[] toggles = {tbEnero, tbFebrero, tbMarzo, tbAbril, tbMayo, tbJunio,
