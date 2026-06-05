@@ -263,16 +263,22 @@ public class CuentaController {
     }
     
 
-    public List<Gasto> filtrarGastos(UUID idCuenta, List<Categoria> categorias, LocalDate fechaInicio, LocalDate fechaFin, List<Month> meses) {		    
+    public List<Gasto> filtrarGastos(UUID idCuenta, List<Categoria> categorias, LocalDate fechaInicio, LocalDate fechaFin, List<Month> meses) {
+        return filtrarGastos(idCuenta, categorias, fechaInicio, fechaFin, meses, null);
+    }
+
+    public List<Gasto> filtrarGastos(UUID idCuenta, List<Categoria> categorias, LocalDate fechaInicio, LocalDate fechaFin, List<Month> meses, Persona pagador) {
         List<Filtro> listaFiltros = new ArrayList<>();
 
 		Filtro filtroCategorias = new FiltroCategorias(new ArrayList<>(categorias));
 		Filtro filtroFechas = new FiltroFechas(fechaInicio, fechaFin);
 		Filtro filtroMeses = new FiltroMeses(meses);
+		Filtro filtroPersona = new FiltroPersona(pagador);
 
 	    listaFiltros.add(filtroCategorias);
-        listaFiltros.add(filtroFechas); 
+        listaFiltros.add(filtroFechas);
         listaFiltros.add(filtroMeses);
+        listaFiltros.add(filtroPersona);
         Filtro filtroMultiple = new FiltroMultiple(listaFiltros);
 	    return filtrarGastos(idCuenta, filtroMultiple);
 	}
