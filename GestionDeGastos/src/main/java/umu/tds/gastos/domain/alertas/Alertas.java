@@ -16,6 +16,7 @@ public class Alertas {
     private double limite;
 	private Categoria categoria;
 	private UUID id;
+	private UUID idCuenta;
     LocalDate fechaCreacion;
     boolean mostrada = false;
 
@@ -24,30 +25,60 @@ public class Alertas {
     public Alertas() {
     }
 
-    public Alertas(double limite, Categoria categoria , EstrategiaTiempo tipo) {
+    public Alertas(double limite, Categoria categoria, EstrategiaTiempo tipo) {
+        this(limite, categoria, tipo, null);
+    }
+
+    public Alertas(double limite, Categoria categoria, EstrategiaTiempo tipo, UUID idCuenta) {
         this.limite = limite;
         this.categoria = categoria;
         this.id = UUID.randomUUID();
+        this.idCuenta = idCuenta;
         this.fechaCreacion = LocalDate.now();
         this.tipo = tipo;
         this.mostrada = false;
-
     }
 
     public double getLimite() {
         return limite;
     }
 
+    public void setLimite(double limite) {
+        this.limite = limite;
+    }
+
     public Categoria getCategoria() {
         return categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
     }
 
     public UUID getId() {
         return id;
     }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public UUID getIdCuenta() {
+        return idCuenta;
+    }
+
+    public void setIdCuenta(UUID idCuenta) {
+        this.idCuenta = idCuenta;
+    }
+
     public EstrategiaTiempo getTipo() {
         return tipo;
-    }   
+    }
+
+    public void setTipo(EstrategiaTiempo tipo) {
+        this.tipo = tipo;
+    }
+
     public LocalDate getFechaCreacion() {
         return fechaCreacion;
     }
@@ -87,10 +118,22 @@ public class Alertas {
 		mostrada = m;
 	}
     
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("Limite ");
+        String[] parts = tipo.getNombreEstrategia().split(" ");
+        sb.append(parts[parts.length - 1].toLowerCase()).append(" de ");
+        sb.append(String.format("%.2f", getLimite())).append("€");
+        if (getCategoria() != null) {
+            sb.append(" en ").append(getCategoria().getNombre());
+        }
+        return sb.toString();
+    }
+
     @JsonIgnore
 	public String getMensaje() {
 		String cat = (getCategoria() == null) ? "General" : getCategoria().getNombre();
-		return "Has superado tu límite " + tipo.getNombreEstrategia() + " de " + getLimite()
+		return "Has superado tu límite " + tipo.getNombreEstrategia().split(" ")[1] + " de " + getLimite()
 				+ "€ en la categoría '" + cat + "'.";
 	}
 }

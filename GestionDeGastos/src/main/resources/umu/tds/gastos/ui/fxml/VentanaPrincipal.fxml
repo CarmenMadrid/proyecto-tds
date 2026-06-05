@@ -270,80 +270,59 @@
                   </SplitPane>
                </content>
             </Tab>
-             <Tab text="Alertas">
-                <content>
-                   <BorderPane>
-                      <center>
-                         <GridPane BorderPane.alignment="CENTER">
-                          <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                          </columnConstraints>
-                          <rowConstraints>
-                            <RowConstraints maxHeight="69.59998168945313" minHeight="10.0" prefHeight="48.40000610351562" vgrow="SOMETIMES" />
-                            <RowConstraints maxHeight="107.19999389648437" minHeight="10.0" prefHeight="107.19999389648437" vgrow="SOMETIMES" />
-                            <RowConstraints maxHeight="63.60002746582032" minHeight="10.0" prefHeight="35.399981689453114" vgrow="SOMETIMES" />
-                              <RowConstraints maxHeight="115.20000610351559" minHeight="10.0" prefHeight="106.40001831054684" vgrow="SOMETIMES" />
-                          </rowConstraints>
-                           <children>
-                               <VBox GridPane.rowIndex="1">
-                                  <children>
-                                     <ListView fx:id="listAlertas" VBox.vgrow="ALWAYS" />
-                                  </children>
-                                  <GridPane.margin>
-                                     <Insets left="50.0" right="50.0" />
-                                  </GridPane.margin>
-                               </VBox>
-                               <VBox GridPane.rowIndex="3">
-                                  <children>
-                                     <ListView fx:id="listNotificaciones" VBox.vgrow="ALWAYS" />
-                                  </children>
-                                  <GridPane.margin>
-                                     <Insets left="50.0" right="50.0" />
-                                  </GridPane.margin>
-                               </VBox>
-                              <Label prefHeight="26.0" prefWidth="113.0" text="Lista de alertas">
-                                 <GridPane.margin>
-                                    <Insets left="50.0" top="20.0" />
-                                 </GridPane.margin>
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </Label>
-                              <Label prefHeight="22.0" prefWidth="200.0" text="Historial de notificaciones" GridPane.rowIndex="2">
-                                 <GridPane.margin>
-                                    <Insets left="50.0" top="10.0" />
-                                 </GridPane.margin>
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                        </GridPane>
-                     </center>
-                     <bottom>
-                        <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                           <children>
-                              <Button fx:id="btnAddAlerta" mnemonicParsing="false" prefHeight="38.0" prefWidth="120.0" onAction="#addAlerta" text="Añadir Alerta">
-                                 <HBox.margin>
-                                    <Insets left="50.0" top="30.0" />
-                                 </HBox.margin>
-                              </Button>
-                              <Button fx:id="btnEditarAlerta" mnemonicParsing="false" prefHeight="38.0" prefWidth="120.0" onAction="#editarAlerta" text="Editar Alerta">
-                                 <HBox.margin>
-                                    <Insets left="15.0" top="30.0" />
-                                 </HBox.margin>
-                              </Button>
-                              <Button fx:id="btnEliminarAlerta" mnemonicParsing="false" prefHeight="38.0" prefWidth="130.0" onAction="#eliminarAlerta" text="Eliminar Alerta">
-                                 <HBox.margin>
-                                    <Insets left="15.0" top="30.0" />
-                                 </HBox.margin>
-                              </Button>
-                           </children>
-                        </HBox>
-                     </bottom>
-                  </BorderPane>
-               </content>
-            </Tab>             
+               <Tab fx:id="tabAlertas" text="Alertas">
+                  <content>
+                    <BorderPane>
+                       <top>
+                          <HBox alignment="CENTER_LEFT" prefHeight="40.0" spacing="10.0">
+                             <children>
+                                <Label text="Cuenta:" />
+                                <ComboBox fx:id="comboCuentaAlertas" prefHeight="26.0" prefWidth="200.0" />
+                             </children>
+                             <BorderPane.margin>
+                                <Insets left="50.0" top="10.0" />
+                             </BorderPane.margin>
+                          </HBox>
+                       </top>
+                       <center>
+                          <HBox spacing="20.0" BorderPane.alignment="CENTER">
+                             <children>
+                                <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                                   <children>
+                                      <Label text="Límites y alertas programadas">
+                                         <font>
+                                            <Font size="13.0" />
+                                         </font>
+                                      </Label>
+                                      <ListView fx:id="listAlertas" VBox.vgrow="ALWAYS" />
+                                      <HBox spacing="15.0">
+                                         <children>
+                                            <Button fx:id="btnAddAlerta" mnemonicParsing="false" prefHeight="38.0" prefWidth="120.0" onAction="#addAlerta" text="Añadir Alerta" />
+                                            <Button fx:id="btnEditarAlerta" mnemonicParsing="false" prefHeight="38.0" prefWidth="120.0" onAction="#editarAlerta" text="Editar Alerta" />
+                                            <Button fx:id="btnEliminarAlerta" mnemonicParsing="false" prefHeight="38.0" prefWidth="130.0" onAction="#eliminarAlerta" text="Eliminar Alerta" />
+                                         </children>
+                                      </HBox>
+                                   </children>
+                                </VBox>
+                                <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                                   <children>
+                                      <Label text="Historial de notificaciones">
+                                         <font>
+                                            <Font size="13.0" />
+                                         </font>
+                                      </Label>
+                                      <ListView fx:id="listNotificaciones" VBox.vgrow="ALWAYS" />
+                                   </children>
+                                </VBox>
+                             </children>
+                             <BorderPane.margin>
+                                <Insets left="50.0" right="50.0" top="10.0" bottom="10.0" />
+                             </BorderPane.margin>
+                          </HBox>
+                       </center>
+                    </BorderPane>
+                  </content>
+            </Tab>
          </tabs>
       </TabPane>
    </center>

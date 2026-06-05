@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class AlertasRepositoryJson implements AlertasRepository {
 
@@ -59,6 +60,13 @@ public class AlertasRepositoryJson implements AlertasRepository {
     @Override
     public List<Alertas> getAllAlertas() {
         return new ArrayList<>(alertas);
+    }
+
+    @Override
+    public List<Alertas> getAlertasByCuenta(UUID idCuenta) {
+        return alertas.stream()
+                .filter(a -> Objects.equals(a.getIdCuenta(), idCuenta))
+                .collect(Collectors.toList());
     }
 
     @Override
