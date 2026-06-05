@@ -53,6 +53,11 @@ public class CrearGastoController {
             public String toString(Cuenta c) { return c == null ? "" : c.getNombre(); }
             public Cuenta fromString(String s) { return null; }
         });
+
+        comboCategoria.setConverter(new StringConverter<>() {
+            public String toString(Categoria c) { return c == null ? "" : c.getNombre(); }
+            public Categoria fromString(String s) { return null; }
+        });
         
         comboPersona.setConverter(new StringConverter<>() {
             public String toString(Persona p) { return p == null ? "" : p.getNombre(); }

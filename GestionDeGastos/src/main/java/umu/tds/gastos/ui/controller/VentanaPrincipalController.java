@@ -334,6 +334,11 @@ public class VentanaPrincipalController {
         gastosTV.getItems().setAll(gastos);
     }
 
+    private void actualizarListaCategorias(Cuenta cuenta) {
+        CuentaController cc = Configuracion.getInstancia().getCuentaController();
+        listCategoria.getItems().setAll(cc.obtenerCategorias(cuenta.getId()));
+    }
+
     private void cargarTodosLosGastos() {
         CuentaController cc = Configuracion.getInstancia().getCuentaController();
         gastoCuentaMap.clear(); //limpiamos para volver a hacerlo
@@ -349,31 +354,29 @@ public class VentanaPrincipalController {
 
     @FXML
     void crearGasto(ActionEvent event) {
-        CuentaController cc = Configuracion.getInstancia().getCuentaController();
         Cuenta preseleccionada = cuentaActual();
         if (preseleccionada == null) {
-            List<Cuenta> cuentas = cc.obtenerCuentas();
-            if (cuentas.isEmpty()) { mensajeError("Cree una cuenta primero."); return; }
-            preseleccionada = cuentas.get(0);
+            mensajeError("Seleccione una cuenta primero.");
+            return;
         }
         SceneManager.getInstancia().showCrearGasto(preseleccionada);
         Cuenta actual = cuentaActual();
         if (actual != null) { cargarGastosCuenta(actual); 
-        					actualizarGraficas(actual); 
+        					actualizarGraficas(actual);
+        					actualizarListaCategorias(actual); 
         }
         else { cargarTodosLosGastos(); }
     }
 
     @FXML
     void crearCategoria(ActionEvent event) {
-        CuentaController cc = Configuracion.getInstancia().getCuentaController();
         Cuenta cuenta = cuentaActual();
         if (cuenta == null) {
-            List<Cuenta> cuentas = cc.obtenerCuentas();
-            if (cuentas.isEmpty()) { mensajeError("No hay cuentas creadas."); return; }
-            cuenta = cuentas.get(0); //Si no hay ninguna seleccionada se coge la primera
+            mensajeError("Seleccione una cuenta primero.");
+            return;
         }
         SceneManager.getInstancia().showCrearCategoria(cuenta);
+        actualizarListaCategorias(cuenta);
     }
     
     @FXML
@@ -421,6 +424,7 @@ public class VentanaPrincipalController {
             sincronizandoCombos = false;
             cargarGastosCuenta(nueva);
             actualizarGraficas(nueva);
+            actualizarListaCategorias(nueva);
         });
 
         comboCuentaGraficas.valueProperty().addListener((obs, old, nueva) -> {
