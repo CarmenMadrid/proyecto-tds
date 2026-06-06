@@ -641,9 +641,19 @@ public class VentanaPrincipalController {
             return;
         }
         CuentaController cc = Configuracion.getInstancia().getCuentaController();
+        String nombreCuenta = cc.obtenerCuentas().stream()
+                .filter(c -> c.getId().equals(seleccionada.getIdCuenta()))
+                .findFirst().map(Cuenta::getNombre).orElse("Desconocida");
+        String tipo = seleccionada.getTipo().getNombreEstrategia().split(" ")[1].toLowerCase();
+        StringBuilder sb = new StringBuilder();
+        sb.append(nombreCuenta).append(": Límite ").append(tipo).append(" de ");
+        sb.append(String.format("%.2f", seleccionada.getLimite())).append("\u20AC");
+        if (seleccionada.getCategoria() != null) {
+            sb.append(" en ").append(seleccionada.getCategoria().getNombre());
+        }
         SceneManager.getInstancia().showConfirmation(
             "Eliminar alerta",
-            "¿Seguro que desea eliminar la alerta \"" + seleccionada.getMensaje() + "\"?",
+            "¿Seguro que desea eliminar la alerta \"" + sb.toString() + "\"?",
             () -> {
                 cc.borrarAlerta(seleccionada);
                 recargarAlertas();

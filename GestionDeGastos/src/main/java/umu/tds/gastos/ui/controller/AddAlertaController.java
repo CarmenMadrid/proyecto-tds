@@ -40,6 +40,12 @@ public class AddAlertaController {
             public String toString(Categoria c) { return c == null ? "" : c.getNombre(); }
             public Categoria fromString(String s) { return null; }
         });
+        chboxSemanal.selectedProperty().addListener((obs, old, nueva) -> {
+            if (nueva) chboxMensual.setSelected(false);
+        });
+        chboxMensual.selectedProperty().addListener((obs, old, nueva) -> {
+            if (nueva) chboxSemanal.setSelected(false);
+        });
     }
 
     public void setCategorias(java.util.List<Categoria> categorias) {
