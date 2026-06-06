@@ -10,319 +10,302 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.ScrollBar?>
-<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleButton?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
 <BorderPane maxHeight="Infinity" maxWidth="Infinity" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="umu.tds.gastos.ui.controller.VentanaPrincipalController">
    <center>
       <TabPane tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
          <tabs>
-             <Tab text="Cuentas">
-                <content>
-                   <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                      <children>
-                         <VBox AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="31.0" AnchorPane.topAnchor="26.0" AnchorPane.rightAnchor="235.0">
-                            <children>
-                               <Label text="Mis cuentas">
-                                  <font>
-                                     <Font size="14.0" />
-                                  </font>
-                               </Label>
-                               <ListView fx:id="listMisCuentas" VBox.vgrow="ALWAYS" />
-                            </children>
-                         </VBox>
-                          <VBox spacing="20" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="45.0">
-                             <children>
-                                <Button fx:id="btnCrearCuenta" mnemonicParsing="false" onAction="#crearCuenta" prefHeight="34.0" prefWidth="200.0" text="Crear Cuenta" />
-                                <Button fx:id="btnCrearCompartida" mnemonicParsing="false" onAction="#crearCuentaCompartida" prefHeight="34.0" prefWidth="200.0" text="Crear Cuenta Compartida" />
-                                <Button fx:id="btnEliminarCuenta" mnemonicParsing="false" onAction="#eliminarCuenta" prefHeight="34.0" prefWidth="200.0" text="Eliminar Cuenta" />
-                             </children>
-                          </VBox>
-                      </children>
-                   </AnchorPane>
-                </content>
-             </Tab>
-             <Tab text="Gastos">
-                <content>
-                   <VBox>
-                      <children>
-                         <HBox>
-                            <children>
-                               <ComboBox fx:id="comboCuenta" prefHeight="26.0" prefWidth="188.0" promptText="Seleccionar Cuenta">
-                                  <HBox.margin>
-                                     <Insets left="20.0" top="10.0" />
-                                  </HBox.margin>
-                               </ComboBox>
-                            </children>
-                         </HBox>
-                         <HBox VBox.vgrow="ALWAYS">
-                            <children>
-                               <TableView fx:id="gastosTV" editable="true" HBox.hgrow="ALWAYS">
-                                  <columns>
-                                     <TableColumn fx:id="nombreCol" prefWidth="75.0" text="Nombre" />
-                                     <TableColumn fx:id="cantidadCol" prefWidth="75.0" text="Cantidad" />
-                                     <TableColumn fx:id="fechaCol" prefWidth="75.0" text="Fecha" />
-                                     <TableColumn fx:id="categoriaCol" prefWidth="75.0" text="Categoría" />
-                                     <TableColumn fx:id="personaCol" prefWidth="75.0" text="Persona" />
-                                  </columns>
-                                  <columnResizePolicy>
-                                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                                  </columnResizePolicy>
-                               </TableView>
-                               <ScrollBar orientation="VERTICAL" />
-                            </children>
-                            <padding>
-                               <Insets left="20.0" right="20.0" />
-                            </padding>
-                         </HBox>
-                          <HBox>
-                             <children>
-                                <Button fx:id="btnCrearCategoria" mnemonicParsing="false" onAction="#crearCategoria" text="Crear Categoría">
-                                   <HBox.margin>
-                                      <Insets left="20.0" top="10.0" bottom="10.0" />
-                                   </HBox.margin>
-                                </Button>
-                                <Button fx:id="btnEliminarCategoria" mnemonicParsing="false" onAction="#eliminarCategoria" text="Eliminar Categoría">
-                                   <HBox.margin>
-                                      <Insets left="20.0" top="10.0" bottom="10.0" />
-                                   </HBox.margin>
-                                </Button>
-                                <Button fx:id="btnCrearGasto" mnemonicParsing="false" onAction="#crearGasto" text="Crear Gasto">
-                                   <HBox.margin>
-                                      <Insets left="20.0" top="10.0" bottom="10.0" />
-                                   </HBox.margin>
-                                </Button>
-                                <Button fx:id="btnEditarGasto" mnemonicParsing="false" onAction="#editarGasto" text="Editar Gasto">
-                                   <HBox.margin>
-                                      <Insets left="20.0" top="10.0" bottom="10.0" />
-                                   </HBox.margin>
-                                </Button>
-                                <Button fx:id="btnEliminarGasto" mnemonicParsing="false" onAction="#eliminarGasto" text="Eliminar Gasto">
-                                   <HBox.margin>
-                                      <Insets left="20.0" top="10.0" bottom="10.0" />
-                                   </HBox.margin>
-                                </Button>
-                             </children>
-                          </HBox>
-                      </children>
-                   </VBox>
-                </content>
-             </Tab>
-             <Tab text="Gráficas">
-                <content>
-                   <SplitPane dividerPositions="0.17564655172413796" orientation="VERTICAL">
-                     <items>
-                       <AnchorPane>
-                            <children>
-                               <ComboBox fx:id="comboCuentaGraficas" layoutX="26.0" layoutY="18.0" prefHeight="26.0" prefWidth="188.0" promptText="Seleccionar Cuenta" />
-                            </children>
-                         </AnchorPane>
-                       <AnchorPane>
-                            <children>
-                               <TabPane tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <tabs>
-                                     <Tab fx:id="barChar" text="Diagrama de barras">
-                                        <content>
-                                           <VBox>
-                                              <children>
-                                                 <BarChart fx:id="barChart" VBox.vgrow="ALWAYS">
-                                                    <xAxis>
-                                                       <CategoryAxis side="BOTTOM" />
-                                                    </xAxis>
-                                                    <yAxis>
-                                                       <NumberAxis side="LEFT" />
-                                                    </yAxis>
-                                                 </BarChart>
-                                              </children>
-                                           </VBox>
-                                        </content>
-                                     </Tab>
-                                   <Tab text="Diagrama circular">
-                                        <content>
-                                           <PieChart fx:id="pieChart" />
-                                        </content>
-                                   </Tab>
-                                 </tabs>
-                               </TabPane>
-                            </children>
-                         </AnchorPane>
-                     </items>
-                   </SplitPane>
-                </content>
-             </Tab>
-             <Tab text="Importar gastos">
-                <content>
-                   <SplitPane dividerPositions="0.16487068965517243" orientation="VERTICAL">
-                     <items>
-                       <AnchorPane>
-                            <children>
-                               <Button fx:id="btnImportar" layoutX="22.0" layoutY="16.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="109.0" onAction="#importar" text="Importar" />
-                            </children>
-                         </AnchorPane>
-                       <AnchorPane>
-                            <children>
-                               <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                  <children>
-                                     <ListView fx:id="listImport" VBox.vgrow="ALWAYS" />
-                                  </children>
-                                  <padding>
-                                     <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                                  </padding>
-                               </VBox>
-                            </children>
-                         </AnchorPane>
-                     </items>
-                   </SplitPane>
-                </content>
-             </Tab>
-             <Tab fx:id="tabFiltro" text="Filtro">
+
+            <Tab text="Cuentas">
                <content>
-                   <SplitPane dividerPositions="0.6040145985401459">
-                     <items>
-                       <AnchorPane>
-                            <children>
-                               <TableView fx:id="gastosTVFiltro" editable="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <VBox spacing="15" style="-fx-background-color: #F5F7FA;">
+                     <padding>
+                        <Insets top="20" right="20" bottom="20" left="20"/>
+                     </padding>
+                     <children>
+                        <Label text="Mis cuentas" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1E2A38;"/>
+                        <HBox spacing="20" VBox.vgrow="ALWAYS">
+                           <children>
+                               <ListView fx:id="listMisCuentas" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 8; -fx-border-color: #E0E0E0; -fx-border-radius: 8;"/>
+                              <VBox spacing="15" alignment="TOP_CENTER">
+                                 <children>
+                                    <Button fx:id="btnCrearCuenta" mnemonicParsing="false" onAction="#crearCuenta" prefHeight="40" prefWidth="230" text="Crear Cuenta" style="-fx-background-color: #3D5A80; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;"/>
+                                    <Button fx:id="btnCrearCompartida" mnemonicParsing="false" onAction="#crearCuentaCompartida" prefHeight="40" prefWidth="230" text="Crear Cuenta Compartida" style="-fx-background-color: #3D5A80; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;"/>
+                                    <Button fx:id="btnEliminarCuenta" mnemonicParsing="false" onAction="#eliminarCuenta" prefHeight="40" prefWidth="230" text="Eliminar Cuenta" style="-fx-background-color: #C0392B; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;"/>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </content>
+            </Tab>
+
+            <Tab text="Gastos">
+               <content>
+                  <VBox spacing="15" style="-fx-background-color: #F5F7FA;">
+                     <padding>
+                        <Insets top="20" right="20" bottom="20" left="20"/>
+                     </padding>
+                     <children>
+                        <HBox alignment="CENTER_LEFT" spacing="15">
+                           <children>
+                              <Label text="Gastos" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1E2A38;"/>
+                              <Region HBox.hgrow="ALWAYS"/>
+                              <ComboBox fx:id="comboCuenta" prefWidth="250" promptText="Seleccionar cuenta" style="-fx-background-color: white;"/>
+                           </children>
+                        </HBox>
+                        <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 15;" VBox.vgrow="ALWAYS">
+                           <children>
+                              <Label text="Lista de gastos" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                              <TableView fx:id="gastosTV" editable="true" VBox.vgrow="ALWAYS">
                                  <columns>
-                                    <TableColumn fx:id="nombreColFiltro" prefWidth="75.0" text="Nombre" />
-                                    <TableColumn fx:id="cantidadColFiltro" prefWidth="75.0" text="Cantidad" />
-                                    <TableColumn fx:id="fechaColFiltro" prefWidth="75.0" text="Fecha" />
-                                    <TableColumn fx:id="categoriaColFiltro" prefWidth="75.0" text="Categoría" />
-                                    <TableColumn fx:id="personaColFiltro" prefWidth="75.0" text="Persona" />
+                                    <TableColumn fx:id="nombreCol" prefWidth="75" text="Nombre"/>
+                                    <TableColumn fx:id="cantidadCol" prefWidth="75" text="Cantidad"/>
+                                    <TableColumn fx:id="fechaCol" prefWidth="75" text="Fecha"/>
+                                    <TableColumn fx:id="categoriaCol" prefWidth="75" text="Categoría"/>
+                                    <TableColumn fx:id="personaCol" prefWidth="75" text="Persona"/>
                                  </columns>
                                  <columnResizePolicy>
-                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
                                  </columnResizePolicy>
                               </TableView>
                            </children>
-                        </AnchorPane>
-                        <AnchorPane>
-                             <children>
-                                <VBox spacing="15.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0">
-                                   <padding>
-                                      <Insets left="10.0" right="10.0" />
-                                   </padding>
-                                    <children>
-                                       <Label text="Cuenta" />
-                                       <ComboBox fx:id="comboCuentaFiltro" prefHeight="26.0" prefWidth="255.0" promptText="Seleccionar Cuenta" />
-                                       <Label text="Fecha inicio" />
-                                       <DatePicker fx:id="calFechaInicio" prefWidth="255.0" />
-                                      <Label text="Fecha fin" />
-                                      <DatePicker fx:id="calFechaFin" prefWidth="255.0" />
-                                      <Label text="Meses" />
-                                      <GridPane>
-                                         <columnConstraints>
-                                            <ColumnConstraints prefWidth="110.0" />
-                                            <ColumnConstraints prefWidth="110.0" />
-                                            <ColumnConstraints prefWidth="110.0" />
-                                            <ColumnConstraints prefWidth="110.0" />
-                                         </columnConstraints>
-                                         <rowConstraints>
-                                            <RowConstraints prefHeight="50.0" />
-                                            <RowConstraints prefHeight="50.0" />
-                                            <RowConstraints prefHeight="50.0" />
-                                            <RowConstraints prefHeight="50.0" />
-                                         </rowConstraints>
-                                         <children>
-                                            <ToggleButton fx:id="tbEnero" prefWidth="100.0" text="Enero" GridPane.columnIndex="0" />
-                                            <ToggleButton fx:id="tbFebrero" prefWidth="100.0" text="Febrero" GridPane.columnIndex="1" />
-                                            <ToggleButton fx:id="tbMarzo" prefWidth="100.0" text="Marzo" GridPane.columnIndex="2" />
-                                            <ToggleButton fx:id="tbAbril" prefWidth="100.0" text="Abril" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-                                            <ToggleButton fx:id="tbMayo" prefWidth="100.0" text="Mayo" GridPane.rowIndex="1" GridPane.columnIndex="1" />
-                                            <ToggleButton fx:id="tbJunio" prefWidth="100.0" text="Junio" GridPane.rowIndex="1" GridPane.columnIndex="2" />
-                                            <ToggleButton fx:id="tbJulio" prefWidth="100.0" text="Julio" GridPane.rowIndex="2" GridPane.columnIndex="0" />
-                                            <ToggleButton fx:id="tbAgosto" prefWidth="100.0" text="Agosto" GridPane.rowIndex="2" GridPane.columnIndex="1" />
-                                            <ToggleButton fx:id="tbSeptiembre" prefWidth="100.0" text="Septiembre" GridPane.rowIndex="2" GridPane.columnIndex="2" />
-                                            <ToggleButton fx:id="tbOctubre" prefWidth="100.0" text="Octubre" GridPane.rowIndex="3" GridPane.columnIndex="0" />
-                                            <ToggleButton fx:id="tbNoviembre" prefWidth="100.0" text="Noviembre" GridPane.rowIndex="3" GridPane.columnIndex="1" />
-                                            <ToggleButton fx:id="tbDiciembre" prefWidth="100.0" text="Diciembre" GridPane.rowIndex="3" GridPane.columnIndex="2" />
-                                         </children>
-                                      </GridPane>
-                                       <Label text="Categoría" />
-                                       <ComboBox fx:id="comboCategoriaFiltro" prefHeight="26.0" prefWidth="255.0" />
-                                       <Label fx:id="lblPagadorFiltro" text="Pagador" />
-                                       <ComboBox fx:id="comboPagadorFiltro" prefHeight="26.0" prefWidth="255.0" />
-                                       <HBox spacing="10.0">
-                                         <children>
-                                            <Button fx:id="btnFiltrar" prefWidth="100.0" HBox.hgrow="ALWAYS" mnemonicParsing="false" prefHeight="35.0" onAction="#filtrar" text="Filtrar" />
-                                            <Button fx:id="btnBorrar" prefWidth="100.0" HBox.hgrow="ALWAYS" mnemonicParsing="false" prefHeight="35.0" onAction="#borrar" text="Borrar" />
-                                         </children>
-                                      </HBox>
-                                   </children>
-                                </VBox>
-                            </children>
-                         </AnchorPane>
-                    </items>
-                  </SplitPane>
+                        </VBox>
+                        <HBox spacing="15">
+                           <children>
+                              <Button fx:id="btnCrearCategoria" mnemonicParsing="false" onAction="#crearCategoria" text="Crear Categoría" prefHeight="38" style="-fx-background-color: #3D5A80; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold;"/>
+                              <Button fx:id="btnEliminarCategoria" mnemonicParsing="false" onAction="#eliminarCategoria" text="Eliminar Categoría" prefHeight="38" style="-fx-background-color: #C0392B; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold;"/>
+                              <Region HBox.hgrow="ALWAYS"/>
+                              <Button fx:id="btnCrearGasto" mnemonicParsing="false" onAction="#crearGasto" text="Crear Gasto" prefHeight="38" style="-fx-background-color: #3D5A80; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold;"/>
+                              <Button fx:id="btnEditarGasto" mnemonicParsing="false" onAction="#editarGasto" text="Editar Gasto" prefHeight="38" style="-fx-background-color: #3D5A80; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold;"/>
+                              <Button fx:id="btnEliminarGasto" mnemonicParsing="false" onAction="#eliminarGasto" text="Eliminar Gasto" prefHeight="38" style="-fx-background-color: #C0392B; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold;"/>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
                </content>
             </Tab>
-               <Tab fx:id="tabAlertas" text="Alertas">
-                  <content>
-                    <BorderPane>
-                       <top>
-                          <HBox alignment="CENTER_LEFT" prefHeight="40.0" spacing="10.0">
-                             <children>
-                                <Label text="Cuenta:" />
-                                <ComboBox fx:id="comboCuentaAlertas" prefHeight="26.0" prefWidth="200.0" />
-                             </children>
-                             <BorderPane.margin>
-                                <Insets left="50.0" top="10.0" />
-                             </BorderPane.margin>
-                          </HBox>
-                       </top>
-                       <center>
-                          <HBox spacing="20.0" BorderPane.alignment="CENTER">
-                             <children>
-                                <VBox spacing="10.0" HBox.hgrow="ALWAYS">
-                                   <children>
-                                      <Label text="Límites y alertas programadas">
-                                         <font>
-                                            <Font size="13.0" />
-                                         </font>
-                                      </Label>
-                                      <ListView fx:id="listAlertas" VBox.vgrow="ALWAYS" />
-                                      <HBox spacing="15.0">
-                                         <children>
-                                            <Button fx:id="btnAddAlerta" mnemonicParsing="false" prefHeight="38.0" prefWidth="120.0" onAction="#addAlerta" text="Añadir Alerta" />
-                                            <Button fx:id="btnEditarAlerta" mnemonicParsing="false" prefHeight="38.0" prefWidth="120.0" onAction="#editarAlerta" text="Editar Alerta" />
-                                            <Button fx:id="btnEliminarAlerta" mnemonicParsing="false" prefHeight="38.0" prefWidth="130.0" onAction="#eliminarAlerta" text="Eliminar Alerta" />
-                                         </children>
-                                      </HBox>
-                                   </children>
-                                </VBox>
-                                <VBox spacing="10.0" HBox.hgrow="ALWAYS">
-                                   <children>
-                                      <Label text="Historial de notificaciones">
-                                         <font>
-                                            <Font size="13.0" />
-                                         </font>
-                                      </Label>
-                                      <ListView fx:id="listNotificaciones" VBox.vgrow="ALWAYS" />
-                                   </children>
-                                </VBox>
-                             </children>
-                             <BorderPane.margin>
-                                <Insets left="50.0" right="50.0" top="10.0" bottom="10.0" />
-                             </BorderPane.margin>
-                          </HBox>
-                       </center>
-                    </BorderPane>
-                  </content>
+
+            <Tab text="Gráficas">
+               <content>
+                  <VBox spacing="15" style="-fx-background-color: #F5F7FA;">
+                     <padding>
+                        <Insets top="20" right="20" bottom="20" left="20"/>
+                     </padding>
+                     <children>
+                        <HBox alignment="CENTER_LEFT" spacing="15">
+                           <children>
+                              <Label text="Análisis financiero" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1E2A38;"/>
+                              <Region HBox.hgrow="ALWAYS"/>
+                              <ComboBox fx:id="comboCuentaGraficas" prefWidth="250" promptText="Seleccionar cuenta"/>
+                           </children>
+                        </HBox>
+                        <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+                           <tabs>
+                              <Tab text="Barras">
+                                 <content>
+                                    <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 15;">
+                                       <children>
+                                          <Label text="Gastos por categoría" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                                          <BarChart fx:id="barChart" VBox.vgrow="ALWAYS">
+                                             <xAxis>
+                                                <CategoryAxis/>
+                                             </xAxis>
+                                             <yAxis>
+                                                <NumberAxis/>
+                                             </yAxis>
+                                          </BarChart>
+                                       </children>
+                                    </VBox>
+                                 </content>
+                              </Tab>
+                              <Tab text="Circular">
+                                 <content>
+                                    <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 15;">
+                                       <children>
+                                          <Label text="Distribución de gastos" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                                          <PieChart fx:id="pieChart" VBox.vgrow="ALWAYS"/>
+                                       </children>
+                                    </VBox>
+                                 </content>
+                              </Tab>
+                           </tabs>
+                        </TabPane>
+                     </children>
+                  </VBox>
+               </content>
             </Tab>
+
+            <Tab text="Importar">
+               <content>
+                  <VBox spacing="15" style="-fx-background-color: #F5F7FA;">
+                     <padding>
+                        <Insets top="20" right="20" bottom="20" left="20"/>
+                     </padding>
+                     <children>
+                        <HBox alignment="CENTER_LEFT" spacing="15">
+                           <children>
+                              <Label text="Importar gastos" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1E2A38;"/>
+                              <Region HBox.hgrow="ALWAYS"/>
+                              <Button fx:id="btnImportar" mnemonicParsing="false" onAction="#importar" text="Importar CSV" prefHeight="40" prefWidth="150" style="-fx-background-color: #3D5A80; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;"/>
+                           </children>
+                        </HBox>
+                        <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 15;" VBox.vgrow="ALWAYS">
+                           <children>
+                              <Label text="Historial de importaciones" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                              <ListView fx:id="listImport" VBox.vgrow="ALWAYS"/>
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+               </content>
+            </Tab>
+
+            <Tab fx:id="tabFiltro" text="Filtro">
+               <content>
+                  <VBox spacing="15" style="-fx-background-color: #F5F7FA;">
+                     <padding>
+                        <Insets top="20" right="20" bottom="20" left="20"/>
+                     </padding>
+                     <children>
+                        <HBox alignment="CENTER_LEFT" spacing="15">
+                           <children>
+                              <Label text="Filtrar gastos" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1E2A38;"/>
+                           </children>
+                        </HBox>
+                        <HBox spacing="20" VBox.vgrow="ALWAYS">
+                           <children>
+                              <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 15;" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <Label text="Resultados" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                                    <TableView fx:id="gastosTVFiltro" editable="true" VBox.vgrow="ALWAYS">
+                                       <columns>
+                                          <TableColumn fx:id="nombreColFiltro" prefWidth="75" text="Nombre"/>
+                                          <TableColumn fx:id="cantidadColFiltro" prefWidth="75" text="Cantidad"/>
+                                          <TableColumn fx:id="fechaColFiltro" prefWidth="75" text="Fecha"/>
+                                          <TableColumn fx:id="categoriaColFiltro" prefWidth="75" text="Categoría"/>
+                                          <TableColumn fx:id="personaColFiltro" prefWidth="75" text="Persona"/>
+                                       </columns>
+                                       <columnResizePolicy>
+                                          <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                                       </columnResizePolicy>
+                                    </TableView>
+                                 </children>
+                              </VBox>
+                              <VBox spacing="12" maxWidth="320" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 15;">
+                                 <children>
+                                    <Label text="Filtros" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                                    <Label text="Cuenta"/>
+                                    <ComboBox fx:id="comboCuentaFiltro" prefWidth="280" promptText="Seleccionar cuenta"/>
+                                    <Label text="Fecha inicio"/>
+                                    <DatePicker fx:id="calFechaInicio" prefWidth="280"/>
+                                    <Label text="Fecha fin"/>
+                                    <DatePicker fx:id="calFechaFin" prefWidth="280"/>
+                                    <Label text="Meses"/>
+                                    <GridPane hgap="5" vgap="5">
+                                       <columnConstraints>
+                                          <ColumnConstraints prefWidth="65"/>
+                                          <ColumnConstraints prefWidth="65"/>
+                                          <ColumnConstraints prefWidth="65"/>
+                                          <ColumnConstraints prefWidth="65"/>
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints prefHeight="35"/>
+                                          <RowConstraints prefHeight="35"/>
+                                          <RowConstraints prefHeight="35"/>
+                                          <RowConstraints prefHeight="35"/>
+                                       </rowConstraints>
+                                       <children>
+                                          <ToggleButton fx:id="tbEnero" prefWidth="65" text="Ene"/>
+                                          <ToggleButton fx:id="tbFebrero" prefWidth="65" text="Feb" GridPane.columnIndex="1"/>
+                                          <ToggleButton fx:id="tbMarzo" prefWidth="65" text="Mar" GridPane.columnIndex="2"/>
+                                          <ToggleButton fx:id="tbAbril" prefWidth="65" text="Abr" GridPane.rowIndex="1"/>
+                                          <ToggleButton fx:id="tbMayo" prefWidth="65" text="May" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                                          <ToggleButton fx:id="tbJunio" prefWidth="65" text="Jun" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+                                          <ToggleButton fx:id="tbJulio" prefWidth="65" text="Jul" GridPane.rowIndex="2"/>
+                                          <ToggleButton fx:id="tbAgosto" prefWidth="65" text="Ago" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                                          <ToggleButton fx:id="tbSeptiembre" prefWidth="65" text="Sep" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+                                          <ToggleButton fx:id="tbOctubre" prefWidth="65" text="Oct" GridPane.rowIndex="3"/>
+                                          <ToggleButton fx:id="tbNoviembre" prefWidth="65" text="Nov" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                                          <ToggleButton fx:id="tbDiciembre" prefWidth="65" text="Dic" GridPane.rowIndex="3" GridPane.columnIndex="2"/>
+                                       </children>
+                                    </GridPane>
+                                    <Label text="Categoría"/>
+                                    <ComboBox fx:id="comboCategoriaFiltro" prefWidth="280"/>
+                                    <Label fx:id="lblPagadorFiltro" text="Pagador"/>
+                                    <ComboBox fx:id="comboPagadorFiltro" prefWidth="280"/>
+                                    <HBox spacing="10">
+                                       <children>
+                                          <Button fx:id="btnFiltrar" prefHeight="38" HBox.hgrow="ALWAYS" mnemonicParsing="false" onAction="#filtrar" text="Filtrar" style="-fx-background-color: #3D5A80; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                                          <Button fx:id="btnBorrar" prefHeight="38" HBox.hgrow="ALWAYS" mnemonicParsing="false" onAction="#borrar" text="Borrar" style="-fx-background-color: #7F8C8D; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </content>
+            </Tab>
+
+            <Tab fx:id="tabAlertas" text="Alertas">
+               <content>
+                  <VBox spacing="15" style="-fx-background-color: #F5F7FA;">
+                     <padding>
+                        <Insets top="20" right="20" bottom="20" left="20"/>
+                     </padding>
+                     <children>
+                        <HBox alignment="CENTER_LEFT" spacing="15">
+                           <children>
+                              <Label text="Alertas y notificaciones" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1E2A38;"/>
+                              <Region HBox.hgrow="ALWAYS"/>
+                              <ComboBox fx:id="comboCuentaAlertas" prefWidth="250" promptText="Todas las cuentas"/>
+                           </children>
+                        </HBox>
+                        <HBox spacing="20" VBox.vgrow="ALWAYS">
+                           <children>
+                              <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 15;" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <Label text="Límites y alertas programadas" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                                    <ListView fx:id="listAlertas" VBox.vgrow="ALWAYS"/>
+                                    <HBox spacing="15">
+                                       <children>
+                                          <Button fx:id="btnAddAlerta" mnemonicParsing="false" onAction="#addAlerta" prefHeight="38" prefWidth="140" text="Añadir Límite" style="-fx-background-color: #3D5A80; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                                          <Button fx:id="btnEditarAlerta" mnemonicParsing="false" onAction="#editarAlerta" prefHeight="38" prefWidth="140" text="Editar Límite" style="-fx-background-color: #3D5A80; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                                          <Button fx:id="btnEliminarAlerta" mnemonicParsing="false" onAction="#eliminarAlerta" prefHeight="38" prefWidth="140" text="Eliminar Límite" style="-fx-background-color: #C0392B; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                              <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 15;" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <Label text="Historial de notificaciones" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+                                    <ListView fx:id="listNotificaciones" VBox.vgrow="ALWAYS"/>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </content>
+            </Tab>
+
          </tabs>
       </TabPane>
    </center>

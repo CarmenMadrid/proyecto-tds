@@ -1,0 +1,45 @@
+.root {
+    -fx-font-family: "Segoe UI", "System";
+}
+
+.chart {
+    -fx-background-color: white;
+}
+
+.tab-pane .tab-header-area {
+    -fx-padding: 3 3 0 3;
+}
+
+.tab {
+    -fx-background-radius: 4 4 0 0;
+}
+
+.combo-box {
+    -fx-background-radius: 6;
+}
+
+.chart-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+}
+
+.table-view {
+    -fx-background-color: white;
+}
+
+.list-view {
+    -fx-background-color: white;
+}
+
+.button {
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+
+.date-picker {
+    -fx-background-radius: 6;
+}
+
+.toggle-button {
+    -fx-background-radius: 6;
+}

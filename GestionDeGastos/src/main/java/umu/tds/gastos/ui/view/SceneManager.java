@@ -173,10 +173,12 @@ public class SceneManager {
 
             if (escenaActual == null) {
                 escenaActual = new Scene(stack);
+                escenaActual.getStylesheets().add(getClass().getResource("/umu/tds/gastos/ui/css/styles.css").toExternalForm());
                 primaryStage.setScene(escenaActual);
                 primaryStage.show();
             } else {
                 escenaActual.setRoot(stack);
+                escenaActual.getStylesheets().add(getClass().getResource("/umu/tds/gastos/ui/css/styles.css").toExternalForm());
             }
 
         } catch (IOException e) {

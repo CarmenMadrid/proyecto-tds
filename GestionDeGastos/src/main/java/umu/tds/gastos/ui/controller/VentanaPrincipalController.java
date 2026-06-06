@@ -608,7 +608,7 @@ public class VentanaPrincipalController {
     void addAlerta(ActionEvent event) {
         Cuenta cuenta = comboCuentaAlertas.getValue();
         if (cuenta == null) {
-            mensajeError("Seleccione una cuenta en el desplegable de alertas.");
+            mensajeError("Seleccione una cuenta primero.");
             return;
         }
         CuentaController cc = Configuracion.getInstancia().getCuentaController();
@@ -625,7 +625,7 @@ public class VentanaPrincipalController {
         }
         Cuenta cuenta = comboCuentaAlertas.getValue();
         if (cuenta == null) {
-            mensajeError("Seleccione una cuenta en el desplegable de alertas.");
+            mensajeError("Seleccione una cuenta primero.");
             return;
         }
         CuentaController cc = Configuracion.getInstancia().getCuentaController();

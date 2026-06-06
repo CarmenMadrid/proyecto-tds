@@ -16,7 +16,7 @@
          <children>
             <Label layoutX="29.0" layoutY="28.0" prefHeight="27.0" prefWidth="254.0" text="Nombre de la cuenta compartida" />
             <TextField fx:id="nombreCuentaCompartida" layoutX="29.0" layoutY="56.0" prefHeight="27.0" prefWidth="247.0" />
-            <Button fx:id="btnCancelar" layoutX="591.0" layoutY="330.0" mnemonicParsing="false" onAction="#cancelar" prefHeight="31.0" prefWidth="78.0" text="Cancelar" />
+            <Button fx:id="btnCancelar" layoutX="591.0" layoutY="330.0" mnemonicParsing="false" onAction="#cancelar" prefHeight="31.0" prefWidth="90.0" text="Cancelar" />
             <Button fx:id="btnAceptar" layoutX="492.0" layoutY="330.0" mnemonicParsing="false" onAction="#aceptar" prefHeight="31.0" prefWidth="78.0" text="Aceptar" />
             <TableView fx:id="tablaPersonasCuenta" layoutX="325.0" layoutY="54.0" prefHeight="200.0" prefWidth="334.0">
               <columns>

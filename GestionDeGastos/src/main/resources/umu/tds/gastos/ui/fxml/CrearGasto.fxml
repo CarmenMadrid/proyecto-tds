@@ -94,7 +94,7 @@
                         <Insets left="110.0" top="20.0" />
                      </HBox.margin>
                   </Button>
-                  <Button fx:id="btnCancelar" mnemonicParsing="false" onAction="#cancelar" prefHeight="31.0" prefWidth="78.0" text="Cancelar">
+                  <Button fx:id="btnCancelar" mnemonicParsing="false" onAction="#cancelar" prefHeight="31.0" prefWidth="90.0" text="Cancelar">
                      <HBox.margin>
                         <Insets left="60.0" top="20.0" />
                      </HBox.margin>

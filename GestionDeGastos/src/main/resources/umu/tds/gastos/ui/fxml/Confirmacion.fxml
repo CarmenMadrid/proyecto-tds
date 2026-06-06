@@ -11,7 +11,7 @@
       <AnchorPane maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="194.0" prefWidth="433.0">
          <children>
             <Label fx:id="mensajeLabel" layoutX="38.0" layoutY="27.0" prefHeight="60.0" prefWidth="350.0" text="Mensaje" wrapText="true" />
-            <Button fx:id="btnCancelar" layoutX="235.0" layoutY="120.0" mnemonicParsing="false" onAction="#cancelar" prefHeight="31.0" prefWidth="78.0" text="Cancelar" />
+            <Button fx:id="btnCancelar" layoutX="235.0" layoutY="120.0" mnemonicParsing="false" onAction="#cancelar" prefHeight="31.0" prefWidth="90.0" text="Cancelar" />
             <Button fx:id="btnAceptar" layoutX="120.0" layoutY="120.0" mnemonicParsing="false" onAction="#aceptar" prefHeight="31.0" prefWidth="78.0" text="Aceptar" />
          </children>
       </AnchorPane>

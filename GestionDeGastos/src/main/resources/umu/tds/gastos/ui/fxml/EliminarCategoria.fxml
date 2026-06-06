@@ -13,7 +13,7 @@
          <children>
             <Label layoutX="38.0" layoutY="27.0" prefHeight="27.0" prefWidth="320.0" text="Seleccione la categoría a eliminar" />
             <ComboBox fx:id="comboCategoria" layoutX="38.0" layoutY="54.0" prefHeight="27.0" prefWidth="320.0" />
-            <Button fx:id="btnCancelar" layoutX="160.0" layoutY="108.0" mnemonicParsing="false" onAction="#cancelar" prefHeight="31.0" prefWidth="78.0" text="Cancelar" />
+            <Button fx:id="btnCancelar" layoutX="160.0" layoutY="108.0" mnemonicParsing="false" onAction="#cancelar" prefHeight="31.0" prefWidth="90.0" text="Cancelar" />
             <Button fx:id="btnAceptar" layoutX="38.0" layoutY="108.0" mnemonicParsing="false" onAction="#aceptar" prefHeight="31.0" prefWidth="78.0" text="Aceptar" />
          </children>
       </AnchorPane>
