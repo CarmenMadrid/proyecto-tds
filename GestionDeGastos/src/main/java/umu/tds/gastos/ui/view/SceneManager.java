@@ -57,6 +57,11 @@ public class SceneManager {
         return primaryStage;
     }
 
+    public void showLogin() {
+        cargarYMostrar("Login");
+        primaryStage.setMaximized(true);
+    }
+
     public void showVentanaPrincipal() {
         cargarYMostrar("VentanaPrincipal");
         primaryStage.setMaximized(true);
