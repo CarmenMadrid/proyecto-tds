@@ -254,10 +254,8 @@ public class VentanaPrincipalController {
             if (nueva) {
                 comboCuentaFiltro.setValue(comboCuenta.getValue());
                 Cuenta cuenta = comboCuentaFiltro.getValue();
-                if (cuenta != null) {
-                    actualizarListaCategorias(cuenta);
-                    comboPagadorFiltro.setValue(null);
-                }
+                actualizarListaCategorias(cuenta);
+                comboPagadorFiltro.setValue(null);
                 CuentaController cc = Configuracion.getInstancia().getCuentaController();
                 if (cuenta != null) {
                     gastosTVFiltro.getItems().setAll(cc.obtenerGastos(cuenta.getId()));
@@ -413,7 +411,11 @@ public class VentanaPrincipalController {
 
     private void actualizarListaCategorias(Cuenta cuenta) {
         CuentaController cc = Configuracion.getInstancia().getCuentaController();
-        comboCategoriaFiltro.getItems().setAll(cc.obtenerCategorias(cuenta.getId()));
+        if (cuenta != null) {
+            comboCategoriaFiltro.getItems().setAll(cc.obtenerCategorias(cuenta.getId()));
+        } else {
+            comboCategoriaFiltro.getItems().setAll(cc.obtenerTodasLasCategorias());
+        }
         comboPagadorFiltro.getItems().clear();
         if (cuenta instanceof CuentaCompartida cc2) {
             comboPagadorFiltro.getItems().setAll(cc2.getPersonas());
@@ -552,18 +554,9 @@ public class VentanaPrincipalController {
                 comboCuentaGraficas.setValue(nueva);
             }
             sincronizandoCombos = false;
-            if (nueva != null) {
-                actualizarListaCategorias(nueva);
-                comboCategoriaFiltro.setValue(null);
-                comboPagadorFiltro.setValue(null);
-            } else {
-                comboCategoriaFiltro.getItems().clear();
-                comboPagadorFiltro.getItems().clear();
-                lblPagadorFiltro.setVisible(false);
-                lblPagadorFiltro.setManaged(false);
-                comboPagadorFiltro.setVisible(false);
-                comboPagadorFiltro.setManaged(false);
-            }
+            actualizarListaCategorias(nueva);
+            comboCategoriaFiltro.setValue(null);
+            comboPagadorFiltro.setValue(null);
         });
     } 
     
