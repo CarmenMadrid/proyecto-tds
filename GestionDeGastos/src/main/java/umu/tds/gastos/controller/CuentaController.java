@@ -174,6 +174,13 @@ public class CuentaController {
                 .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
     }
 
+    public List<Categoria> obtenerTodasLasCategorias() {
+        return cuentaRepository.getAllCuentas().stream()
+                .flatMap(c -> c.getCategorias().stream())
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
     public Categoria crearCategoria(UUID idCuenta, String nombre) {
         Preconditions.checkNotNull(nombre, "El nombre no puede ser nulo");
         Preconditions.checkArgument(!nombre.trim().isEmpty(), "El nombre no puede estar vacío");

@@ -254,10 +254,8 @@ public class VentanaPrincipalController {
             if (nueva) {
                 comboCuentaFiltro.setValue(comboCuenta.getValue());
                 Cuenta cuenta = comboCuentaFiltro.getValue();
-                if (cuenta != null) {
-                    actualizarListaCategorias(cuenta);
-                    comboPagadorFiltro.setValue(null);
-                }
+                actualizarListaCategorias(cuenta);
+                comboPagadorFiltro.setValue(null);
                 CuentaController cc = Configuracion.getInstancia().getCuentaController();
                 if (cuenta != null) {
                     gastosTVFiltro.getItems().setAll(cc.obtenerGastos(cuenta.getId()));
@@ -413,7 +411,11 @@ public class VentanaPrincipalController {
 
     private void actualizarListaCategorias(Cuenta cuenta) {
         CuentaController cc = Configuracion.getInstancia().getCuentaController();
-        comboCategoriaFiltro.getItems().setAll(cc.obtenerCategorias(cuenta.getId()));
+        if (cuenta != null) {
+            comboCategoriaFiltro.getItems().setAll(cc.obtenerCategorias(cuenta.getId()));
+        } else {
+            comboCategoriaFiltro.getItems().setAll(cc.obtenerTodasLasCategorias());
+        }
         comboPagadorFiltro.getItems().clear();
         if (cuenta instanceof CuentaCompartida cc2) {
             comboPagadorFiltro.getItems().setAll(cc2.getPersonas());
@@ -552,18 +554,9 @@ public class VentanaPrincipalController {
                 comboCuentaGraficas.setValue(nueva);
             }
             sincronizandoCombos = false;
-            if (nueva != null) {
-                actualizarListaCategorias(nueva);
-                comboCategoriaFiltro.setValue(null);
-                comboPagadorFiltro.setValue(null);
-            } else {
-                comboCategoriaFiltro.getItems().clear();
-                comboPagadorFiltro.getItems().clear();
-                lblPagadorFiltro.setVisible(false);
-                lblPagadorFiltro.setManaged(false);
-                comboPagadorFiltro.setVisible(false);
-                comboPagadorFiltro.setManaged(false);
-            }
+            actualizarListaCategorias(nueva);
+            comboCategoriaFiltro.setValue(null);
+            comboPagadorFiltro.setValue(null);
         });
     } 
     
@@ -608,7 +601,7 @@ public class VentanaPrincipalController {
     void addAlerta(ActionEvent event) {
         Cuenta cuenta = comboCuentaAlertas.getValue();
         if (cuenta == null) {
-            mensajeError("Seleccione una cuenta en el desplegable de alertas.");
+            mensajeError("Seleccione una cuenta primero.");
             return;
         }
         CuentaController cc = Configuracion.getInstancia().getCuentaController();
@@ -625,7 +618,7 @@ public class VentanaPrincipalController {
         }
         Cuenta cuenta = comboCuentaAlertas.getValue();
         if (cuenta == null) {
-            mensajeError("Seleccione una cuenta en el desplegable de alertas.");
+            mensajeError("Seleccione una cuenta primero.");
             return;
         }
         CuentaController cc = Configuracion.getInstancia().getCuentaController();
@@ -641,9 +634,19 @@ public class VentanaPrincipalController {
             return;
         }
         CuentaController cc = Configuracion.getInstancia().getCuentaController();
+        String nombreCuenta = cc.obtenerCuentas().stream()
+                .filter(c -> c.getId().equals(seleccionada.getIdCuenta()))
+                .findFirst().map(Cuenta::getNombre).orElse("Desconocida");
+        String tipo = seleccionada.getTipo().getNombreEstrategia().split(" ")[1].toLowerCase();
+        StringBuilder sb = new StringBuilder();
+        sb.append(nombreCuenta).append(": Límite ").append(tipo).append(" de ");
+        sb.append(String.format("%.2f", seleccionada.getLimite())).append("\u20AC");
+        if (seleccionada.getCategoria() != null) {
+            sb.append(" en ").append(seleccionada.getCategoria().getNombre());
+        }
         SceneManager.getInstancia().showConfirmation(
             "Eliminar alerta",
-            "¿Seguro que desea eliminar la alerta \"" + seleccionada.getMensaje() + "\"?",
+            "¿Seguro que desea eliminar la alerta \"" + sb.toString() + "\"?",
             () -> {
                 cc.borrarAlerta(seleccionada);
                 recargarAlertas();
