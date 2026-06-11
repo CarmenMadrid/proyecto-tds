@@ -17,7 +17,7 @@ public class MainApp extends Application {
         SceneManager sceneManager = SceneManager.getInstancia();
         sceneManager.init(pantallaInicial);
 
-        sceneManager.showVentanaPrincipal();
+        sceneManager.showLogin();
 	}
 
 	public static void main(String[] args) {

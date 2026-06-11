@@ -107,6 +107,7 @@ public class CuentaController {
             gasto = cuenta.agregarGasto(cantidad, fecha, categoria);
         }
         cuentaRepository.updateCuenta(cuenta);
+        verificarAlertas();
         return gasto;
     }
     
@@ -121,6 +122,7 @@ public class CuentaController {
             gasto.setNombre(nombre);
         }
         cuentaRepository.updateCuenta(cuenta);
+        verificarAlertas();
     }
 
     public void editarGasto(UUID idCuenta, UUID idGasto, double cantidad, LocalDate fecha, String nombreCategoria) {
@@ -146,6 +148,7 @@ public class CuentaController {
         cuenta.modificarGasto(gasto, cantidad, fecha, categoria != null ? categoria : gasto.getCategoria());
 
         cuentaRepository.updateCuenta(cuenta);
+        verificarAlertas();
     }
 
     public void eliminarGasto(UUID idCuenta, UUID idGasto) {
@@ -169,6 +172,13 @@ public class CuentaController {
         return cuentaRepository.getCuenta(idCuenta)
                 .map(Cuenta::getCategorias)
                 .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
+    }
+
+    public List<Categoria> obtenerTodasLasCategorias() {
+        return cuentaRepository.getAllCuentas().stream()
+                .flatMap(c -> c.getCategorias().stream())
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     public Categoria crearCategoria(UUID idCuenta, String nombre) {
@@ -296,6 +306,7 @@ public class CuentaController {
         int count = procesarGastosImportados(cuenta, importados);
         if (count > 0) {
             cuentaRepository.updateCuenta(cuenta);
+            verificarAlertas();
         }
         return count;
     }
@@ -355,7 +366,7 @@ public class CuentaController {
 		}
 	}
 
-    public void crearAlerta(double limite, Categoria categoria, String nombreClaseAlerta)
+    public void crearAlerta(double limite, Categoria categoria, String nombreClaseAlerta, UUID idCuenta)
 			throws RuntimeException, IllegalArgumentException {
 		Preconditions.checkArgument(limite > 0, "El límite debe ser positivo.");
 
@@ -363,9 +374,21 @@ public class CuentaController {
         Preconditions.checkArgument(alertaRepository.buscarAlerta(limite, categoria, nombreClaseAlerta) == null,
                 "Ya existe la alerta");
 
-        Alertas nuevaAlerta = new Alertas(limite, categoria, tipoAlerta);
+        Alertas nuevaAlerta = new Alertas(limite, categoria, tipoAlerta, idCuenta);
         alertaRepository.addAlerta(nuevaAlerta);
 
+        verificarAlertas();
+    }
+
+    public void editarAlerta(UUID idAlerta, double limite, Categoria categoria, String nombreClaseAlerta) {
+        Preconditions.checkArgument(limite > 0, "El límite debe ser positivo.");
+        Alertas alerta = alertaRepository.getAlerta(idAlerta)
+                .orElseThrow(() -> new IllegalArgumentException("Alerta no encontrada"));
+        EstrategiaTiempo tipoAlerta = instanciarEstrategia(nombreClaseAlerta);
+        alerta.setLimite(limite);
+        alerta.setCategoria(categoria);
+        alerta.setTipo(tipoAlerta);
+        alertaRepository.updateAlerta(alerta);
         verificarAlertas();
     }
 
@@ -379,20 +402,28 @@ public class CuentaController {
 
     
     private void verificarAlertas() {
-		Preconditions.checkNotNull(obtenerCuentaPersonal(), "Cuenta personal es null");
-
-		List<Gasto> gastosPersonales = obtenerGastos(obtenerCuentaPersonal().getId());
-
 		for (Alertas alerta : alertaRepository.getAllAlertas()) {
+			List<Gasto> gastosCuenta;
+			UUID idCuenta = alerta.getIdCuenta();
+			String nombreCuenta = "Global";
+			if (idCuenta != null) {
+				Cuenta cuenta = cuentaRepository.getCuenta(idCuenta).orElse(null);
+				if (cuenta == null) continue;
+				gastosCuenta = cuenta.getGastos();
+				nombreCuenta = cuenta.getNombre();
+			} else {
+				gastosCuenta = cuentaRepository.getAllCuentas().stream()
+						.flatMap(c -> c.getGastos().stream())
+						.collect(Collectors.toList());
+			}
 
-			if (alerta.superaLimite(gastosPersonales)) {
+			if (alerta.superaLimite(gastosCuenta)) {
 
 				if (!alerta.isMostrada()) {
 					alerta.setMostrada(true);
 					alertaRepository.updateAlerta(alerta);
 
-					// Crear notificación
-					Notificacion notif = new Notificacion(alerta,"Personal");
+					Notificacion notif = new Notificacion(alerta, nombreCuenta);
 					notificacionesRepository.addNotificacion(notif);
 				}
 
@@ -410,6 +441,10 @@ public class CuentaController {
 
 	public List<Alertas> getAlertas() {
 		return alertaRepository.getAllAlertas();
+	}
+
+	public List<Alertas> getAlertasByCuenta(UUID idCuenta) {
+		return alertaRepository.getAlertasByCuenta(idCuenta);
 	}
 
 	public List<Notificacion> getNotificaciones() {

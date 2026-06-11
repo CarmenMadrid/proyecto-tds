@@ -34,10 +34,12 @@ import javafx.scene.control.ToggleButton;
 import javafx.util.StringConverter;
 import umu.tds.gastos.app.Configuracion;
 import umu.tds.gastos.controller.CuentaController;
+import umu.tds.gastos.domain.alertas.Alertas;
 import umu.tds.gastos.domain.core.Categoria;
 import umu.tds.gastos.domain.core.Cuenta;
 import umu.tds.gastos.domain.core.CuentaCompartida;
 import umu.tds.gastos.domain.core.Gasto;
+import umu.tds.gastos.domain.core.Notificacion;
 import umu.tds.gastos.domain.core.Persona;
 import umu.tds.gastos.ui.view.SceneManager;
 public class VentanaPrincipalController {
@@ -126,6 +128,9 @@ public class VentanaPrincipalController {
     @FXML // fx:id="comboCuentaFiltro"
     private ComboBox<Cuenta> comboCuentaFiltro; // Value injected by FXMLLoader
 
+    @FXML // fx:id="comboCuentaAlertas"
+    private ComboBox<Cuenta> comboCuentaAlertas; // Value injected by FXMLLoader
+
     @FXML // fx:id="fechaCol"
     private TableColumn<Gasto, LocalDate> fechaCol; // Value injected by FXMLLoader
 
@@ -139,7 +144,7 @@ public class VentanaPrincipalController {
     private TableView<Gasto> gastosTVFiltro; // Value injected by FXMLLoader
 
     @FXML // fx:id="listAlertas"
-    private ListView<?> listAlertas; // Value injected by FXMLLoader
+    private ListView<Alertas> listAlertas; // Value injected by FXMLLoader
 
     @FXML // fx:id="comboCategoriaFiltro"
     private ComboBox<Categoria> comboCategoriaFiltro; // Value injected by FXMLLoader
@@ -157,7 +162,10 @@ public class VentanaPrincipalController {
     private ListView<Cuenta> listMisCuentas; // Value injected by FXMLLoader
 
     @FXML // fx:id="listNotificaciones"
-    private ListView<?> listNotificaciones; // Value injected by FXMLLoader
+    private ListView<Notificacion> listNotificaciones; // Value injected by FXMLLoader
+
+    @FXML // fx:id="tabAlertas"
+    private Tab tabAlertas; // Value injected by FXMLLoader
 
     @FXML // fx:id="tabFiltro"
     private Tab tabFiltro; // Value injected by FXMLLoader
@@ -230,15 +238,24 @@ public class VentanaPrincipalController {
         configurarComboCuenta();
 
         refrescarCuentas();
+        recargarAlertas();
+
+        comboCuentaAlertas.setConverter(new StringConverter<>() {
+            public String toString(Cuenta c) { return c == null ? "Todas las cuentas" : c.getNombre(); }
+            public Cuenta fromString(String s) { return null; }
+        });
+        comboCuentaAlertas.valueProperty().addListener((obs, old, nueva) -> recargarAlertas());
+
+        tabAlertas.selectedProperty().addListener((obs, old, nueva) -> {
+            if (nueva) recargarAlertas();
+        });
 
         tabFiltro.selectedProperty().addListener((obs, old, nueva) -> {
             if (nueva) {
                 comboCuentaFiltro.setValue(comboCuenta.getValue());
                 Cuenta cuenta = comboCuentaFiltro.getValue();
-                if (cuenta != null) {
-                    actualizarListaCategorias(cuenta);
-                    comboPagadorFiltro.setValue(null);
-                }
+                actualizarListaCategorias(cuenta);
+                comboPagadorFiltro.setValue(null);
                 CuentaController cc = Configuracion.getInstancia().getCuentaController();
                 if (cuenta != null) {
                     gastosTVFiltro.getItems().setAll(cc.obtenerGastos(cuenta.getId()));
@@ -307,11 +324,13 @@ public class VentanaPrincipalController {
         comboCuenta.getItems().setAll(cuentas);
         comboCuentaGraficas.getItems().setAll(cuentas);
         comboCuentaFiltro.getItems().setAll(cuentas);
+        comboCuentaAlertas.getItems().setAll(cuentas);
         sincronizandoCombos = false;
         if (seleccionada != null && cuentas.contains(seleccionada)) {
             comboCuenta.setValue(seleccionada);
             comboCuentaGraficas.setValue(seleccionada);
             comboCuentaFiltro.setValue(seleccionada);
+            comboCuentaAlertas.setValue(seleccionada);
         }
     }
     
@@ -371,6 +390,7 @@ public class VentanaPrincipalController {
             barChart.getData().clear();
             pieChart.getData().clear();
         }
+        recargarAlertas();
     }
 
     private void mensajeError(String mensaje) {
@@ -391,7 +411,11 @@ public class VentanaPrincipalController {
 
     private void actualizarListaCategorias(Cuenta cuenta) {
         CuentaController cc = Configuracion.getInstancia().getCuentaController();
-        comboCategoriaFiltro.getItems().setAll(cc.obtenerCategorias(cuenta.getId()));
+        if (cuenta != null) {
+            comboCategoriaFiltro.getItems().setAll(cc.obtenerCategorias(cuenta.getId()));
+        } else {
+            comboCategoriaFiltro.getItems().setAll(cc.obtenerTodasLasCategorias());
+        }
         comboPagadorFiltro.getItems().clear();
         if (cuenta instanceof CuentaCompartida cc2) {
             comboPagadorFiltro.getItems().setAll(cc2.getPersonas());
@@ -504,6 +528,7 @@ public class VentanaPrincipalController {
             sincronizandoCombos = true;
             comboCuentaGraficas.setValue(nueva);
             comboCuentaFiltro.setValue(nueva);
+            comboCuentaAlertas.setValue(nueva);
             sincronizandoCombos = false;
             cargarGastosCuenta(nueva);
             actualizarGraficas(nueva);
@@ -515,6 +540,7 @@ public class VentanaPrincipalController {
             sincronizandoCombos = true;
             comboCuenta.setValue(nueva);
             comboCuentaFiltro.setValue(nueva);
+            comboCuentaAlertas.setValue(nueva);
             sincronizandoCombos = false;
             cargarGastosCuenta(nueva);
             actualizarGraficas(nueva);
@@ -528,18 +554,9 @@ public class VentanaPrincipalController {
                 comboCuentaGraficas.setValue(nueva);
             }
             sincronizandoCombos = false;
-            if (nueva != null) {
-                actualizarListaCategorias(nueva);
-                comboCategoriaFiltro.setValue(null);
-                comboPagadorFiltro.setValue(null);
-            } else {
-                comboCategoriaFiltro.getItems().clear();
-                comboPagadorFiltro.getItems().clear();
-                lblPagadorFiltro.setVisible(false);
-                lblPagadorFiltro.setManaged(false);
-                comboPagadorFiltro.setVisible(false);
-                comboPagadorFiltro.setManaged(false);
-            }
+            actualizarListaCategorias(nueva);
+            comboCategoriaFiltro.setValue(null);
+            comboPagadorFiltro.setValue(null);
         });
     } 
     
@@ -569,16 +586,71 @@ public class VentanaPrincipalController {
         recargarCuentaActual();
     }
     
-    
-    
-    
-    
-  
-    
-    
+    private void recargarAlertas() {
+        CuentaController cc = Configuracion.getInstancia().getCuentaController();
+        Cuenta cuenta = comboCuentaAlertas.getValue();
+        if (cuenta != null) {
+            listAlertas.getItems().setAll(cc.getAlertasByCuenta(cuenta.getId()));
+        } else {
+            listAlertas.getItems().setAll(cc.getAlertas());
+        }
+        listNotificaciones.getItems().setAll(cc.getNotificaciones());
+    }
+
     @FXML
     void addAlerta(ActionEvent event) {
+        Cuenta cuenta = comboCuentaAlertas.getValue();
+        if (cuenta == null) {
+            mensajeError("Seleccione una cuenta primero.");
+            return;
+        }
+        CuentaController cc = Configuracion.getInstancia().getCuentaController();
+        SceneManager.getInstancia().showAddAlerta(cuenta, cc.obtenerCategorias(cuenta.getId()));
+        recargarAlertas();
+    }
 
+    @FXML
+    void editarAlerta(ActionEvent event) {
+        Alertas seleccionada = listAlertas.getSelectionModel().getSelectedItem();
+        if (seleccionada == null) {
+            mensajeError("Seleccione una alerta para editar.");
+            return;
+        }
+        Cuenta cuenta = comboCuentaAlertas.getValue();
+        if (cuenta == null) {
+            mensajeError("Seleccione una cuenta primero.");
+            return;
+        }
+        CuentaController cc = Configuracion.getInstancia().getCuentaController();
+        SceneManager.getInstancia().showEditarAlerta(seleccionada, cc.obtenerCategorias(cuenta.getId()));
+        recargarAlertas();
+    }
+
+    @FXML
+    void eliminarAlerta(ActionEvent event) {
+        Alertas seleccionada = listAlertas.getSelectionModel().getSelectedItem();
+        if (seleccionada == null) {
+            mensajeError("Seleccione una alerta para eliminar.");
+            return;
+        }
+        CuentaController cc = Configuracion.getInstancia().getCuentaController();
+        String nombreCuenta = cc.obtenerCuentas().stream()
+                .filter(c -> c.getId().equals(seleccionada.getIdCuenta()))
+                .findFirst().map(Cuenta::getNombre).orElse("Desconocida");
+        String tipo = seleccionada.getTipo().getNombreEstrategia().split(" ")[1].toLowerCase();
+        StringBuilder sb = new StringBuilder();
+        sb.append(nombreCuenta).append(": Límite ").append(tipo).append(" de ");
+        sb.append(String.format("%.2f", seleccionada.getLimite())).append("\u20AC");
+        if (seleccionada.getCategoria() != null) {
+            sb.append(" en ").append(seleccionada.getCategoria().getNombre());
+        }
+        SceneManager.getInstancia().showConfirmation(
+            "Eliminar alerta",
+            "¿Seguro que desea eliminar la alerta \"" + sb.toString() + "\"?",
+            () -> {
+                cc.borrarAlerta(seleccionada);
+                recargarAlertas();
+            });
     }
 
     @FXML
@@ -604,16 +676,6 @@ public class VentanaPrincipalController {
     }
 
     
-    @FXML
-    void editarAlerta(ActionEvent event) {
-
-    }
-
-    @FXML
-    void eliminarAlerta(ActionEvent event) {
-
-    }
-
     @FXML
     void filtrar(ActionEvent event) {
         CuentaController cc = Configuracion.getInstancia().getCuentaController();
