@@ -34,9 +34,7 @@
 
 ![crearGasto](imagenes/crearGasto.png)
 
-**Descripción:** Al pulsar el botón de Crear Gasto se nos abre una interfaz para rellenar los atributos necesarios de un gasto. Cabe resaltar que al seleccionar fecha se nos abre un desplegable de un calendario y al seleccionar categoría se abre un desplegable con las categorías creadas en la Cuenta. Una vez creado un gasto se ve así.
-
-![crearGasto2](imagenes/crearGasto2.png)
+**Descripción:** Al pulsar el botón de Crear Gasto se nos abre una interfaz para rellenar los atributos necesarios de un gasto. Cabe resaltar que al seleccionar fecha se nos abre un desplegable de un calendario y al seleccionar categoría se abre un desplegable con las categorías creadas en la Cuenta. Una vez creado un gasto se añade visualmente a la interfaz en la lista central.
 
 ### Eliminar Gasto
 
@@ -68,7 +66,7 @@
 
 ![importar2](imagenes/importar2.png)
 
-**Descripción:** En esta interfaz se nos permite importar una lista de gastos; para ello hay que pulsar el botón Importar, esto nos abrirá el explorador de archivos para seleccionar el archivo con los gastos que queramos importar (NOTA: Actualmente la aplicación solo permite archivos en formato CSV para su importación). Cuando se han importado aparecerá un aviso con el número de gastos importado y a qué cuenta.
+**Descripción:** En esta interfaz se nos permite importar una lista de gastos; para ello hay que pulsar el botón Importar, esto nos abrirá el explorador de archivos para seleccionar el archivo con los gastos que queramos importar (NOTA: Actualmente la aplicación solo permite archivos en formato CSV para su importación). Cuando se han importado aparecerá en el historial de importaciones.
 
 ---
 
