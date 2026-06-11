@@ -2,6 +2,14 @@
 
 ## Inicio
 
+![inicio2](imagenes/inicio2.png)
+
+**Descripción:** Al iniciar la aplicacion nos encontramos con un botón para entrar en ella.
+
+---
+
+## Gestion de Cuentas
+
 ![inicio](imagenes/inicio.png)
 
 **Descripción:** Al iniciar la app nos encontramos con la selección de cuentas, con una cuenta personal llamada "Personal" está creada por defecto, esta interfaz nos permite realizar 3 operaciones básicas: Crear Cuenta, sirve para crear una cuenta personal escribiendo el nombre de la cuenta, Crear Cuenta Compartida, permite crear una cuenta compartida poniendo nombre a la cuenta y nombres de las personas en ella teniendo la opción de añadir varias personas y si se produce un gasto equitativo o por el contrario porcentual escribiendo el usuario los porcentajes de cada persona, por último Eliminar Cuenta permite eliminar una cuenta seleccionada pidiendo confirmación, si no hay ninguna cuenta seleccionada resultara en un aviso de error.
