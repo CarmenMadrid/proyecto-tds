@@ -89,3 +89,31 @@
 ---
 
 ## Alertas y Notificaciones
+
+![alertas](imagenes/alertas.png)
+
+**Descripción:** En esta interfaz se pueden ver las alertas que hay, un historial con las notificaciones asi como poder crear modificar o eliminarlas.
+
+### Añadir Limite
+
+![añadirLimite](imagenes/añadirLimite.png)
+
+**Descripción:** Al pulsar este botón nos saltara una interfaz donde añadir el limite en unidades, seleccionar si es mensual o semanal y si queremos que sea general o de una categoria de gasto concreto.
+
+### Editar Limite
+
+![editarLimite](imagenes/editarLimite.png)
+
+**Descripción:** Al pulsar este botón nos saltara una interfaz donde poder editar un limite ya existente.
+
+### Eliminar Limite
+
+![eliminarLimite](imagenes/eliminarLimite.png)
+
+**Descripción:** Al pulsar este botón nos saltara una interfaz donde poder editar una alerta ya existente.
+
+---
+
+## Terminal
+
+**Descripción:** Adicionalmente el programa se puede usar desde el terminal sin necesidad de lanzar la interfaz grafica.
