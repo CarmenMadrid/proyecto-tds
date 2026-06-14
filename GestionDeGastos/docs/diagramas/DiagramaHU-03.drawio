@@ -1,0 +1,159 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Página-1" id="GPyzAAzE5wxWG-fDeipm">
+    <mxGraphModel dx="1212" dy="661" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="HvasqnzYOMc17l0eORbR-5" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};participant=umlActor;" value="" vertex="1">
+          <mxGeometry height="300" width="20" x="100" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="HvasqnzYOMc17l0eORbR-6" parent="1" style="html=1;points=[[0,0,0,0,5],[0,1,0,0,-5],[1,0,0,0,5],[1,1,0,0,-5]];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" value="" vertex="1">
+          <mxGeometry height="530" width="10" x="240" y="430" as="geometry" />
+        </mxCell>
+        <mxCell id="HvasqnzYOMc17l0eORbR-7" edge="1" parent="1" style="html=1;verticalAlign=bottom;startArrow=oval;endArrow=block;startSize=8;curved=0;rounded=0;entryX=0;entryY=0;entryDx=0;entryDy=5;" target="HvasqnzYOMc17l0eORbR-6" value="btnEliminarGasto(event)">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="110" y="435" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HvasqnzYOMc17l0eORbR-8" parent="1" style="html=1;whiteSpace=wrap;" value="VentanaPrincipal.fxml" vertex="1">
+          <mxGeometry height="20" width="110" x="190" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="HvasqnzYOMc17l0eORbR-9" parent="1" style="text;align=center;fontStyle=1;verticalAlign=middle;spacingLeft=3;spacingRight=3;strokeColor=none;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="HU-03: Eliminar Gasto" vertex="1">
+          <mxGeometry height="26" width="80" x="350" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="HvasqnzYOMc17l0eORbR-10" parent="1" style="html=1;points=[[0,0,0,0,5],[0,1,0,0,-5],[1,0,0,0,5],[1,1,0,0,-5]];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" value="" vertex="1">
+          <mxGeometry height="315" width="10" x="450" y="445" as="geometry" />
+        </mxCell>
+        <mxCell id="HvasqnzYOMc17l0eORbR-11" edge="1" parent="1" source="HvasqnzYOMc17l0eORbR-6" style="html=1;verticalAlign=bottom;startArrow=oval;endArrow=block;startSize=8;curved=0;rounded=0;entryX=0;entryY=0;entryDx=0;entryDy=5;" target="HvasqnzYOMc17l0eORbR-10" value="eliminarGasto(idCuenta, idGasto)">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="310" y="450" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HvasqnzYOMc17l0eORbR-12" parent="1" style="html=1;whiteSpace=wrap;" value="CuentaController.java" vertex="1">
+          <mxGeometry height="20" width="125" x="390" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="HvasqnzYOMc17l0eORbR-13" parent="1" style="html=1;points=[[0,0,0,0,5],[0,1,0,0,-5],[1,0,0,0,5],[1,1,0,0,-5]];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" value="" vertex="1">
+          <mxGeometry height="270" width="10" x="650" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="HvasqnzYOMc17l0eORbR-14" edge="1" parent="1" source="HvasqnzYOMc17l0eORbR-10" style="html=1;verticalAlign=bottom;startArrow=oval;endArrow=block;startSize=8;curved=0;rounded=0;entryX=0;entryY=0;entryDx=0;entryDy=5;" target="HvasqnzYOMc17l0eORbR-13" value="getCuenta(idCuenta)">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="580" y="475" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HvasqnzYOMc17l0eORbR-15" parent="1" style="html=1;whiteSpace=wrap;" value="CuentaRepository.java" vertex="1">
+          <mxGeometry height="20" width="157.5" x="592.5" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="HvasqnzYOMc17l0eORbR-18" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;exitX=0;exitY=1;exitDx=0;exitDy=-5;" target="HvasqnzYOMc17l0eORbR-10" value="">
+          <mxGeometry relative="1" x="-1" y="132" as="geometry">
+            <mxPoint x="120" y="-77" as="offset" />
+            <mxPoint x="650" y="520" as="sourcePoint" />
+            <mxPoint x="580" y="520" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HvasqnzYOMc17l0eORbR-19" edge="1" parent="1" source="HvasqnzYOMc17l0eORbR-10" style="html=1;verticalAlign=bottom;startArrow=oval;startFill=1;endArrow=block;startSize=8;curved=0;rounded=0;entryX=0;entryY=0;entryDx=0;entryDy=5;entryPerimeter=0;" target="HvasqnzYOMc17l0eORbR-21" value="getGasto(idGasto)">
+          <mxGeometry relative="1" width="60" as="geometry">
+            <mxPoint x="650" y="550" as="sourcePoint" />
+            <mxPoint x="890" y="540" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HvasqnzYOMc17l0eORbR-20" parent="1" style="html=1;whiteSpace=wrap;" value="Cuenta.java" vertex="1">
+          <mxGeometry height="20" width="157.5" x="876.25" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="HvasqnzYOMc17l0eORbR-21" parent="1" style="html=1;points=[[0,0,0,0,5],[0,1,0,0,-5],[1,0,0,0,5],[1,1,0,0,-5]];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" value="" vertex="1">
+          <mxGeometry height="160" width="10" x="950" y="530" as="geometry" />
+        </mxCell>
+        <mxCell id="HvasqnzYOMc17l0eORbR-22" edge="1" parent="1" source="HvasqnzYOMc17l0eORbR-21" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;" target="HvasqnzYOMc17l0eORbR-10" value="">
+          <mxGeometry relative="1" x="-0.75" y="20" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="700" y="580" />
+            </Array>
+            <mxPoint x="920" y="554.68" as="sourcePoint" />
+            <mxPoint x="840" y="554.68" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HvasqnzYOMc17l0eORbR-23" edge="1" parent="1" source="HvasqnzYOMc17l0eORbR-10" style="html=1;verticalAlign=bottom;startArrow=oval;startFill=1;endArrow=block;startSize=8;curved=0;rounded=0;" target="HvasqnzYOMc17l0eORbR-21" value="borrarGasto(gasto)">
+          <mxGeometry relative="1" width="60" as="geometry">
+            <Array as="points">
+              <mxPoint x="710" y="610" />
+            </Array>
+            <mxPoint x="650" y="550" as="sourcePoint" />
+            <mxPoint x="710" y="550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HvasqnzYOMc17l0eORbR-28" edge="1" parent="1" source="HvasqnzYOMc17l0eORbR-10" style="html=1;verticalAlign=bottom;startArrow=oval;startFill=1;endArrow=block;startSize=8;curved=0;rounded=0;" target="HvasqnzYOMc17l0eORbR-13" value="updateCuenta(cuenta)">
+          <mxGeometry relative="1" width="60" as="geometry">
+            <Array as="points">
+              <mxPoint x="560" y="640" />
+            </Array>
+            <mxPoint x="490" y="650" as="sourcePoint" />
+            <mxPoint x="550" y="650" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HvasqnzYOMc17l0eORbR-29" parent="1" style="html=1;whiteSpace=wrap;" value="CuentaRepositoryJson.java" vertex="1">
+          <mxGeometry height="20" width="157.5" x="1070" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="HvasqnzYOMc17l0eORbR-30" parent="1" style="html=1;points=[[0,0,0,0,5],[0,1,0,0,-5],[1,0,0,0,5],[1,1,0,0,-5]];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" value="" vertex="1">
+          <mxGeometry height="100" width="10" x="1150" y="630" as="geometry" />
+        </mxCell>
+        <mxCell id="HvasqnzYOMc17l0eORbR-31" edge="1" parent="1" source="HvasqnzYOMc17l0eORbR-13" style="html=1;verticalAlign=bottom;startArrow=oval;startFill=1;endArrow=block;startSize=8;curved=0;rounded=0;" target="HvasqnzYOMc17l0eORbR-30" value="updateCuenta(cuenta)">
+          <mxGeometry relative="1" width="60" as="geometry">
+            <Array as="points">
+              <mxPoint x="900" y="650" />
+            </Array>
+            <mxPoint x="690" y="650" as="sourcePoint" />
+            <mxPoint x="750" y="650" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HvasqnzYOMc17l0eORbR-32" parent="1" style="html=1;points=[[0,0,0,0,5],[0,1,0,0,-5],[1,0,0,0,5],[1,1,0,0,-5]];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" value="" vertex="1">
+          <mxGeometry height="40" width="10" x="1155" y="680" as="geometry" />
+        </mxCell>
+        <mxCell id="HvasqnzYOMc17l0eORbR-33" edge="1" parent="1" style="html=1;align=left;spacingLeft=2;endArrow=block;rounded=0;edgeStyle=orthogonalEdgeStyle;curved=0;rounded=0;" target="HvasqnzYOMc17l0eORbR-32" value="guardarDatos()">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1190" y="690" />
+            </Array>
+            <mxPoint x="1160" y="660" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HvasqnzYOMc17l0eORbR-34" edge="1" parent="1" source="HvasqnzYOMc17l0eORbR-30" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;exitX=0;exitY=1;exitDx=0;exitDy=-5;exitPerimeter=0;" target="HvasqnzYOMc17l0eORbR-13" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1113.75" y="720" as="sourcePoint" />
+            <mxPoint x="1033.75" y="720" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HvasqnzYOMc17l0eORbR-35" edge="1" parent="1" source="HvasqnzYOMc17l0eORbR-13" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;" target="HvasqnzYOMc17l0eORbR-10" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="550" y="730" />
+            </Array>
+            <mxPoint x="610" y="760" as="sourcePoint" />
+            <mxPoint x="530" y="760" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rV4PVrH0BTettNgwrLNj-1" parent="1" style="html=1;points=[[0,0,0,0,5],[0,1,0,0,-5],[1,0,0,0,5],[1,1,0,0,-5]];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" value="" vertex="1">
+          <mxGeometry height="40" width="10" x="245" y="800" as="geometry" />
+        </mxCell>
+        <mxCell id="rV4PVrH0BTettNgwrLNj-2" edge="1" parent="1" style="html=1;align=left;spacingLeft=2;endArrow=block;rounded=0;edgeStyle=orthogonalEdgeStyle;curved=0;rounded=0;" target="rV4PVrH0BTettNgwrLNj-1" value="cargarGastosCuenta(cuenta)">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="280" y="810" />
+            </Array>
+            <mxPoint x="250" y="780" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rV4PVrH0BTettNgwrLNj-3" parent="1" style="html=1;points=[[0,0,0,0,5],[0,1,0,0,-5],[1,0,0,0,5],[1,1,0,0,-5]];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" value="" vertex="1">
+          <mxGeometry height="40" width="10" x="245" y="870" as="geometry" />
+        </mxCell>
+        <mxCell id="rV4PVrH0BTettNgwrLNj-4" edge="1" parent="1" style="html=1;align=left;spacingLeft=2;endArrow=block;rounded=0;edgeStyle=orthogonalEdgeStyle;curved=0;rounded=0;" target="rV4PVrH0BTettNgwrLNj-3" value="actualizarGraficas(cuenta)">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="280" y="880" />
+            </Array>
+            <mxPoint x="250" y="850" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
