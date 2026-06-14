@@ -440,19 +440,6 @@ public class VentanaPrincipalController {
         }
     }
 
-    private void cargarTodosLosGastos() {
-        CuentaController cc = Configuracion.getInstancia().getCuentaController();
-        gastoCuentaMap.clear(); //limpiamos para volver a hacerlo
-        List<Gasto> todos = cc.obtenerCuentas().stream()
-                .flatMap(c -> { //para cada cuenta un stream 
-                    List<Gasto> gs = cc.obtenerGastos(c.getId()); //pedimos la lista de gastos
-                    gs.forEach(g -> gastoCuentaMap.put(g.getId(), c)); //guardamos cada gasto con el id de la cuenta
-                    return gs.stream();
-                })
-                .collect(Collectors.toList());
-        gastosTV.getItems().setAll(todos);
-    }
-
     @FXML
     void crearGasto(ActionEvent event) {
         Cuenta preseleccionada = cuentaActual();
