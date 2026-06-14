@@ -2,118 +2,159 @@
 
 ## Inicio
 
-![inicio2](imagenes/inicio2.png)
+![Inicio](imagenes/inicio2.png)
 
-**Descripción:** Al iniciar la aplicacion nos encontramos con un botón para entrar en ella.
+**Descripción:** Al iniciar la aplicación nos encontramos con un botón de "Entrar" para acceder a ella.
 
 ---
 
-## Gestion de Cuentas
+## Gestión de Cuentas
 
-![inicio](imagenes/inicio.png)
+![Gestión de cuentas](imagenes/inicio.png)
 
-**Descripción:** Al iniciar la app nos encontramos con la selección de cuentas, con una cuenta personal llamada "Personal" está creada por defecto, esta interfaz nos permite realizar 3 operaciones básicas: Crear Cuenta, sirve para crear una cuenta personal escribiendo el nombre de la cuenta, Crear Cuenta Compartida, permite crear una cuenta compartida poniendo nombre a la cuenta y nombres de las personas en ella teniendo la opción de añadir varias personas y si se produce un gasto equitativo o por el contrario porcentual escribiendo el usuario los porcentajes de cada persona, por último Eliminar Cuenta permite eliminar una cuenta seleccionada pidiendo confirmación, si no hay ninguna cuenta seleccionada resultara en un aviso de error.
+**Descripción:** Al entrar en la aplicación nos encontramos con la lista de cuentas. La cuenta personal llamada "Personal" está creada por defecto. Seleccionando una cuenta haciendo doble click sobre ella, se muestra un resumen de su información básica, con la cantidad gastada total, el número de gastos registrados y los límites semanales y mensuales que tiene establecidos. Además, para las cuentas compartidas se muestran los participantes con sus respectivos porcentajes de participación.
 
-![creaCuenta](imagenes/crearCuenta.png)
+| Resumen cuenta personal | Resumen cuenta compartida |
+|-------------------------|---------------------------|
+| ![Resumen cuenta personal](imagenes/resumenCuentaPersonal.png) | ![Resumen cuenta compartida](imagenes/resumenCuentaCompartida.png) |
 
-![creaCuentaCompartida](imagenes/creaCuentaCompartida.png)
+Esta interfaz presenta también tres botones a la derecha que nos permiten realizar las siguientes operaciones básicas:
 
-![eliminar](imagenes/eliminar.png)
+### Crear Cuenta
 
-![eliminarError](imagenes/eliminarError.png)
+![Crear cuenta](imagenes/crearCuenta.png)
+
+**Descripción:** Proporcionando un nombre válido (no repetido), se crea una cuenta personal.
+
+### Crear Cuenta Compartida
+
+![Crear cuenta compartida](imagenes/crearCuentaCompartida.png)
+
+**Descripción:** Proporcionando un nombre válido (no repetido) y al menos un participante, se crea una cuenta compartida.
+ Por defecto se aplica un reparto equitativo entre los miembros, aunque también está la opción de aplicar un reparto personalizado, escribiendo para cada persona su porcentaje de gastos.
+
+| Reparto equitativo | Reparto personalizado |
+|--------------------|-----------------------|
+|![Reparto equitativo](imagenes/crearCuentaCompartida1.png) | ![Reparto personalizado](imagenes/crearCuentaCompartida2.png) |
+
+### Eliminar Cuenta
+
+![Eliminar cuenta](imagenes/eliminar.png)
+
+**Descripción:** Permite eliminar una cuenta seleccionada pidiendo confirmación.
 
 ---
 
 ## Gestión de Gastos y Categorías
 
-![inicioGastos](imagenes/inicioGastos.png)
+![Gestión de gastos](imagenes/inicioGastos.png)
 
 **Descripción:** Para manejar los gastos y categorías tenemos esta pestaña, antes de crear un gasto o categoría tenemos que tener seleccionada una cuenta en el desplegable situado en la parte superior izquierda.
 
-### Crear Gasto 
+| Gastos cuenta personal | Gastos cuenta compartida |
+|------------------------|--------------------------|
+|![Gastos cuenta personal](imagenes/gastos1.png) | ![Gastos cuenta compartida](imagenes/gastos2.png) |
 
-![crearGasto](imagenes/crearGasto.png)
+### Crear Gasto
 
-**Descripción:** Al pulsar el botón de Crear Gasto se nos abre una interfaz para rellenar los atributos necesarios de un gasto. Cabe resaltar que al seleccionar fecha se nos abre un desplegable de un calendario y al seleccionar categoría se abre un desplegable con las categorías creadas en la Cuenta. Una vez creado un gasto se añade visualmente a la interfaz en la lista central.
+| Crear gasto en cuenta personal | Crear gasto en cuenta compartida |
+|--------------------------------|----------------------------------|
+|![Crear gasto en cuenta personal](imagenes/crearGasto1.png) | ![Crear gasto en cuenta compartida](imagenes/crearGasto2.png) |
+
+**Descripción:** Al pulsar el botón de Crear Gasto se abre una pestaña para rellenar los atributos necesarios de un gasto. Cabe resaltar que al seleccionar fecha se muestra un desplegable de un calendario y al seleccionar categoría se abre un desplegable con las categorías creadas en la cuenta, de igual forma para el pagador en una cuenta compartida.
+
+| Calendario | Categorías | Pagador |
+|------------|------------|---------|
+|![Calendario](imagenes/crearGasto3.png) | ![Categorías](imagenes/crearGasto4.png) | ![Pagador](imagenes/crearGasto5.png) |
 
 ### Eliminar Gasto
 
-![eliminarGasto](imagenes/eliminarGasto.png)
+![Eliminar gasto](imagenes/eliminarGasto.png)
 
-**Descripción:** Al igual que eliminar cuenta hay que seleccionar un gasto previamente y nos pedirá confirmación para eliminarlo.
+**Descripción:** Al igual que eliminar cuenta, hay que seleccionar un gasto previamente y nos pedirá confirmación para eliminarlo.
 
 ### Editar Gasto
 
-![editarGasto](imagenes/editarGasto.png)
+| Editar gasto en cuenta personal | Editar gasto en cuenta compartida |
+|---------------------------------|-----------------------------------|
+|![Editar gasto en cuenta personal](imagenes/editarGasto1.png) | ![Editar gasto en cuenta compartida](imagenes/editarGasto2.png) |
 
-**Descripción:** Al seleccionar un gasto con este botón nos vuelve a abrir el desplegable que había al crear un gasto y nos permite modificar sus atributos.
+**Descripción:** Al seleccionar un gasto y pulsar el botón "Editar Gasto", se abre la misma pestaña que la de crear un gasto y nos permite modificar sus atributos.
 
 ### Crear Categoría
 
-![crearCategoria](imagenes/crearCategoria.png)
+![Crear categoria](imagenes/crearCategoria.png)
 
 **Descripción:** Al seleccionar este botón nos permite crear una nueva categoría escribiendo el nombre que queramos darle.
 
 ### Eliminar Categoría
 
-![eliminarCategoria](imagenes/eliminarCategoria.png)
+![Eliminar categoria](imagenes/eliminarCategoria.png)
 
-**Descripción:** Al seleccionar este botón nos permite eliminar una categoría ya existente seleccionándola dentro de un desplegable con las categorías existentes.
+**Descripción:** Al seleccionar este botón, podemos eliminar una categoría existente y vacía (sin gastos registrados), seleccionándola dentro del desplegable con las diferentes categorías de la cuenta. Como con el resto de opciones de eliminación, antes de borrar la categoría se muestra un mensaje de confirmación.
+
+---
+
+## Gráficas de Gastos
+
+| Diagrama de barras | Diagrama circular |
+|--------------------|-------------------|
+|![Diagrama de barras](imagenes/diagramaBarras.png) | ![Diagrama circular](imagenes/diagramaCircular.png) |
+
+**Descripción:** En esta pestaña se pueden ver gráficas que agrupan los gastos de una cuenta por categorías. El desplegable para seleccionar la cuenta se encuentra arriba a la derecha y la gráfica está disponible en formato de diagrama de barras y diagrama circular.
 
 ---
 
 ## Importar Gastos
 
-![importar2](imagenes/importar2.png)
+![Importar](imagenes/importar2.png)
 
-**Descripción:** En esta interfaz se nos permite importar una lista de gastos; para ello hay que pulsar el botón Importar, esto nos abrirá el explorador de archivos para seleccionar el archivo con los gastos que queramos importar (NOTA: Actualmente la aplicación solo permite archivos en formato CSV para su importación). Cuando se han importado aparecerá en el historial de importaciones.
+**Descripción:** En esta pestaña se nos permite importar una lista de gastos; para ello hay que pulsar el botón "Importar" y seleccionar la cuenta y el archivo deseado.
 
----
+![Importar](imagenes/importar.png)
 
-## Graficas de Gastos
+ El botón de "Seleccionar..." abrirá el explorador de archivos para seleccionar el archivo con los gastos que queramos importar (NOTA: Actualmente la aplicación solo permite archivos en formato CSV para su importación). Cuando se han importado correctamente los gastos, aparece un mensaje informativo en el historial de importaciones.
 
-![diagramaBarras](imagenes/diagramaBarras.png)
-
-**Descripción:** En esta interfaz se pueden ver gráficas que agrupan los gastos de una cuenta por Categorías, ya sea en diagrama de barras o también en opción de generar un diagrama circular.
-
-![diagramaCircular](imagenes/diagramaCircular.png)
+ ![Importar](imagenes/historialImportar.png)
 
 ---
 
 ## Filtros
 
-![filtros](imagenes/filtros.png)
+![Filtros](imagenes/filtros.png)
 
-**Descripción:** En esta interfaz se pueden filtrar los gastos de las cuentas por un rango de fechas, haber sido realizados en meses concretos, por categoría del gasto o por una combinación de estos filtros; a la izquierda nos saldrá un listado con los gastos que cumplen el filtrado.
+**Descripción:** En esta interfaz se pueden filtrar los gastos de las cuentas por la cuenta a la que pertenecen, por un rango de fechas, por haber sido realizados en meses concretos, por la categoría del gasto o por una combinación de estos filtros, además, una vez que se ha seleccionado una cuenta específica y si esta es compartida, también aparece la opción de filtrar por pagador. Cuando se seleccionan los filtros y se pulsa el botón de "Filtrar", se muestra a la izquierda un listado con los gastos que cumplen el filtrado. Si no hay filtros activos o se pulsa el botón de "Borrar", se muestra la lista con todos los gastos existentes.
+
+![Gastos filtrados](imagenes/filtros1.png)
 
 ---
 
 ## Alertas y Notificaciones
 
-![alertas](imagenes/alertas.png)
+![Alertas y notificaciones](imagenes/alertas.png)
 
-**Descripción:** En esta interfaz se pueden ver las alertas que hay, un historial con las notificaciones asi como poder crear modificar o eliminarlas.
+**Descripción:** En esta última pestaña se pueden ver los límites que hay establecidos para cada cuenta, además de crearlos, editarlos y eliminarlos; y, a la derecha, se muestra un historial con las notificaciones de las alertas de los límites que se han superado.
 
-### Añadir Limite
+### Añadir Límite
 
-![añadirLimite](imagenes/añadirLimite.png)
+![Añadir limite](imagenes/añadirLimite.png)
 
-**Descripción:** Al pulsar este botón nos saltara una interfaz donde añadir el limite en unidades, seleccionar si es mensual o semanal y si queremos que sea general o de una categoria de gasto concreto.
+**Descripción:** Al pulsar el botón de "Añadir Límite", aparece una pestaña donde podemos crear una nueva alerta asignando su cantidad y si es semanal o mensual. Por defecto se aplica sobre todas las categorías, pero también se puede seleccionar una categoria de gasto concreta en el desplegable.
 
-### Editar Limite
+### Editar Límite
 
 ![editarLimite](imagenes/editarLimite.png)
 
-**Descripción:** Al pulsar este botón nos saltara una interfaz donde poder editar un limite ya existente.
+**Descripción:** Esta pestaña nos permite modificar la cantidad, el tipo (semanal o mensual) o la categoría de un límite existente.
 
-### Eliminar Limite
+### Eliminar Límite
 
-![eliminarLimite](imagenes/eliminarLimite.png)
+![Eliminar limite](imagenes/eliminarLimite.png)
 
-**Descripción:** Al pulsar este botón nos saltara una interfaz donde poder editar una alerta ya existente.
+**Descripción:** Al pulsar este botón nos salta un mensaje de confirmación para eliminar el límite seleccionado.
 
 ---
 
 ## Terminal
 
-**Descripción:** Adicionalmente el programa se puede usar desde el terminal sin necesidad de lanzar la interfaz grafica.
+**Descripción:** Adicionalmente, el programa se puede usar desde la terminal sin necesidad de lanzar la interfaz gráfica.
