@@ -240,6 +240,15 @@ public class VentanaPrincipalController {
         refrescarCuentas();
         recargarAlertas();
 
+        listMisCuentas.setOnMouseClicked(e -> {
+            if (e.getClickCount() == 2) {
+                Cuenta seleccionada = listMisCuentas.getSelectionModel().getSelectedItem();
+                if (seleccionada != null) {
+                    SceneManager.getInstancia().showAccountSummary(seleccionada);
+                }
+            }
+        });
+
         comboCuentaAlertas.setConverter(new StringConverter<>() {
             public String toString(Cuenta c) { return c == null ? "Todas las cuentas" : c.getNombre(); }
             public Cuenta fromString(String s) { return null; }
