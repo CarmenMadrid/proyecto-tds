@@ -71,7 +71,7 @@ Esta interfaz presenta también tres botones a la derecha que nos permiten reali
 
 ![Eliminar gasto](imagenes/eliminarGasto.png)
 
-**Descripción:** Al igual que eliminar cuenta, hay que seleccionar un gasto previamente y nos pedirá confirmación para eliminarlo.
+**Descripción:** Al igual que eliminar cuenta, hay que seleccionar un gasto previamente y nos pide confirmación para eliminarlo.
 
 ### Editar Gasto
 
@@ -112,10 +112,11 @@ Esta interfaz presenta también tres botones a la derecha que nos permiten reali
 **Descripción:** En esta pestaña se nos permite importar una lista de gastos; para ello hay que pulsar el botón "Importar" y seleccionar la cuenta y el archivo deseado.
 
 ![Importar](imagenes/importar.png)
+![Seleccionar archivo](imagenes/exploradorImportar.png)
 
- El botón de "Seleccionar..." abrirá el explorador de archivos para seleccionar el archivo con los gastos que queramos importar (NOTA: Actualmente la aplicación solo permite archivos en formato CSV para su importación). Cuando se han importado correctamente los gastos, aparece un mensaje informativo en el historial de importaciones.
+**Descripción:** El botón de "Seleccionar..." abre el explorador de archivos para seleccionar el archivo con los gastos que queramos importar (NOTA: Actualmente la aplicación solo permite archivos en formato CSV para su importación). Cuando se han importado correctamente los gastos, aparece un mensaje informativo en el historial de importaciones.
 
- ![Importar](imagenes/historialImportar.png)
+![Importar](imagenes/historialImportar.png)
 
 ---
 
