@@ -30,10 +30,10 @@ public class CuentaNuevaController {
         }
         
         boolean existe = cuentaController.obtenerCuentas().stream()
-                .anyMatch(c -> c.getNombre().equals(nombreCuenta));
+                .anyMatch(c -> c.getNombre().equals(nombre));
 
         if (existe) {
-            mensajeError("Ya existe una cuenta con el nombre \"" + nombreCuenta + "\". Elige otro nombre.");
+            mensajeError("Ya existe una cuenta con el nombre \"" + nombre + "\". Elige otro nombre.");
             return;
         }
 
