@@ -157,4 +157,6 @@ Esta interfaz presenta también tres botones a la derecha que nos permiten reali
 
 ## Terminal
 
+![Terminal](imagenes/terminal.png)
+
 **Descripción:** Adicionalmente, el programa se puede usar desde la terminal sin necesidad de lanzar la interfaz gráfica.
