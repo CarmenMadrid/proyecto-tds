@@ -180,10 +180,10 @@ public class CuentaCompartidaController {
         }
 
         CuentaCompartida.TipoReparto tipo = rbPersonalizado.isSelected()
-                ? CuentaCompartida.TipoReparto.PORCENTAJE
+                ? CuentaCompartida.TipoReparto.PERSONALIZADO
                 : CuentaCompartida.TipoReparto.EQUITATIVO;
 
-        if (tipo == CuentaCompartida.TipoReparto.PORCENTAJE) {
+        if (tipo == CuentaCompartida.TipoReparto.PERSONALIZADO) {
             double suma = personas.stream()
                     .mapToDouble(PersonaEntry::getPorcentaje).sum();
             if (Math.abs(suma - 100.0) > 0.001) {
@@ -200,7 +200,7 @@ public class CuentaCompartidaController {
         CuentaCompartida cuenta = (CuentaCompartida)
                 cuentaController.crearCuentaCompartida(nombreCuenta, listaPersonas, tipo);
 
-        if (tipo == CuentaCompartida.TipoReparto.PORCENTAJE) {
+        if (tipo == CuentaCompartida.TipoReparto.PERSONALIZADO) {
             Map<Persona, Double> mapa = new HashMap<>();
             for (PersonaEntry pp : personas) {
                 Persona persona = listaPersonas.stream()

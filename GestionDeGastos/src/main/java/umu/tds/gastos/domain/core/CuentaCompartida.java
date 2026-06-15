@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 public class CuentaCompartida extends Cuenta {
 
     public enum TipoReparto {
-        EQUITATIVO, PORCENTAJE
+        EQUITATIVO, PERSONALIZADO
     }
 
     private List<Persona> personas;
