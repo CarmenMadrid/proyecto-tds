@@ -12,7 +12,7 @@
 
 ![Gestión de cuentas](imagenes/inicio.png)
 
-**Descripción:** Al entrar en la aplicación nos encontramos con la lista de cuentas. La cuenta personal llamada "Personal" está creada por defecto. Seleccionando una cuenta haciendo doble click sobre ella, se muestra un resumen de su información básica, con la cantidad gastada total, el número de gastos registrados y los límites semanales y mensuales que tiene establecidos. Además, para las cuentas compartidas se muestran los participantes con sus respectivos porcentajes de participación.
+**Descripción:** Al entrar en la aplicación nos encontramos con la lista de cuentas. La cuenta personal llamada "Personal" está creada por defecto. Seleccionando una cuenta haciendo doble click sobre ella, se muestra un resumen de su información básica, con la cantidad gastada total, el número de gastos registrados y los límites semanales y mensuales que tiene establecidos. Además, para las cuentas compartidas se muestran los participantes con sus saldos y respectivos porcentajes personalizados de participación si los tienen.
 
 | Resumen cuenta personal | Resumen cuenta compartida |
 |-------------------------|---------------------------|
