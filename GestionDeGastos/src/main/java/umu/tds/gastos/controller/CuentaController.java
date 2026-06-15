@@ -151,6 +151,34 @@ public class CuentaController {
         verificarAlertas();
     }
 
+    public void editarGastoConPagador(UUID idCuenta, UUID idGasto, double cantidad, LocalDate fecha, String nombreCategoria, Persona pagador) {
+        Cuenta cuenta = cuentaRepository.getCuenta(idCuenta)
+                .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));
+        if (!(cuenta instanceof CuentaCompartida cc)) {
+            throw new IllegalArgumentException("Solo cuentas compartidas tienen pagador");
+        }
+        Categoria categoria = null;
+        if (nombreCategoria != null && !nombreCategoria.trim().isEmpty()) {
+            String cat = nombreCategoria.trim();
+            categoria = cuenta.getCategoria(cat)
+                    .orElseGet(() -> {
+                        Categoria nueva = new Categoria(cat);
+                        cuenta.addCategoria(nueva);
+                        return nueva;
+                    });
+        }
+        Gasto gasto = cuenta.getGasto(idGasto)
+                .orElseThrow(() -> new IllegalArgumentException("Gasto no encontrado"));
+        cc.modificarGasto(gasto, cantidad, fecha, categoria != null ? categoria : gasto.getCategoria());
+        if (pagador != null) {
+            Preconditions.checkArgument(cc.getPersonas().contains(pagador), "El pagador no es miembro de esta cuenta");
+            gasto.setPagador(pagador);
+            cc.calcularSaldos();
+        }
+        cuentaRepository.updateCuenta(cuenta);
+        verificarAlertas();
+    }
+
     public void eliminarGasto(UUID idCuenta, UUID idGasto) {
         Cuenta cuenta = cuentaRepository.getCuenta(idCuenta)
                 .orElseThrow(() -> new IllegalArgumentException("Cuenta no encontrada"));

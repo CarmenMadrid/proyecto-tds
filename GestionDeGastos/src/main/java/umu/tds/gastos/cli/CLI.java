@@ -26,12 +26,10 @@ public class CLI {
 
     private final CuentaController controller;
     private final Scanner scanner;
-    private final Cuenta cuentaPersonal;
 
     public CLI(CuentaController controller) {
         this.controller = controller;
         this.scanner = new Scanner(System.in);
-        this.cuentaPersonal = controller.obtenerCuentaPersonal();
     }
 
     public void ejecutar() {
@@ -40,16 +38,20 @@ public class CLI {
             String input = scanner.nextLine().trim();
             try {
                 switch (Integer.parseInt(input)) {
-                    case 1 -> verGastos(cuentaPersonal);
+                    case 1 -> { Cuenta c = seleccionarCuentaPersonal(); if (c != null) verGastos(c); }
                     case 2 -> anadirGastoPersonal();
                     case 3 -> editarGastoPersonal();
-                    case 4 -> eliminarGasto(cuentaPersonal);
-                    case 5 -> menuCuentasCompartidas();
-                    case 6 -> anadirGastoCompartido();
-                    case 7 -> editarGastoCompartido();
-                    case 8 -> eliminarGastoCompartido();
-                    case 9 -> filtrarGastos();
-                    case 10 -> { System.out.println("\n¡Hasta luego!\n"); return; }
+                    case 4 -> { Cuenta c = seleccionarCuentaPersonal(); if (c != null) eliminarGasto(c); }
+                    case 5 -> crearCuentaPersonal();
+                    case 6 -> eliminarCuentaPersonal();
+                    case 7 -> menuCuentasCompartidas();
+                    case 8 -> anadirGastoCompartido();
+                    case 9 -> editarGastoCompartido();
+                    case 10 -> eliminarGastoCompartido();
+                    case 11 -> crearCuentaCompartida();
+                    case 12 -> eliminarCuentaCompartida();
+                    case 13 -> filtrarGastos();
+                    case 14 -> { System.out.println("\n¡Hasta luego!\n"); return; }
                     default -> System.out.println("Opción inválida.");
                 }
             } catch (NumberFormatException e) {
@@ -63,16 +65,23 @@ public class CLI {
         System.out.println(" ======================================");
         System.out.println("     GESTIÓN DE GASTOS");
         System.out.println(" ======================================");
-        System.out.println(" 1. Ver gastos personales");
+        System.out.println(" --- Cuentas personales ---");
+        System.out.println(" 1. Ver cuentas personales");
         System.out.println(" 2. Añadir gasto personal");
         System.out.println(" 3. Editar gasto personal");
         System.out.println(" 4. Eliminar gasto personal");
-        System.out.println(" 5. Ver cuentas compartidas");
-        System.out.println(" 6. Añadir gasto compartido");
-        System.out.println(" 7. Editar gasto compartido");
-        System.out.println(" 8. Eliminar gasto compartido");
-        System.out.println(" 9. Filtrar gastos");
-        System.out.println(" 10. Salir");
+        System.out.println(" 5. Crear cuenta personal");
+        System.out.println(" 6. Eliminar cuenta personal");
+        System.out.println(" --- Cuentas compartidas ---");
+        System.out.println(" 7. Ver cuentas compartidas");
+        System.out.println(" 8. Añadir gasto compartido");
+        System.out.println(" 9. Editar gasto compartido");
+        System.out.println(" 10. Eliminar gasto compartido");
+        System.out.println(" 11. Crear cuenta compartida");
+        System.out.println(" 12. Eliminar cuenta compartida");
+        System.out.println(" --- Generales ---");
+        System.out.println(" 13. Filtrar gastos");
+        System.out.println(" 14. Salir");
         System.out.println("---------------------------------------");
         System.out.print("Seleccione: ");
     }
@@ -81,13 +90,45 @@ public class CLI {
     // Operaciones cuenta personal
     // ========================================================================
 
+    private void crearCuentaPersonal() {
+        System.out.println("\n--- Crear cuenta personal ---\n");
+        try {
+            String nombre = leerLinea("Nombre de la cuenta (o 'salir'): ");
+            controller.crearCuentaPersonal(nombre);
+            System.out.println("\u2713 Cuenta personal creada correctamente.\n");
+        } catch (CancelarOperacion e) {
+            System.out.println(e.getMessage() + "\n");
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage() + "\n");
+        }
+    }
+
+    private void eliminarCuentaPersonal() {
+        System.out.println("\n--- Eliminar cuenta personal ---\n");
+        Cuenta c = seleccionarCuentaPersonal();
+        if (c == null) return;
+        try {
+            String resp = leerLinea("¿Seguro que desea eliminar \"" + c.getNombre() + "\"? (s/N): ");
+            if (!resp.equalsIgnoreCase("s") && !resp.equalsIgnoreCase("si")) {
+                System.out.println("Cancelado.\n");
+                return;
+            }
+            controller.eliminarCuenta(c.getId());
+            System.out.println("\u2713 Cuenta personal eliminada correctamente.\n");
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage() + "\n");
+        }
+    }
+
     private void anadirGastoPersonal() {
+        Cuenta c = seleccionarCuentaPersonal();
+        if (c == null) return;
         System.out.println("\n--- Añadir gasto personal ---\n");
         try {
             double cantidad = leerCantidad("Cantidad (o 'salir'): ");
             LocalDate fecha = leerFecha("Fecha (yyyy-MM-dd) [Enter=hoy] (o 'salir'): ");
-            String nombreCat = leerCategoria("Categoría (o 'salir'): ", cuentaPersonal);
-            controller.registrarGasto(cuentaPersonal.getId(), cantidad, fecha, nombreCat);
+            String nombreCat = leerCategoria("Categoría (o 'salir'): ", c);
+            controller.registrarGasto(c.getId(), cantidad, fecha, nombreCat);
             System.out.println("\u2713 Gasto registrado correctamente.\n");
         } catch (CancelarOperacion e) {
             System.out.println(e.getMessage() + "\n");
@@ -97,8 +138,10 @@ public class CLI {
     }
 
     private void editarGastoPersonal() {
+        Cuenta c = seleccionarCuentaPersonal();
+        if (c == null) return;
         System.out.println("\n--- Editar gasto personal ---");
-        List<Gasto> gastos = controller.obtenerGastos(cuentaPersonal.getId());
+        List<Gasto> gastos = controller.obtenerGastos(c.getId());
         if (gastos.isEmpty()) {
             System.out.println("No hay gastos.\n");
             return;
@@ -108,8 +151,8 @@ public class CLI {
             System.out.println("(Enter para mantener el valor actual)");
             double cantidad = leerCantidadOpcional("Cantidad [" + g.getCantidad() + "] (o 'salir'): ", g.getCantidad());
             LocalDate fecha = leerFechaOpcional("Fecha [" + g.getFecha() + "] (o 'salir'): ", g.getFecha());
-            String nombreCat = leerCategoriaOpcional("Categoría [" + g.getCategoria().getNombre() + "] (o 'salir'): ", cuentaPersonal);
-            controller.editarGasto(cuentaPersonal.getId(), g.getId(), cantidad, fecha, nombreCat);
+            String nombreCat = leerCategoriaOpcional("Categoría [" + g.getCategoria().getNombre() + "] (o 'salir'): ", c);
+            controller.editarGasto(c.getId(), g.getId(), cantidad, fecha, nombreCat);
             System.out.println("\u2713 Gasto actualizado correctamente.\n");
         } catch (CancelarOperacion e) {
             System.out.println(e.getMessage() + "\n");
@@ -122,6 +165,54 @@ public class CLI {
     // Operaciones cuentas compartidas
     // ========================================================================
 
+    private void crearCuentaCompartida() {
+        System.out.println("\n--- Crear cuenta compartida ---\n");
+        try {
+            String nombre = leerLinea("Nombre de la cuenta (o 'salir'): ");
+            System.out.println("Introduzca los nombres de los participantes (deje en blanco para terminar):");
+            List<Persona> personas = new ArrayList<>();
+            while (true) {
+                String p = leerLinea("  Participante (o 'salir'): ");
+                if (p.isEmpty()) break;
+                personas.add(new Persona(p));
+            }
+            if (personas.size() < 2) {
+                System.out.println("Se necesitan al menos 2 participantes.\n");
+                return;
+            }
+            System.out.println("Tipo de reparto:");
+            System.out.println("1. Equitativo");
+            System.out.println("2. Personalizado\n");
+            String tipo = leerLinea("Seleccione (o 'salir'): ");
+            CuentaCompartida.TipoReparto reparto = tipo.equals("2")
+                    ? CuentaCompartida.TipoReparto.PERSONALIZADO
+                    : CuentaCompartida.TipoReparto.EQUITATIVO;
+            controller.crearCuentaCompartida(nombre, personas, reparto);
+            System.out.println("\u2713 Cuenta compartida creada correctamente.\n");
+        } catch (CancelarOperacion e) {
+            System.out.println(e.getMessage() + "\n");
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage() + "\n");
+        }
+    }
+
+    private void eliminarCuentaCompartida() {
+        System.out.println("\n--- Eliminar cuenta compartida ---\n");
+        CuentaCompartida cc = seleccionarCuentaCompartida();
+        if (cc == null) return;
+        try {
+            String resp = leerLinea("¿Seguro que desea eliminar \"" + cc.getNombre() + "\"? (s/N): ");
+            if (!resp.equalsIgnoreCase("s") && !resp.equalsIgnoreCase("si")) {
+                System.out.println("Cancelado.\n");
+                return;
+            }
+            controller.eliminarCuenta(cc.getId());
+            System.out.println("\u2713 Cuenta compartida eliminada correctamente.\n");
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage() + "\n");
+        }
+    }
+
     private void menuCuentasCompartidas() {
         System.out.println("\n--- Cuentas compartidas ---\n");
         CuentaCompartida cc = seleccionarCuentaCompartida();
@@ -129,24 +220,26 @@ public class CLI {
         mostrarDetalleCuenta(cc);
         while (true) {
             System.out.println();
-            System.out.println(" 1. Volver al menú principal");
-            if (cc.getTipoReparto() == CuentaCompartida.TipoReparto.PORCENTAJE) {
+            if (cc.getTipoReparto() == CuentaCompartida.TipoReparto.PERSONALIZADO) {
+                System.out.println(" 1. Volver al menú principal");
                 System.out.println(" 2. Configurar porcentajes de reparto\n");
-            }
-            String input = leerLinea("Seleccione (o 'salir'): ");
-            try {
-                int op = Integer.parseInt(input);
-                if (op == 1) return;
-                if (op == 2 && cc.getTipoReparto() == CuentaCompartida.TipoReparto.PORCENTAJE) {
-                    configurarPorcentajes(cc);
-                    mostrarDetalleCuenta(cc);
-                } else {
-                    System.out.println("Opción inválida.");
+                String input = leerLinea("Seleccione (o 'salir'): ");
+                try {
+                    int op = Integer.parseInt(input);
+                    if (op == 1) return;
+                    if (op == 2) {
+                        configurarPorcentajes(cc);
+                        mostrarDetalleCuenta(cc);
+                    } else {
+                        System.out.println("Opción inválida.");
+                    }
+                } catch (CancelarOperacion e) {
+                    return;
+                } catch (NumberFormatException e) {
+                    System.out.println("Número inválido.");
                 }
-            } catch (CancelarOperacion e) {
+            } else {
                 return;
-            } catch (NumberFormatException e) {
-                System.out.println("Número inválido.");
             }
         }
     }
@@ -184,7 +277,8 @@ public class CLI {
             double cantidad = leerCantidadOpcional("Cantidad [" + g.getCantidad() + "] (o 'salir'): ", g.getCantidad());
             LocalDate fecha = leerFechaOpcional("Fecha [" + g.getFecha() + "] (o 'salir'): ", g.getFecha());
             String nombreCat = leerCategoriaOpcional("Categoría [" + g.getCategoria().getNombre() + "] (o 'salir'): ", cc);
-            controller.editarGasto(cc.getId(), g.getId(), cantidad, fecha, nombreCat);
+            Persona pagador = seleccionarPersona(cc, "Pagador actual: " + g.getPagador() + ". ¿Nuevo pagador (o 'salir')? ");
+            controller.editarGastoConPagador(cc.getId(), g.getId(), cantidad, fecha, nombreCat, pagador);
             System.out.println("\u2713 Gasto actualizado correctamente.\n");
         } catch (CancelarOperacion e) {
             System.out.println(e.getMessage() + "\n");
@@ -256,7 +350,11 @@ public class CLI {
         System.out.println("2. Compartida\n");
         while (true) {
             String linea = leerLinea("Seleccione (o 'salir'): ");
-            if (linea.equals("1")) return cuentaPersonal;
+            if (linea.equals("1")) {
+                Cuenta c = seleccionarCuentaPersonal();
+                if (c == null) continue;
+                return c;
+            }
             if (linea.equals("2")) {
                 CuentaCompartida cc = seleccionarCuentaCompartida();
                 if (cc == null) return null;
@@ -348,6 +446,37 @@ public class CLI {
     // Helpers 
     // ========================================================================
 
+    private Cuenta seleccionarCuentaPersonal() {
+        List<Cuenta> personales = controller.obtenerCuentas().stream()
+                .filter(c -> !c.isCompartida())
+                .collect(Collectors.toList());
+        if (personales.isEmpty()) {
+            System.out.println("No hay cuentas personales. Cree una primero.\n");
+            return null;
+        }
+        if (personales.size() == 1) {
+            return personales.get(0);
+        }
+        System.out.println("Cuentas personales:");
+        for (int i = 0; i < personales.size(); i++) {
+            System.out.println((i + 1) + ". " + personales.get(i).getNombre());
+        }
+        System.out.print("Seleccione cuenta (o 'salir'): ");
+        String input = scanner.nextLine().trim();
+        if (input.equalsIgnoreCase("salir")) return null;
+        try {
+            int idx = Integer.parseInt(input) - 1;
+            if (idx < 0 || idx >= personales.size()) {
+                System.out.println("Índice inválido.\n");
+                return null;
+            }
+            return personales.get(idx);
+        } catch (NumberFormatException e) {
+            System.out.println("Número inválido.\n");
+            return null;
+        }
+    }
+
     private CuentaCompartida seleccionarCuentaCompartida() {
         List<Cuenta> todas = controller.obtenerCuentas();
         List<CuentaCompartida> compartidas = todas.stream()
@@ -386,7 +515,7 @@ public class CLI {
         System.out.print("Miembros: ");
         System.out.println(cc.getPersonas().stream().map(Persona::getNombre).collect(Collectors.joining(", ")));
 
-        if (cc.getTipoReparto() == CuentaCompartida.TipoReparto.PORCENTAJE) {
+        if (cc.getTipoReparto() == CuentaCompartida.TipoReparto.PERSONALIZADO) {
             Map<String, Double> pcts = controller.obtenerPorcentajes(cc.getId());
             if (!pcts.isEmpty()) {
                 System.out.print("Porcentajes: ");
@@ -493,6 +622,10 @@ public class CLI {
     }
 
     private Persona seleccionarPersona(CuentaCompartida cc) {
+        return seleccionarPersona(cc, "Seleccione pagador (o 'salir'): ");
+    }
+
+    private Persona seleccionarPersona(CuentaCompartida cc, String mensaje) {
         List<Persona> personas = cc.getPersonas();
         System.out.println("Pagadores:");
         for (int i = 0; i < personas.size(); i++) {
@@ -500,7 +633,7 @@ public class CLI {
         }
         while (true) {
             try {
-                String linea = leerLinea("Seleccione pagador (o 'salir'): ");
+                String linea = leerLinea(mensaje);
                 int idx = Integer.parseInt(linea) - 1;
                 if (idx >= 0 && idx < personas.size()) return personas.get(idx);
                 System.out.println("Índice inválido.");

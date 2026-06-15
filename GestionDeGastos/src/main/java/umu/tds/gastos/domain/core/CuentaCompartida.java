@@ -141,6 +141,7 @@ public class CuentaCompartida extends Cuenta {
         Preconditions.checkArgument(Math.abs(total - 100.0) < 0.001,
                 "Los porcentajes deben sumar 100. Suma actual: " + total);
         this.porcentajes = porcentajes;
+        saldos.clear();
     }
 
     public void setSaldos(Map<Persona, Double> saldos) {
