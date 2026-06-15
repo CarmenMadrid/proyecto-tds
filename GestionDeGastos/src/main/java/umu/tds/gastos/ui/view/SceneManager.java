@@ -9,9 +9,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.Separator;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -293,63 +295,87 @@ public class SceneManager {
             Label nombreCuenta = new Label(cuenta.getNombre());
             nombreCuenta.setStyle("-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #1E2A38;");
 
-            Label tipoCuenta = new Label(cuenta.isCompartida() ? "Cuenta compartida" : "Cuenta personal");
+            String subtitulo;
+            if (cuenta.isCompartida()) {
+                int n = ((CuentaCompartida) cuenta).getPersonas().size();
+                subtitulo = "Cuenta compartida · " + n + " participante" + (n != 1 ? "s" : "");
+            } else {
+                subtitulo = "Cuenta personal";
+            }
+            Label tipoCuenta = new Label(subtitulo);
             tipoCuenta.setStyle("-fx-font-size: 14px; -fx-text-fill: #6B7280;");
 
             content.getChildren().addAll(nombreCuenta, tipoCuenta);
 
             HBox metrics = new HBox(15);
             metrics.getChildren().addAll(
-                    createMetricCard("Total gastado", String.format("%.2f €", total)),
+                    createMetricCard("Gastado", String.format("%.0f €", total)),
                     createMetricCard("Gastos", String.valueOf(gastos.size()))
             );
             content.getChildren().add(metrics);
 
+            // participantes
             if (cuenta.isCompartida()) {
                 CuentaCompartida cc2 = (CuentaCompartida) cuenta;
-                Label lblReparto = new Label("Reparto: " + (cc2.getTipoReparto() == CuentaCompartida.TipoReparto.EQUITATIVO ? "Equitativo" : "Personalizado"));
-                lblReparto.setStyle("-fx-font-size: 14px; -fx-text-fill: #6B7280;");
-                content.getChildren().add(lblReparto);
+                Map<String, Double> porcentajes = cc.obtenerPorcentajes(cuenta.getId());
+                Map<Persona, Double> saldos = cc.obtenerSaldos(cuenta.getId());
 
                 Label lblParticipantes = new Label("Participantes");
                 lblParticipantes.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1E2A38;");
                 content.getChildren().add(lblParticipantes);
 
-                Map<String, Double> porcentajes = cc.obtenerPorcentajes(cuenta.getId());
-                VBox listaParticipantes = new VBox(8);
-
+                VBox listaParticipantes = new VBox(12);
                 if (porcentajes.isEmpty()) {
-                    double eq = 100.0 / cc2.getPersonas().size();
                     for (Persona p : cc2.getPersonas()) {
-                        HBox fila = crearFilaParticipante(p.getNombre(), eq);
+                        VBox fila = crearFilaParticipante(p.getNombre(), 100.0 / cc2.getPersonas().size(), saldos.getOrDefault(p, 0.0), true);
                         listaParticipantes.getChildren().add(fila);
                     }
                 } else {
                     for (Map.Entry<String, Double> e : porcentajes.entrySet()) {
-                        HBox fila = crearFilaParticipante(e.getKey(), e.getValue());
+                        double saldo = saldos.entrySet().stream()
+                                .filter(s -> s.getKey().getNombre().equals(e.getKey()))
+                                .map(Map.Entry::getValue)
+                                .findFirst().orElse(0.0);
+                        VBox fila = crearFilaParticipante(e.getKey(), e.getValue(), saldo, false);
                         listaParticipantes.getChildren().add(fila);
                     }
                 }
                 content.getChildren().add(listaParticipantes);
             }
 
+            // alertas
             List<Alertas> alertas = cc.getAlertasByCuenta(cuenta.getId());
-            Label lblAlertas = new Label("Límites y alertas");
-            lblAlertas.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1E2A38;");
-            content.getChildren().add(lblAlertas);
+            if (!alertas.isEmpty()) {
+                content.getChildren().add(new Separator());
+            }
+            for (Alertas a : alertas) {
+                List<Gasto> gastosCat = a.filtrarPorCategoria(gastos);
+                double gastado = a.getTipo().comprobar(a, gastosCat);
+                double disponible = a.getLimite() - gastado;
+                if (disponible < 0) disponible = 0;
 
-            if (alertas.isEmpty()) {
-                Label sinAlertas = new Label("No hay límites configurados para esta cuenta.");
-                sinAlertas.setStyle("-fx-text-fill: #9CA3AF; -fx-font-style: italic;");
-                content.getChildren().add(sinAlertas);
-            } else {
-                VBox listaAlertas = new VBox(4);
-                for (Alertas a : alertas) {
-                    Label item = new Label("  " + a.toString());
-                    item.setStyle("-fx-text-fill: #555; -fx-font-size: 13px;");
-                    listaAlertas.getChildren().add(item);
+                String[] parts = a.getTipo().getNombreEstrategia().split(" ");
+                String tipo = parts[parts.length - 1].toLowerCase();
+
+                HBox filaAlerta = new HBox(6);
+                filaAlerta.setAlignment(Pos.CENTER_LEFT);
+
+                Label limite = new Label("Límite " + tipo + " de " + String.format("%.2f \u20AC", a.getLimite()));
+                limite.setStyle("-fx-font-size: 14px; -fx-text-fill: #333;");
+
+                filaAlerta.getChildren().add(limite);
+
+                if (a.getCategoria() != null) {
+                    Label lblCat = new Label(" en " + a.getCategoria().getNombre());
+                    lblCat.setStyle("-fx-font-size: 14px; -fx-text-fill: #333;");
+                    filaAlerta.getChildren().add(lblCat);
                 }
-                content.getChildren().add(listaAlertas);
+
+                Label lblDisp = new Label("  " + String.format("%.0f \u20AC disponibles", disponible));
+                lblDisp.setStyle("-fx-font-size: 14px; -fx-text-fill: #059669; -fx-font-weight: bold;");
+
+                filaAlerta.getChildren().add(lblDisp);
+                content.getChildren().add(filaAlerta);
             }
 
             HBox buttons = new HBox(10);
@@ -407,24 +433,45 @@ public class SceneManager {
         return card;
     }
 
-    private HBox crearFilaParticipante(String nombre, double porcentaje) {
-        HBox fila = new HBox(10);
-        fila.setAlignment(Pos.CENTER_LEFT);
+    private VBox crearFilaParticipante(String nombre, double porcentaje, double saldo, boolean ocultarPct) {
+        HBox top = new HBox();
+        top.setAlignment(Pos.CENTER_LEFT);
 
         Label lblName = new Label(nombre);
-        lblName.setPrefWidth(100);
-        lblName.setStyle("-fx-font-weight: bold; -fx-text-fill: #1E2A38;");
+        lblName.setStyle("-fx-font-weight: bold; -fx-text-fill: #1E2A38; -fx-font-size: 14px;");
 
-        ProgressBar pb = new ProgressBar(porcentaje / 100.0);
-        pb.setPrefWidth(200);
-        pb.setStyle("-fx-accent: #3D5A80;");
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        Label lblPct = new Label(String.format("%.0f%%", porcentaje));
-        lblPct.setPrefWidth(50);
-        lblPct.setStyle("-fx-text-fill: #6B7280;");
+        Label lblSaldo = new Label(formatearSaldo(saldo));
+        lblSaldo.setStyle("-fx-font-size: 14px; -fx-text-fill: " + (saldo >= 0 ? "#059669;" : "#DC2626;") + " -fx-font-weight: bold;");
 
-        fila.getChildren().addAll(lblName, pb, lblPct);
+        top.getChildren().addAll(lblName, spacer, lblSaldo);
+
+        VBox fila = new VBox(4);
+        fila.getChildren().add(top);
+
+        if (!ocultarPct) {
+            HBox bar = new HBox(8);
+            bar.setAlignment(Pos.CENTER_LEFT);
+
+            ProgressBar pb = new ProgressBar(porcentaje / 100.0);
+            pb.setPrefWidth(260);
+            pb.setPrefHeight(14);
+            pb.setStyle("-fx-accent: #3D5A80;");
+
+            Label lblPct = new Label(String.format("%.0f%%", porcentaje));
+            lblPct.setStyle("-fx-text-fill: #6B7280; -fx-font-size: 13px;");
+
+            bar.getChildren().addAll(pb, lblPct);
+            fila.getChildren().add(bar);
+        }
+
         return fila;
+    }
+
+    private String formatearSaldo(double saldo) {
+        return String.format("%+.2f \u20AC", saldo);
     }
 
     public void closeDialog() {
